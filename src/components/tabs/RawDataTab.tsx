@@ -62,26 +62,32 @@ export function RawDataTab({ data }: RawDataTabProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedData.map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-mono text-xs">
-                    {row.timestamp || 'N/A'}
-                  </TableCell>
-                  <TableCell>{row.currentlyTeaching || 'N/A'}</TableCell>
-                  <TableCell>{row.yearsTeachingCategory}</TableCell>
-                  <TableCell className="max-w-[200px] truncate" title={row.schoolType}>
-                    {row.schoolType || 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-right font-mono" style={{ color: 'var(--chart-support)' }}>
-                    {row.supportAdaptationIndex?.toFixed(2) || 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-right font-mono" style={{ color: 'var(--chart-challenge)' }}>
-                    {row.challengeAdaptationIndex?.toFixed(2) || 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-right font-mono">{row.groupSize || 'N/A'}</TableCell>
-                  <TableCell>{row.hasCertification || 'N/A'}</TableCell>
-                </TableRow>
-              ))}
+              {paginatedData.map((row, idx) => {
+                const formattedTimestamp = row.timestamp 
+                  ? row.timestamp.replace(/\s+(CET|CEST|UTC|GMT)$/i, '').trim()
+                  : 'N/A';
+                
+                return (
+                  <TableRow key={idx}>
+                    <TableCell className="font-mono text-xs">
+                      {formattedTimestamp}
+                    </TableCell>
+                    <TableCell>{row.currentlyTeaching || 'N/A'}</TableCell>
+                    <TableCell>{row.yearsTeachingCategory}</TableCell>
+                    <TableCell className="max-w-[200px] truncate" title={row.schoolType}>
+                      {row.schoolType || 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-right font-mono" style={{ color: 'var(--chart-support)' }}>
+                      {row.supportAdaptationIndex?.toFixed(2) || 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-right font-mono" style={{ color: 'var(--chart-challenge)' }}>
+                      {row.challengeAdaptationIndex?.toFixed(2) || 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-right font-mono">{row.groupSize || 'N/A'}</TableCell>
+                    <TableCell>{row.hasCertification || 'N/A'}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
