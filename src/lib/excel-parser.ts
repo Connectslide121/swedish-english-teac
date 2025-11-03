@@ -79,7 +79,7 @@ export function parseExcel(file: ArrayBuffer): { data: SurveyResponse[]; warning
     const yearsTeaching = values[29]?.trim() || '';
     
     const row: SurveyResponse = {
-      timestamp: values[0]?.trim() || '',
+      timestamp: parseTimestamp(values[0]?.trim() || ''),
       consent: values[1]?.trim() || '',
       currentlyTeaching: values[2]?.trim() || '',
       
@@ -134,6 +134,37 @@ function parseNumber(value: string): number | null {
   if (!value || value.trim() === '') return null;
   const num = parseFloat(value.replace(/[^0-9.-]/g, ''));
   return isNaN(num) ? null : num;
+}
+
+function parseTimestamp(timestamp: string): string {
+  if (!timestamp) return '';
+  
+  const match = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(em|am|pm)\s+(\w+)/i);
+  
+  if (match) {
+    const [, year, month, day, hour, minute, second, meridiem, timezone] = match;
+    
+    let hour24 = parseInt(hour, 10);
+    const meridiemLower = meridiem.toLowerCase();
+    
+    if (meridiemLower === 'em' || meridiemLower === 'pm') {
+      if (hour24 !== 12) {
+        hour24 += 12;
+      }
+    } else if ((meridiemLower === 'am') && hour24 === 12) {
+      hour24 = 0;
+    }
+    
+    const paddedMonth = month.padStart(2, '0');
+    const paddedDay = day.padStart(2, '0');
+    const paddedHour = hour24.toString().padStart(2, '0');
+    const paddedMinute = minute.padStart(2, '0');
+    const paddedSecond = second.padStart(2, '0');
+    
+    return `${year}-${paddedMonth}-${paddedDay} ${paddedHour}:${paddedMinute}:${paddedSecond} ${timezone}`;
+  }
+  
+  return timestamp;
 }
 
 function categorizeYears(yearsText: string): string {
