@@ -139,7 +139,7 @@ function parseNumber(value: string): number | null {
 function parseTimestamp(timestamp: string): string {
   if (!timestamp) return '';
   
-  const match = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(em|am|pm)\s+(\w+)/i);
+  const match = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(em|am|pm)(?:\s+(\w+))?/i);
   
   if (match) {
     const [, year, month, day, hour, minute, second, meridiem, timezone] = match;
@@ -161,7 +161,8 @@ function parseTimestamp(timestamp: string): string {
     const paddedMinute = minute.padStart(2, '0');
     const paddedSecond = second.padStart(2, '0');
     
-    return `${year}-${paddedMonth}-${paddedDay} ${paddedHour}:${paddedMinute}:${paddedSecond} ${timezone}`;
+    const formattedDate = `${year}-${paddedMonth}-${paddedDay} ${paddedHour}:${paddedMinute}:${paddedSecond}`;
+    return timezone ? `${formattedDate} ${timezone}` : formattedDate;
   }
   
   return timestamp;
