@@ -86,8 +86,8 @@ export function BarChart({ data, height = 300, xLabel, yLabel }: BarChartProps) 
       })
       .on('mousemove', function(event) {
         const containerRect = containerRef.current!.getBoundingClientRect();
-        const tooltipX = event.pageX - containerRect.left + 10;
-        const tooltipY = event.pageY - containerRect.top - 40;
+        const tooltipX = event.clientX - containerRect.left + 10;
+        const tooltipY = event.clientY - containerRect.top - 40;
         
         tooltip
           .style('top', `${tooltipY}px`)
