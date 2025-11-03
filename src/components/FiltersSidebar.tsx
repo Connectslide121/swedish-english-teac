@@ -18,7 +18,7 @@ interface FiltersSidebarProps {
 
 export function FiltersSidebar({ data, filters, onFiltersChange }: FiltersSidebarProps) {
   const schoolTypes = getUniqueValues(data, 'schoolType');
-  const yearsCategories = ['0-3', '4-6', '7-10', '11-20', '21-30', '30+'];
+  const yearsCategories = ['0-5', '6-11', '11-20', '20-30', '30+'];
   const levelsOptions = ['7-9', 'Gymnasiet', 'Grundskola', 'Upper secondary'];
   const shareOptions = getUniqueValues(data, 'shareSupportStudents');
 
