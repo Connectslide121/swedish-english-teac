@@ -27,6 +27,20 @@ export function GroupedBarChart({ data, height = 350 }: GroupedBarChartProps) {
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    const tooltip = d3.select(containerRef.current)
+      .append('div')
+      .style('position', 'absolute')
+      .style('visibility', 'hidden')
+      .style('background-color', 'var(--popover)')
+      .style('color', 'var(--popover-foreground)')
+      .style('border', '1px solid var(--border)')
+      .style('border-radius', '0.375rem')
+      .style('padding', '0.5rem 0.75rem')
+      .style('font-size', '0.875rem')
+      .style('pointer-events', 'none')
+      .style('z-index', '1000')
+      .style('box-shadow', '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)');
+
     const x0 = d3.scaleBand()
       .domain(data.map(d => d.category))
       .range([0, innerWidth])
@@ -71,8 +85,8 @@ export function GroupedBarChart({ data, height = 350 }: GroupedBarChartProps) {
 
     categories.selectAll('.bar')
       .data(d => [
-        { key: 'support', value: d.support ?? 0 },
-        { key: 'challenge', value: d.challenge ?? 0 },
+        { key: 'support', value: d.support ?? 0, category: d.category },
+        { key: 'challenge', value: d.challenge ?? 0, category: d.category },
       ])
       .join('rect')
       .attr('class', 'bar')
@@ -82,11 +96,21 @@ export function GroupedBarChart({ data, height = 350 }: GroupedBarChartProps) {
       .attr('height', d => innerHeight - y(d.value))
       .attr('fill', d => colors[d.key as keyof typeof colors])
       .attr('opacity', 0.9)
-      .on('mouseenter', function() {
+      .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
+        const typeName = d.key === 'support' ? 'Support' : 'Challenge';
+        tooltip
+          .style('visibility', 'visible')
+          .html(`<strong>${d.category}</strong><br/>${typeName}: ${d.value.toFixed(2)}`);
+      })
+      .on('mousemove', function(event) {
+        tooltip
+          .style('top', `${event.pageY - containerRef.current!.getBoundingClientRect().top - 40}px`)
+          .style('left', `${event.pageX - containerRef.current!.getBoundingClientRect().left + 10}px`);
       })
       .on('mouseleave', function() {
         d3.select(this).attr('opacity', 0.9);
+        tooltip.style('visibility', 'hidden');
       });
 
     const legend = svg.append('g')
@@ -116,7 +140,7 @@ export function GroupedBarChart({ data, height = 350 }: GroupedBarChartProps) {
   }, [data, height]);
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div ref={containerRef} className="w-full relative">
       <svg ref={svgRef}></svg>
     </div>
   );

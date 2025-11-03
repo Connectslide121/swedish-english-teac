@@ -36,6 +36,20 @@ export function HorizontalBarChart({
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    const tooltip = d3.select(containerRef.current)
+      .append('div')
+      .style('position', 'absolute')
+      .style('visibility', 'hidden')
+      .style('background-color', 'var(--popover)')
+      .style('color', 'var(--popover-foreground)')
+      .style('border', '1px solid var(--border)')
+      .style('border-radius', '0.375rem')
+      .style('padding', '0.5rem 0.75rem')
+      .style('font-size', '0.875rem')
+      .style('pointer-events', 'none')
+      .style('z-index', '1000')
+      .style('box-shadow', '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)');
+
     const y = d3.scaleBand()
       .domain(data.map(d => d.category))
       .range([0, innerHeight])
@@ -81,11 +95,22 @@ export function HorizontalBarChart({
       .attr('height', y.bandwidth())
       .attr('fill', d => (d.value ?? 0) >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)')
       .attr('opacity', 0.8)
-      .on('mouseenter', function() {
+      .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
+        const direction = (d.value ?? 0) >= 0 ? 'More challenging' : 'More supportive';
+        const countText = d.count !== undefined ? `<br/>Responses: ${d.count}` : '';
+        tooltip
+          .style('visibility', 'visible')
+          .html(`<strong>${d.category}</strong><br/>Difference: ${d.value.toFixed(2)}<br/>${direction}${countText}`);
+      })
+      .on('mousemove', function(event) {
+        tooltip
+          .style('top', `${event.pageY - containerRef.current!.getBoundingClientRect().top - 40}px`)
+          .style('left', `${event.pageX - containerRef.current!.getBoundingClientRect().left + 10}px`);
       })
       .on('mouseleave', function() {
         d3.select(this).attr('opacity', 0.8);
+        tooltip.style('visibility', 'hidden');
       });
 
     g.selectAll('.label')
@@ -116,7 +141,7 @@ export function HorizontalBarChart({
   }, [data, height, valueLabel, showBaseline, baselineValue]);
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div ref={containerRef} className="w-full relative">
       <svg ref={svgRef}></svg>
     </div>
   );
