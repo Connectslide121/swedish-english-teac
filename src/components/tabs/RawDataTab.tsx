@@ -65,7 +65,7 @@ export function RawDataTab({ data }: RawDataTabProps) {
               {paginatedData.map((row, idx) => (
                 <TableRow key={idx}>
                   <TableCell className="font-mono text-xs">
-                    {row.timestamp ? new Date(row.timestamp).toLocaleDateString() : 'N/A'}
+                    {row.timestamp || 'N/A'}
                   </TableCell>
                   <TableCell>{row.currentlyTeaching || 'N/A'}</TableCell>
                   <TableCell>{row.yearsTeachingCategory}</TableCell>
