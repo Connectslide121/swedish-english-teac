@@ -1,4 +1,4 @@
-import { SurveyResponse, Filters, SummaryStats, FactorImpact, QuestionStats } from './types';
+import { SurveyResponse, Filters, SummaryStats, FactorImpact, QuestionStats, DualFactorImpact } from './types';
 
 export function applyFilters(data: SurveyResponse[], filters: Filters): SurveyResponse[] {
   return data.filter(row => {
@@ -256,4 +256,121 @@ export function getQuestionBreakdown(
   });
   
   return result;
+}
+
+export function calculateDualFactorImpact(
+  data: SurveyResponse[],
+  variable: keyof SurveyResponse,
+  threshold: number = 4.0
+): DualFactorImpact[] {
+  const validData = data.filter(r => 
+    r.supportAdaptationIndex !== null && r.challengeAdaptationIndex !== null
+  );
+  
+  if (validData.length === 0) {
+    return [];
+  }
+  
+  const overallSupportMean = validData.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / validData.length;
+  const overallChallengeMean = validData.reduce((sum, r) => sum + (r.challengeAdaptationIndex as number), 0) / validData.length;
+  
+  const categories = new Map<string, SurveyResponse[]>();
+  
+  validData.forEach(row => {
+    const category = String(row[variable] || 'Unknown');
+    if (!categories.has(category)) {
+      categories.set(category, []);
+    }
+    categories.get(category)!.push(row);
+  });
+  
+  const results: DualFactorImpact[] = [];
+  
+  categories.forEach((rows, category) => {
+    if (rows.length === 0) return;
+    
+    const meanSupport = rows.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / rows.length;
+    const meanChallenge = rows.reduce((sum, r) => sum + (r.challengeAdaptationIndex as number), 0) / rows.length;
+    
+    const highBothCount = rows.filter(r => 
+      (r.supportAdaptationIndex as number) >= threshold && 
+      (r.challengeAdaptationIndex as number) >= threshold
+    ).length;
+    
+    const diffSupport = meanSupport - overallSupportMean;
+    const diffChallenge = meanChallenge - overallChallengeMean;
+    
+    results.push({
+      variable: String(variable),
+      category,
+      meanSupport,
+      meanChallenge,
+      diffSupportFromOverall: diffSupport,
+      diffChallengeFromOverall: diffChallenge,
+      count: rows.length,
+      probabilityBoth: highBothCount / rows.length,
+      combinedImpact: Math.abs(diffSupport) + Math.abs(diffChallenge),
+    });
+  });
+  
+  return results;
+}
+
+export function calculateDualGroupSizeImpact(
+  data: SurveyResponse[],
+  threshold: number = 4.0
+): DualFactorImpact[] {
+  const validData = data.filter(r => 
+    r.supportAdaptationIndex !== null && 
+    r.challengeAdaptationIndex !== null && 
+    r.groupSize !== null
+  );
+  
+  if (validData.length === 0) {
+    return [];
+  }
+  
+  const overallSupportMean = validData.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / validData.length;
+  const overallChallengeMean = validData.reduce((sum, r) => sum + (r.challengeAdaptationIndex as number), 0) / validData.length;
+  
+  const buckets = [
+    { name: '≤15', min: 0, max: 15 },
+    { name: '16-20', min: 16, max: 20 },
+    { name: '21-25', min: 21, max: 25 },
+    { name: '26+', min: 26, max: 999 },
+  ];
+  
+  return buckets.map(bucket => {
+    const rows = validData.filter(r => {
+      const size = r.groupSize as number;
+      return size >= bucket.min && size <= bucket.max;
+    });
+    
+    if (rows.length === 0) {
+      return null;
+    }
+    
+    const meanSupport = rows.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / rows.length;
+    const meanChallenge = rows.reduce((sum, r) => sum + (r.challengeAdaptationIndex as number), 0) / rows.length;
+    
+    const highBothCount = rows.filter(r => 
+      (r.supportAdaptationIndex as number) >= threshold && 
+      (r.challengeAdaptationIndex as number) >= threshold
+    ).length;
+    
+    const diffSupport = meanSupport - overallSupportMean;
+    const diffChallenge = meanChallenge - overallChallengeMean;
+    
+    return {
+      variable: 'groupSize',
+      category: bucket.name,
+      meanSupport,
+      meanChallenge,
+      diffSupportFromOverall: diffSupport,
+      diffChallengeFromOverall: diffChallenge,
+      count: rows.length,
+      probabilityBoth: highBothCount / rows.length,
+      combinedImpact: Math.abs(diffSupport) + Math.abs(diffChallenge),
+    };
+  }).filter((r): r is DualFactorImpact => r !== null);
 }

@@ -9,6 +9,7 @@ import { FiltersSidebar } from '@/components/FiltersSidebar';
 import { OverviewTab } from '@/components/tabs/OverviewTab';
 import { SupportFactorsTab } from '@/components/tabs/SupportFactorsTab';
 import { ChallengeFactorsTab } from '@/components/tabs/ChallengeFactorsTab';
+import { BothFactorsTab } from '@/components/tabs/BothFactorsTab';
 import { PerQuestionTab } from '@/components/tabs/PerQuestionTab';
 import { RawDataTab } from '@/components/tabs/RawDataTab';
 import { parseCSV } from '@/lib/csv-parser';
@@ -152,6 +153,7 @@ function App() {
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="support">Support Factors</TabsTrigger>
                   <TabsTrigger value="challenge">Challenge Factors</TabsTrigger>
+                  <TabsTrigger value="both">Both Factors</TabsTrigger>
                   <TabsTrigger value="questions">Per Question</TabsTrigger>
                   <TabsTrigger value="raw">Raw Data</TabsTrigger>
                 </TabsList>
@@ -166,6 +168,10 @@ function App() {
 
                 <TabsContent value="challenge">
                   <ChallengeFactorsTab data={filteredData} />
+                </TabsContent>
+
+                <TabsContent value="both">
+                  <BothFactorsTab data={filteredData} />
                 </TabsContent>
 
                 <TabsContent value="questions">

@@ -96,10 +96,10 @@ export function HorizontalBarChart({
       .attr('width', d => Math.abs(x(d.value ?? 0) - x(0)))
       .attr('height', y.bandwidth())
       .attr('fill', d => {
-        if ((d.value ?? 0) >= 0) {
-          return 'var(--chart-challenge)';
+        if (chartType === 'support') {
+          return (d.value ?? 0) >= 0 ? 'var(--chart-support)' : 'var(--chart-challenge)';
         } else {
-          return 'var(--chart-support)';
+          return (d.value ?? 0) >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)';
         }
       })
       .attr('opacity', 0.8)

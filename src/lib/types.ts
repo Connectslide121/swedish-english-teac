@@ -78,3 +78,15 @@ export interface QuestionStats {
   stdDev: number;
   percentHighUse: number;
 }
+
+export interface DualFactorImpact {
+  variable: string;
+  category: string;
+  meanSupport: number;
+  meanChallenge: number;
+  diffSupportFromOverall: number;
+  diffChallengeFromOverall: number;
+  count: number;
+  probabilityBoth: number;
+  combinedImpact: number;
+}
