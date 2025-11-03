@@ -13,11 +13,11 @@ The dashboard handles CSV upload, multi-dimensional filtering, statistical calcu
 ## Essential Features
 
 ### CSV Upload & Parsing
-- **Functionality**: Accepts Google Forms CSV export with exactly 34 columns in fixed order (columns mapped by index position 0-33, not by header text)
-- **Purpose**: Load the specific survey dataset about classroom adaptations
-- **Trigger**: User clicks file upload area or drags CSV file
-- **Progression**: Select file → Parse CSV by column index → Calculate derived indices → Display dashboard
-- **Success criteria**: All 12 adaptation questions (indices 3-14) parsed correctly, derived indices calculated, data ready for filtering
+- **Functionality**: Accepts Google Forms export in CSV or Excel format (.csv, .xlsx, .xls) with exactly 34 columns in fixed order (columns mapped by index position 0-33, not by header text)
+- **Purpose**: Load the specific survey dataset about classroom adaptations in multiple formats for researcher convenience
+- **Trigger**: User clicks file upload area or drags CSV/Excel file
+- **Progression**: Select file → Detect format → Parse by column index → Calculate derived indices → Display dashboard
+- **Success criteria**: All 12 adaptation questions (indices 3-14) parsed correctly from both CSV and Excel formats, derived indices calculated, data ready for filtering
 
 ### Derived Metrics Calculation
 - **Functionality**: Computes SupportAdaptationIndex (mean of Q1-6), ChallengeAdaptationIndex (mean of Q7-12), plus categorical variables from teacher demographics

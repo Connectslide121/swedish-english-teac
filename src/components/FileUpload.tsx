@@ -3,7 +3,7 @@ import { UploadSimple, CheckCircle } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 
 interface FileUploadProps {
-  onFileLoad: (content: string, filename: string) => void;
+  onFileLoad: (content: string | ArrayBuffer, filename: string, fileType: 'csv' | 'excel') => void;
 }
 
 export function FileUpload({ onFileLoad }: FileUploadProps) {
@@ -11,18 +11,28 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
 
   const handleFile = useCallback((file: File) => {
-    if (!file.name.endsWith('.csv')) {
-      alert('Please upload a CSV file');
+    const isCSV = file.name.toLowerCase().endsWith('.csv');
+    const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
+    
+    if (!isCSV && !isExcel) {
+      alert('Please upload a CSV or Excel file (.csv, .xlsx, .xls)');
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const content = e.target?.result as string;
+      const content = e.target?.result;
+      if (!content) return;
+      
       setUploadedFile(file.name);
-      onFileLoad(content, file.name);
+      onFileLoad(content, file.name, isCSV ? 'csv' : 'excel');
     };
-    reader.readAsText(file);
+    
+    if (isExcel) {
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.readAsText(file);
+    }
   }, [onFileLoad]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -46,7 +56,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
   const handleClick = useCallback(() => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv';
+    input.accept = '.csv,.xlsx,.xls';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) handleFile(file);
@@ -82,12 +92,15 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
           <>
             <UploadSimple className="text-muted-foreground" size={48} />
             <div>
-              <h3 className="text-lg font-medium mb-1">Upload CSV Data</h3>
+              <h3 className="text-lg font-medium mb-1">Upload Survey Data</h3>
               <p className="text-sm text-muted-foreground">
-                Upload the Google Forms CSV from the<br />
+                Upload the Google Forms export from the<br />
                 "Classroom Adaptations in the English Classroom" survey
               </p>
               <p className="text-xs text-muted-foreground mt-2">
+                Supports CSV and Excel formats (.csv, .xlsx, .xls)
+              </p>
+              <p className="text-xs text-muted-foreground">
                 Click to browse or drag and drop
               </p>
             </div>
