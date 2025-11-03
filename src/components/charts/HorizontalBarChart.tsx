@@ -7,6 +7,7 @@ interface HorizontalBarChartProps {
   valueLabel?: string;
   showBaseline?: boolean;
   baselineValue?: number;
+  chartType?: 'support' | 'challenge';
 }
 
 export function HorizontalBarChart({ 
@@ -15,6 +16,7 @@ export function HorizontalBarChart({
   valueLabel,
   showBaseline = false,
   baselineValue = 0,
+  chartType = 'support',
 }: HorizontalBarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -93,20 +95,32 @@ export function HorizontalBarChart({
       .attr('y', d => y(d.category) || 0)
       .attr('width', d => Math.abs(x(d.value ?? 0) - x(0)))
       .attr('height', y.bandwidth())
-      .attr('fill', d => (d.value ?? 0) >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)')
+      .attr('fill', d => {
+        if ((d.value ?? 0) >= 0) {
+          return chartType === 'support' ? 'var(--chart-support)' : 'var(--chart-challenge)';
+        } else {
+          return chartType === 'support' ? 'var(--chart-challenge)' : 'var(--chart-support)';
+        }
+      })
       .attr('opacity', 0.8)
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
-        const direction = (d.value ?? 0) >= 0 ? 'More challenging' : 'More supportive';
+        const direction = (d.value ?? 0) >= 0 
+          ? (chartType === 'support' ? 'Higher support adaptation' : 'Higher challenge adaptation')
+          : (chartType === 'support' ? 'Lower support adaptation' : 'Lower challenge adaptation');
         const countText = d.count !== undefined ? `<br/>Responses: ${d.count}` : '';
         tooltip
           .style('visibility', 'visible')
-          .html(`<strong>${d.category}</strong><br/>Difference: ${d.value.toFixed(2)}<br/>${direction}${countText}`);
+          .html(`<div style="max-width: 350px;"><strong>${d.category}</strong><br/>Difference: ${(d.value ?? 0) >= 0 ? '+' : ''}${d.value.toFixed(2)}<br/><em>${direction}</em>${countText}</div>`);
       })
       .on('mousemove', function(event) {
+        const containerRect = containerRef.current!.getBoundingClientRect();
+        const tooltipX = event.pageX - containerRect.left + 10;
+        const tooltipY = event.pageY - containerRect.top - 40;
+        
         tooltip
-          .style('top', `${event.pageY - containerRef.current!.getBoundingClientRect().top - 40}px`)
-          .style('left', `${event.pageX - containerRef.current!.getBoundingClientRect().left + 10}px`);
+          .style('top', `${tooltipY}px`)
+          .style('left', `${tooltipX}px`);
       })
       .on('mouseleave', function() {
         d3.select(this).attr('opacity', 0.8);
@@ -138,7 +152,7 @@ export function HorizontalBarChart({
         .text(valueLabel);
     }
 
-  }, [data, height, valueLabel, showBaseline, baselineValue]);
+  }, [data, height, valueLabel, showBaseline, baselineValue, chartType]);
 
   return (
     <div ref={containerRef} className="w-full relative">

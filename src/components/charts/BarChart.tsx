@@ -82,12 +82,16 @@ export function BarChart({ data, height = 300, xLabel, yLabel }: BarChartProps) 
         d3.select(this).attr('opacity', 1);
         tooltip
           .style('visibility', 'visible')
-          .html(`<strong>${d.label}</strong><br/>Value: ${d.value.toFixed(2)}`);
+          .html(`<div style="max-width: 300px;"><strong>${d.label}</strong><br/>Value: ${d.value.toFixed(2)}</div>`);
       })
       .on('mousemove', function(event) {
+        const containerRect = containerRef.current!.getBoundingClientRect();
+        const tooltipX = event.pageX - containerRect.left + 10;
+        const tooltipY = event.pageY - containerRect.top - 40;
+        
         tooltip
-          .style('top', `${event.pageY - containerRef.current!.getBoundingClientRect().top - 40}px`)
-          .style('left', `${event.pageX - containerRef.current!.getBoundingClientRect().left + 10}px`);
+          .style('top', `${tooltipY}px`)
+          .style('left', `${tooltipX}px`);
       })
       .on('mouseleave', function() {
         d3.select(this).attr('opacity', 0.9);

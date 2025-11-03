@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { calculateQuestionStats, getQuestionDistribution, getQuestionBreakdown } from '@/lib/analysis';
 import { BarChart } from '../charts/BarChart';
@@ -68,7 +70,25 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Question Statistics - All Questions</h3>
+        <div className="flex items-start gap-2 mb-4">
+          <h3 className="text-lg font-semibold">Question Statistics - All Questions</h3>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="text-muted-foreground cursor-help mt-1" size={18} />
+            </TooltipTrigger>
+            <TooltipContent className="max-w-md">
+              <p className="text-xs mb-2">
+                This table shows statistics for all 12 survey questions (6 support + 6 challenge strategies).
+              </p>
+              <ul className="text-xs space-y-1 list-disc list-inside">
+                <li><strong>Mean:</strong> Average frequency on 1-5 scale (1=Never, 5=Always)</li>
+                <li><strong>Median:</strong> Middle value when responses are sorted</li>
+                <li><strong>Std Dev:</strong> How much responses vary (higher = more disagreement among teachers)</li>
+                <li><strong>% High Use:</strong> Percentage who answered 4 (Often) or 5 (Always)</li>
+              </ul>
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -96,7 +116,20 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Detailed Question Analysis</h3>
+        <div className="flex items-start gap-2 mb-4">
+          <h3 className="text-lg font-semibold">Detailed Question Analysis</h3>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="text-muted-foreground cursor-help mt-1" size={18} />
+            </TooltipTrigger>
+            <TooltipContent className="max-w-md">
+              <p className="text-xs">
+                Select a specific question to see how responses are distributed and how they vary across different teacher groups. 
+                This helps identify which teacher characteristics are associated with different teaching strategies.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <div className="mb-6">
           <label className="text-sm font-medium mb-2 block">Select Question</label>
           <Select value={selectedQuestion} onValueChange={setSelectedQuestion}>
@@ -115,7 +148,20 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
 
         <div className="space-y-6">
           <div>
-            <h4 className="text-md font-semibold mb-3">Response Distribution</h4>
+            <div className="flex items-start gap-2 mb-3">
+              <h4 className="text-md font-semibold">Response Distribution</h4>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="text-muted-foreground cursor-help" size={16} />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p className="text-xs">
+                    Shows how many teachers selected each frequency level (1-5) for this strategy. 
+                    1 = Never, 2 = Rarely, 3 = Sometimes, 4 = Often, 5 = Always.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <BarChart
               data={distributionData}
               height={250}
@@ -126,14 +172,40 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
 
           {yearData.length > 0 && (
             <div>
-              <h4 className="text-md font-semibold mb-3">By Years Teaching Experience</h4>
+              <div className="flex items-start gap-2 mb-3">
+                <h4 className="text-md font-semibold">By Years Teaching Experience</h4>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="text-muted-foreground cursor-help" size={16} />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm">
+                    <p className="text-xs">
+                      Shows the average frequency of use for this strategy across different experience levels. 
+                      This reveals whether more or less experienced teachers tend to use this strategy differently.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <GroupedBarChart data={yearData} height={300} />
             </div>
           )}
 
           {schoolData.length > 0 && (
             <div>
-              <h4 className="text-md font-semibold mb-3">By School Type (Top 8)</h4>
+              <div className="flex items-start gap-2 mb-3">
+                <h4 className="text-md font-semibold">By School Type (Top 8)</h4>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="text-muted-foreground cursor-help" size={16} />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm">
+                    <p className="text-xs">
+                      Shows the 8 school types with the highest average use of this strategy. 
+                      Different school contexts may require or enable different adaptation approaches.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <GroupedBarChart data={schoolData} height={350} />
             </div>
           )}
