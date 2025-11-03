@@ -71,8 +71,8 @@ export function GroupedBarChart({ data, height = 350 }: GroupedBarChartProps) {
 
     categories.selectAll('.bar')
       .data(d => [
-        { key: 'support', value: d.support },
-        { key: 'challenge', value: d.challenge },
+        { key: 'support', value: d.support ?? 0 },
+        { key: 'challenge', value: d.challenge ?? 0 },
       ])
       .join('rect')
       .attr('class', 'bar')

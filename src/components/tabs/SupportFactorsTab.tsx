@@ -26,9 +26,11 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
   ];
 
   const validData = data.filter(r => r.supportAdaptationIndex !== null);
-  const overallMean = validData.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / validData.length;
+  const overallMean = validData.length > 0 
+    ? validData.reduce((sum, r) => sum + (r.supportAdaptationIndex as number), 0) / validData.length
+    : 0;
   const highSupportCount = validData.filter(r => (r.supportAdaptationIndex as number) >= 4.0).length;
-  const baseRate = highSupportCount / validData.length;
+  const baseRate = validData.length > 0 ? highSupportCount / validData.length : 0;
 
   const stats = calculateQuestionStats(data);
   const supportQuestions = stats.slice(0, 6);
@@ -121,11 +123,11 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
                   <TableRow key={idx}>
                     <TableCell className="font-medium">{impact.variable}</TableCell>
                     <TableCell>{impact.category}</TableCell>
-                    <TableCell className="text-right font-mono">{impact.meanIndex.toFixed(2)}</TableCell>
+                    <TableCell className="text-right font-mono">{(impact.meanIndex ?? 0).toFixed(2)}</TableCell>
                     <TableCell className={`text-right font-mono ${impact.diffFromOverall >= 0 ? 'text-chart-challenge' : 'text-chart-support'}`}>
-                      {impact.diffFromOverall >= 0 ? '+' : ''}{impact.diffFromOverall.toFixed(2)}
+                      {impact.diffFromOverall >= 0 ? '+' : ''}{(impact.diffFromOverall ?? 0).toFixed(2)}
                     </TableCell>
-                    <TableCell className="text-right font-mono">{(impact.probability * 100).toFixed(1)}%</TableCell>
+                    <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
                     <TableCell className="text-right">
                       {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
                       {impact.count}

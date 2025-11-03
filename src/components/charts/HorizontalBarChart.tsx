@@ -75,11 +75,11 @@ export function HorizontalBarChart({
       .data(data)
       .join('rect')
       .attr('class', 'bar')
-      .attr('x', d => d.value >= 0 ? x(0) : x(d.value))
+      .attr('x', d => (d.value ?? 0) >= 0 ? x(0) : x(d.value ?? 0))
       .attr('y', d => y(d.category) || 0)
-      .attr('width', d => Math.abs(x(d.value) - x(0)))
+      .attr('width', d => Math.abs(x(d.value ?? 0) - x(0)))
       .attr('height', y.bandwidth())
-      .attr('fill', d => d.value >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)')
+      .attr('fill', d => (d.value ?? 0) >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)')
       .attr('opacity', 0.8)
       .on('mouseenter', function() {
         d3.select(this).attr('opacity', 1);
@@ -92,14 +92,14 @@ export function HorizontalBarChart({
       .data(data)
       .join('text')
       .attr('class', 'label')
-      .attr('x', d => d.value >= 0 ? x(d.value) + 5 : x(d.value) - 5)
+      .attr('x', d => (d.value ?? 0) >= 0 ? x(d.value ?? 0) + 5 : x(d.value ?? 0) - 5)
       .attr('y', d => (y(d.category) || 0) + y.bandwidth() / 2)
       .attr('dy', '0.35em')
-      .attr('text-anchor', d => d.value >= 0 ? 'start' : 'end')
+      .attr('text-anchor', d => (d.value ?? 0) >= 0 ? 'start' : 'end')
       .style('font-size', '11px')
       .style('fill', 'var(--foreground)')
       .text(d => {
-        const valText = d.value.toFixed(2);
+        const valText = (d.value ?? 0).toFixed(2);
         return d.count !== undefined ? `${valText} (n=${d.count})` : valText;
       });
 

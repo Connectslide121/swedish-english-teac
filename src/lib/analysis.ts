@@ -73,6 +73,11 @@ export function calculateFactorImpact(
   const indexField = indexType === 'support' ? 'supportAdaptationIndex' : 'challengeAdaptationIndex';
   
   const validData = data.filter(r => r[indexField] !== null);
+  
+  if (validData.length === 0) {
+    return [];
+  }
+  
   const overallMean = validData.reduce((sum, r) => sum + (r[indexField] as number), 0) / validData.length;
   
   const categories = new Map<string, SurveyResponse[]>();
@@ -88,6 +93,8 @@ export function calculateFactorImpact(
   const results: FactorImpact[] = [];
   
   categories.forEach((rows, category) => {
+    if (rows.length === 0) return;
+    
     const meanIndex = rows.reduce((sum, r) => sum + (r[indexField] as number), 0) / rows.length;
     const highCount = rows.filter(r => (r[indexField] as number) >= threshold).length;
     
@@ -112,6 +119,11 @@ export function calculateGroupSizeImpact(
   const indexField = indexType === 'support' ? 'supportAdaptationIndex' : 'challengeAdaptationIndex';
   
   const validData = data.filter(r => r[indexField] !== null && r.groupSize !== null);
+  
+  if (validData.length === 0) {
+    return [];
+  }
+  
   const overallMean = validData.reduce((sum, r) => sum + (r[indexField] as number), 0) / validData.length;
   
   const buckets = [
@@ -128,14 +140,7 @@ export function calculateGroupSizeImpact(
     });
     
     if (rows.length === 0) {
-      return {
-        variable: 'groupSize',
-        category: bucket.name,
-        meanIndex: 0,
-        diffFromOverall: 0,
-        count: 0,
-        probability: 0,
-      };
+      return null;
     }
     
     const meanIndex = rows.reduce((sum, r) => sum + (r[indexField] as number), 0) / rows.length;
@@ -149,7 +154,7 @@ export function calculateGroupSizeImpact(
       count: rows.length,
       probability: highCount / rows.length,
     };
-  }).filter(r => r.count > 0);
+  }).filter((r): r is FactorImpact => r !== null);
 }
 
 export function calculateQuestionStats(data: SurveyResponse[]): QuestionStats[] {

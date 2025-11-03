@@ -22,7 +22,7 @@ export function SummaryCards({ stats }: SummaryCardsProps) {
           Avg Support Index
         </div>
         <div className="text-3xl font-semibold" style={{ color: 'var(--chart-support)' }}>
-          {stats.avgSupport.toFixed(2)}
+          {(stats.avgSupport ?? 0).toFixed(2)}
         </div>
         <div className="text-xs text-muted-foreground mt-1">
           Mean of 6 support questions (1-5 scale)
@@ -34,7 +34,7 @@ export function SummaryCards({ stats }: SummaryCardsProps) {
           Avg Challenge Index
         </div>
         <div className="text-3xl font-semibold" style={{ color: 'var(--chart-challenge)' }}>
-          {stats.avgChallenge.toFixed(2)}
+          {(stats.avgChallenge ?? 0).toFixed(2)}
         </div>
         <div className="text-xs text-muted-foreground mt-1">
           Mean of 6 challenge questions (1-5 scale)
@@ -46,7 +46,7 @@ export function SummaryCards({ stats }: SummaryCardsProps) {
           Difference (C - S)
         </div>
         <div className={`text-3xl font-semibold ${stats.difference >= 0 ? 'text-foreground' : 'text-foreground'}`}>
-          {stats.difference >= 0 ? '+' : ''}{stats.difference.toFixed(2)}
+          {stats.difference >= 0 ? '+' : ''}{(stats.difference ?? 0).toFixed(2)}
         </div>
         <div className="text-xs text-muted-foreground mt-1">
           {stats.difference > 0 

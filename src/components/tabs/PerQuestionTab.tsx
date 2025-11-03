@@ -84,10 +84,10 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
               {stats.map((stat, idx) => (
                 <TableRow key={idx}>
                   <TableCell className="font-medium">{stat.question}</TableCell>
-                  <TableCell className="text-right font-mono">{stat.mean.toFixed(2)}</TableCell>
-                  <TableCell className="text-right font-mono">{stat.median.toFixed(1)}</TableCell>
-                  <TableCell className="text-right font-mono">{stat.stdDev.toFixed(2)}</TableCell>
-                  <TableCell className="text-right font-mono">{stat.percentHighUse.toFixed(1)}%</TableCell>
+                  <TableCell className="text-right font-mono">{(stat.mean ?? 0).toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-mono">{(stat.median ?? 0).toFixed(1)}</TableCell>
+                  <TableCell className="text-right font-mono">{(stat.stdDev ?? 0).toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-mono">{(stat.percentHighUse ?? 0).toFixed(1)}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>
