@@ -97,9 +97,9 @@ export function HorizontalBarChart({
       .attr('height', y.bandwidth())
       .attr('fill', d => {
         if ((d.value ?? 0) >= 0) {
-          return chartType === 'support' ? 'var(--chart-challenge)' : 'var(--chart-support)';
+          return 'var(--chart-challenge)';
         } else {
-          return chartType === 'support' ? 'var(--chart-support)' : 'var(--chart-challenge)';
+          return 'var(--chart-support)';
         }
       })
       .attr('opacity', 0.8)
