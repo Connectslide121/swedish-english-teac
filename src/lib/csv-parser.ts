@@ -1,5 +1,29 @@
 import { SurveyResponse } from './types';
 
+const EXPECTED_COLS = 34;
+
+function normalizeRowTo34(row: string[]): string[] {
+  const arr = Array.isArray(row) ? row.slice() : Object.values(row) as string[];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] === 'string') {
+      arr[i] = arr[i].trim();
+    }
+  }
+
+  if (arr.length < EXPECTED_COLS) {
+    while (arr.length < EXPECTED_COLS) {
+      arr.push('');
+    }
+  }
+
+  if (arr.length > EXPECTED_COLS) {
+    arr.length = EXPECTED_COLS;
+  }
+
+  return arr;
+}
+
 export function parseCSV(csvText: string): { data: SurveyResponse[]; warnings: string[] } {
   const warnings: string[] = [];
   const lines = csvText.split('\n').filter(line => line.trim());
@@ -11,11 +35,8 @@ export function parseCSV(csvText: string): { data: SurveyResponse[]; warnings: s
   const data: SurveyResponse[] = [];
   
   for (let i = 1; i < lines.length; i++) {
-    const values = parseCSVLine(lines[i]);
-    if (values.length < 34) {
-      warnings.push(`Row ${i} has fewer than 34 columns, skipping`);
-      continue;
-    }
+    const parsedValues = parseCSVLine(lines[i]);
+    const values = normalizeRowTo34(parsedValues);
     
     const supportValues = [
       parseNumber(values[3]),
