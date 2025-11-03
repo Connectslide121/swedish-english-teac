@@ -13,11 +13,11 @@ The dashboard handles CSV upload, multi-dimensional filtering, statistical calcu
 ## Essential Features
 
 ### CSV Upload & Parsing
-- **Functionality**: Accepts Google Forms CSV export with 34 columns including bilingual headers
+- **Functionality**: Accepts Google Forms CSV export with exactly 34 columns in fixed order (columns mapped by index position 0-33, not by header text)
 - **Purpose**: Load the specific survey dataset about classroom adaptations
 - **Trigger**: User clicks file upload area or drags CSV file
-- **Progression**: Select file → Parse CSV → Validate columns → Calculate derived indices → Display dashboard
-- **Success criteria**: All 12 adaptation questions (cols 3-14) parsed correctly, derived indices calculated, data ready for filtering
+- **Progression**: Select file → Parse CSV by column index → Calculate derived indices → Display dashboard
+- **Success criteria**: All 12 adaptation questions (indices 3-14) parsed correctly, derived indices calculated, data ready for filtering
 
 ### Derived Metrics Calculation
 - **Functionality**: Computes SupportAdaptationIndex (mean of Q1-6), ChallengeAdaptationIndex (mean of Q7-12), plus categorical variables from teacher demographics
@@ -62,7 +62,7 @@ The dashboard handles CSV upload, multi-dimensional filtering, statistical calcu
 - **Success criteria**: CSV includes all original columns plus SupportAdaptationIndex and ChallengeAdaptationIndex
 
 ## Edge Case Handling
-- **Missing columns** - Display warning banner if expected headers not found, render available data only
+- **Insufficient columns** - Display warning banner if row has fewer than 34 columns, skip that row
 - **Empty/malformed values** - Ignore when calculating means, show "N/A" in tables, don't break charts
 - **No file uploaded** - Show instructional placeholder with survey name
 - **Zero filtered results** - Display "No data matches current filters" message

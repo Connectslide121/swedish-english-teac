@@ -17,6 +17,20 @@ export interface SurveyResponse {
   challengeQ5: number | null;
   challengeQ6: number | null;
   
+  itemTimeToDifferentiate: string;
+  itemClassSizeOk: string;
+  itemConfidentSupport: string;
+  itemConfidentChallenge: string;
+  itemTeacherEdPrepared: string;
+  itemFormativeHelps: string;
+  itemDigitalTools: string;
+  itemMaterialsSupport: string;
+  itemMaterialsChallenge: string;
+  
+  openHelpsMost: string;
+  openHindersMost: string;
+  openOther: string;
+  
   hasCertification: string;
   levelsTeaching: string;
   yearsTeaching: string;
