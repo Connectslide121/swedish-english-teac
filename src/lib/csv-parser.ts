@@ -152,37 +152,26 @@ function parseNumber(value: string): number | null {
 }
 
 function categorizeYears(yearsText: string): string {
-  const text = yearsText.toLowerCase();
+  const text = yearsText.toLowerCase().trim();
   
-  if (text.includes('0') || text.includes('1') || text.includes('2') || text.includes('3')) {
-    if (!text.includes('10') && !text.includes('20') && !text.includes('30')) {
-      return '0-3';
-    }
-  }
-  if (text.includes('4') || text.includes('5') || text.includes('6')) {
-    return '4-6';
-  }
-  if (text.includes('7') || text.includes('8') || text.includes('9') || text.includes('10')) {
-    if (!text.includes('20') && !text.includes('30')) {
-      return '7-10';
-    }
-  }
-  if (text.includes('11') || text.includes('12') || text.includes('13') || text.includes('14') ||
-      text.includes('15') || text.includes('16') || text.includes('17') || text.includes('18') ||
-      text.includes('19') || text.includes('20')) {
-    if (!text.includes('21') && !text.includes('30')) {
-      return '11-20';
-    }
-  }
-  if (text.includes('21') || text.includes('22') || text.includes('23') || text.includes('24') ||
-      text.includes('25') || text.includes('26') || text.includes('27') || text.includes('28') ||
-      text.includes('29') || text.includes('30')) {
-    if (!text.includes('30+') && !text.includes('>')) {
-      return '21-30';
-    }
-  }
-  if (text.includes('30+') || text.includes('>30') || text.includes('more than 30')) {
+  if (text.includes('30+') || text.includes('>30') || text.includes('> 30') || text.includes('more than 30')) {
     return '30+';
+  }
+  
+  if (text.includes('21-30') || text.includes('21–30') || text.includes('20-30') || text.includes('20–30')) {
+    return '21-30';
+  }
+  
+  if (text.includes('11-20') || text.includes('11–20')) {
+    return '11-20';
+  }
+  
+  if (text.includes('6-10') || text.includes('6–10')) {
+    return '6-10';
+  }
+  
+  if (text.includes('0-5') || text.includes('0–5')) {
+    return '0-5';
   }
   
   return 'Unknown';
