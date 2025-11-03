@@ -151,7 +151,7 @@ function categorizeYears(yearsText: string): string {
     return '11-20';
   }
   
-  if (text.includes('6-10') || text.includes('6–10')) {
+  if (text.includes('6-10') || text.includes('6–10') || text.includes('6-11') || text.includes('6–11')) {
     return '6-10';
   }
   
