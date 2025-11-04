@@ -79,8 +79,8 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
       <div className="flex flex-col items-center gap-4 text-center">
         {uploadedFile ? (
           <>
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent shadow-md">
-              <CheckCircle className="text-accent-foreground" size={48} weight="fill" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent/15 text-accent/50 shadow-md">
+              <CheckCircle size={48} weight="fill" />
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-1 text-foreground">File Uploaded Successfully</h3>
@@ -93,9 +93,9 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
         ) : (
           <>
             <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl transition-all shadow-md ${
-              isDragging ? 'bg-accent' : 'bg-primary'
+              isDragging ? 'bg-accent/15 text-accent/50' : 'bg-primary/10 text-primary/40'
             }`}>
-              <UploadSimple className={isDragging ? 'text-accent-foreground' : 'text-primary-foreground'} size={48} weight={isDragging ? 'fill' : 'regular'} />
+              <UploadSimple size={48} weight={isDragging ? 'fill' : 'regular'} />
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2 text-foreground">Upload Survey Data</h3>
