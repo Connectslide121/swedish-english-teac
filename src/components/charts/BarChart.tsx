@@ -106,7 +106,8 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
         
         let questionText = '';
         if (enableQuestionTooltips) {
-          const fullQuestion = d.fullQuestion || getFullQuestion(d.label);
+          const variableName = d.label.split(':')[0].trim();
+          const fullQuestion = d.fullQuestion || getFullQuestion(variableName);
           if (fullQuestion) {
             questionText = `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${fullQuestion}</div>`;
           }
