@@ -66,10 +66,10 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
 
   return (
     <Card
-      className={`p-12 border-2 border-dashed cursor-pointer transition-all ${
+      className={`p-12 border-2 border-dashed cursor-pointer transition-all backdrop-blur-sm ${
         isDragging
-          ? 'border-accent bg-accent/5'
-          : 'border-border hover:border-accent/50 hover:bg-muted/30'
+          ? 'border-accent bg-accent/10 shadow-lg shadow-accent/20'
+          : 'border-border/50 hover:border-accent/50 hover:bg-card/80 hover:shadow-md'
       }`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
@@ -79,10 +79,12 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
       <div className="flex flex-col items-center gap-4 text-center">
         {uploadedFile ? (
           <>
-            <CheckCircle className="text-accent" size={48} weight="fill" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10">
+              <CheckCircle className="text-accent" size={48} weight="fill" />
+            </div>
             <div>
-              <h3 className="text-lg font-medium mb-1">File Uploaded</h3>
-              <p className="text-sm text-muted-foreground">{uploadedFile}</p>
+              <h3 className="text-lg font-medium mb-1">File Uploaded Successfully</h3>
+              <p className="text-sm text-muted-foreground font-mono">{uploadedFile}</p>
               <p className="text-xs text-muted-foreground mt-2">
                 Click or drag to upload a different file
               </p>
@@ -90,17 +92,21 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
           </>
         ) : (
           <>
-            <UploadSimple className="text-muted-foreground" size={48} />
+            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full transition-all ${
+              isDragging ? 'bg-accent/10' : 'bg-primary/10'
+            }`}>
+              <UploadSimple className={isDragging ? 'text-accent' : 'text-primary'} size={48} weight={isDragging ? 'fill' : 'regular'} />
+            </div>
             <div>
-              <h3 className="text-lg font-medium mb-1">Upload Survey Data</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-2">Upload Survey Data</h3>
+              <p className="text-sm text-muted-foreground mb-3">
                 Upload the Google Forms export from the<br />
-                "Classroom Adaptations in the English Classroom" survey
+                <span className="font-medium">"Classroom Adaptations in the English Classroom"</span> survey
               </p>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground mb-1">
                 Supports CSV and Excel formats (.csv, .xlsx, .xls)
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-primary font-medium">
                 Click to browse or drag and drop
               </p>
             </div>
