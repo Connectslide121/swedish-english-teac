@@ -66,7 +66,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
 
   return (
     <Card
-      className={`p-12 border-2 border-dashed cursor-pointer transition-all bg-white shadow-lg ${
+      className={`group p-12 border-2 border-dashed cursor-pointer transition-all bg-white shadow-lg ${
         isDragging
           ? 'border-accent bg-accent/5 shadow-xl shadow-accent/30 scale-[1.02]'
           : 'border-primary/30 hover:border-accent hover:shadow-xl hover:shadow-accent/10'
@@ -98,7 +98,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
               <UploadSimple size={48} weight={isDragging ? 'fill' : 'regular'} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2 text-foreground">Upload Survey Data</h3>
+              <h3 className="text-lg font-semibold mb-2 text-foreground group-hover:underline transition-all">Upload Survey Data</h3>
               <p className="text-sm text-foreground/70 mb-3 leading-relaxed">
                 Upload the Google Forms export from the<br />
                 <span className="font-semibold text-foreground">"Classroom Adaptations in the English Classroom"</span> survey
