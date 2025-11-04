@@ -200,6 +200,7 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
           height={Math.max(300, probData.length * 20)}
           yLabel="Probability of high support (0-100%)"
           exportPrefix="support_probability"
+          enableQuestionTooltips
         />
       </Card>
 

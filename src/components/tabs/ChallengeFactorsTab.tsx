@@ -200,6 +200,7 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           height={Math.max(300, probData.length * 20)}
           yLabel="Probability of high challenge (0-100%)"
           exportPrefix="challenge_probability"
+          enableQuestionTooltips
         />
       </Card>
 

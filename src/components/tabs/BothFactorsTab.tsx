@@ -181,6 +181,7 @@ export function BothFactorsTab({ data }: BothFactorsTabProps) {
           height={Math.max(300, topBothFactors.length * 20)}
           yLabel="Probability of high adaptation for both (0-100%)"
           exportPrefix="both_probability"
+          enableQuestionTooltips
         />
       </Card>
 
@@ -217,6 +218,7 @@ export function BothFactorsTab({ data }: BothFactorsTabProps) {
           height={Math.max(300, topCombined.length * 20)}
           yLabel="Combined impact score"
           exportPrefix="both_combined_impact"
+          enableQuestionTooltips
         />
       </Card>
 

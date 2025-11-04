@@ -3,16 +3,18 @@ import * as d3 from 'd3';
 import { Button } from '@/components/ui/button';
 import { Download } from '@phosphor-icons/react';
 import { exportSvgToPng, getChartFilename } from '@/lib/export-utils';
+import { getFullQuestion } from '@/lib/question-mappings';
 
 interface BarChartProps {
-  data: { label: string; value: number; color?: string }[];
+  data: { label: string; value: number; color?: string; fullQuestion?: string }[];
   height?: number;
   xLabel?: string;
   yLabel?: string;
   exportPrefix?: string;
+  enableQuestionTooltips?: boolean;
 }
 
-export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'bar-chart' }: BarChartProps) {
+export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'bar-chart', enableQuestionTooltips = false }: BarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -101,9 +103,18 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
       .attr('opacity', 0.9)
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
+        
+        let questionText = '';
+        if (enableQuestionTooltips) {
+          const fullQuestion = d.fullQuestion || getFullQuestion(d.label);
+          if (fullQuestion) {
+            questionText = `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${fullQuestion}</div>`;
+          }
+        }
+        
         tooltip
           .style('visibility', 'visible')
-          .html(`<div style="max-width: 300px;"><strong>${d.label}</strong><br/>Value: ${d.value.toFixed(2)}</div>`);
+          .html(`<div style="max-width: 400px;"><strong>${d.label}</strong><br/>Value: ${d.value.toFixed(2)}${questionText}</div>`);
       })
       .on('mousemove', function(event) {
         const containerRect = containerRef.current!.getBoundingClientRect();
@@ -155,7 +166,7 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
         .text(yLabel);
     }
 
-  }, [data, height, xLabel, yLabel]);
+  }, [data, height, xLabel, yLabel, enableQuestionTooltips]);
 
   return (
     <div className="space-y-2">
