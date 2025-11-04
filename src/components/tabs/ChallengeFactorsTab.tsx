@@ -186,81 +186,83 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
         <div className="flex items-start gap-2 mb-4">
           <h3 className="text-lg font-semibold">Detailed Factor Analysis Table</h3>
           <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="text-muted-foreground cursor-help mt-1" size={18} />
             </TooltipTrigger>
             <TooltipContent className="max-w-md">
-            </TooltipTrigger>
-                This table provides detailed statistics for how each teacher characteristic relates to challenge adaptation.
               <p className="text-xs mb-2">
-              <ul className="text-xs space-y-1 list-disc list-inside">
-              </p>ore for this group (1-5 scale)</li>
+                This table provides detailed statistics for how each teacher characteristic relates to challenge adaptation.
+              </p>
               <ul className="text-xs space-y-1 list-disc list-inside">
                 <li><strong>Mean Index:</strong> Average challenge score for this group (1-5 scale)</li>
-                <li><strong>Count:</strong> Number of teachers in this group</li>
+                <li><strong>Diff from Overall:</strong> How much this group differs from the {overallMean.toFixed(2)} average</li>
                 <li><strong>P(High):</strong> Percentage with challenge index ≥ 4.0</li>
+                <li><strong>Count:</strong> Number of teachers in this group</li>
+              </ul>
             </TooltipContent>
           </Tooltip>
-            </TooltipContent>
-          </Tooltip>
-          <Table>
+        </div>
         <div className="overflow-x-auto">
           <Table>
+            <TableHeader>
+              <TableRow>
                 <TableHead>Variable</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Variable</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">P(High)</TableHead>
+                <TableHead className="text-right">Mean Index</TableHead>
                 <TableHead className="text-right">Diff from Overall</TableHead>
-              </TableRow>
+                <TableHead className="text-right">P(High)</TableHead>
                 <TableHead className="text-right">Count</TableHead>
               </TableRow>
+            </TableHeader>
+            <TableBody>
               {allImpacts
                 .sort((a, b) => b.diffFromOverall - a.diffFromOverall)
-              {allImpacts
+                .map((impact, idx) => (
                   <TableRow key={idx}>
                     <TableCell className="font-medium">{impact.variable}</TableCell>
-                  <TableRow key={idx}>
+                    <TableCell>{impact.category}</TableCell>
                     <TableCell className="text-right font-mono">{(impact.meanIndex ?? 0).toFixed(2)}</TableCell>
                     <TableCell className={`text-right font-mono ${impact.diffFromOverall >= 0 ? 'text-chart-challenge' : 'text-muted-foreground'}`}>
-                    <TableCell className="text-right font-mono">{(impact.meanIndex ?? 0).toFixed(2)}</TableCell>
-                    <TableCell className={`text-right font-mono ${impact.diffFromOverall >= 0 ? 'text-chart-challenge' : 'text-muted-foreground'}`}>
-                    <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
-                    <TableCell className="text-right">
-                    <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
-                    <TableCell className="text-right">
+                      {impact.diffFromOverall >= 0 ? '+' : ''}{(impact.diffFromOverall ?? 0).toFixed(2)}
                     </TableCell>
-                  </TableRow>
+                    <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
+                    <TableCell className="text-right">
+                      {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
+                      {impact.count}
                     </TableCell>
                   </TableRow>
                 ))}
+            </TableBody>
+          </Table>
         </div>
       </Card>
 
-      </Card>
-2 mb-4">
       <Card className="p-6">
-          <Tooltip>
+        <div className="flex items-start gap-2 mb-4">
           <h3 className="text-lg font-semibold">Individual Challenge Questions - Average Frequency</h3>
-          <Tooltip> className="text-muted-foreground cursor-help mt-1" size={18} />
+          <Tooltip>
             <TooltipTrigger asChild>
-            <TooltipContent className="max-w-md">
+              <Info className="text-muted-foreground cursor-help mt-1" size={18} />
             </TooltipTrigger>
+            <TooltipContent className="max-w-md">
+              <p className="text-xs">
                 These are the 6 challenge strategies teachers were asked about. The bars show the average frequency of use on a scale from 1 (Never) to 5 (Always).
-              <p className="text-xs">equently when adapting lessons for students needing additional challenge.
+                Higher bars indicate strategies that teachers use more frequently when adapting lessons for students needing additional challenge.
               </p>
             </TooltipContent>
           </Tooltip>
-            </TooltipContent>
+        </div>
         <BarChart
           data={challengeQuestions.map(q => ({
-        <BarCharton,
+            label: q.question,
+            value: q.mean,
+            color: 'var(--chart-challenge)',
+          }))}
           height={300}
           yLabel="Mean frequency (1-5 scale)"
           exportPrefix="challenge_questions"
         />
       </Card>
-    </div>
-  );
-}
     </div>
   );
 }
