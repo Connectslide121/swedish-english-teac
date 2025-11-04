@@ -72,7 +72,7 @@ export function calculateFactorImpact(
 ): FactorImpact[] {
   const indexField = indexType === 'support' ? 'supportAdaptationIndex' : 'challengeAdaptationIndex';
   
-  const validData = data.filter(r => r[indexField] !== null);
+  const validData = data.filter(r => r[indexField] !== null && r[variable] !== null && String(r[variable]).trim() !== '');
   
   if (validData.length === 0) {
     return [];
@@ -264,7 +264,10 @@ export function calculateDualFactorImpact(
   threshold: number = 4.0
 ): DualFactorImpact[] {
   const validData = data.filter(r => 
-    r.supportAdaptationIndex !== null && r.challengeAdaptationIndex !== null
+    r.supportAdaptationIndex !== null && 
+    r.challengeAdaptationIndex !== null &&
+    r[variable] !== null && 
+    String(r[variable]).trim() !== ''
   );
   
   if (validData.length === 0) {

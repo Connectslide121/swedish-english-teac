@@ -16,15 +16,38 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
   const yearsImpact = calculateFactorImpact(data, 'yearsTeachingCategory', 'challenge', 4.0);
   const schoolTypeImpact = calculateFactorImpact(data, 'schoolType', 'challenge', 4.0);
   const certificationImpact = calculateFactorImpact(data, 'hasCertification', 'challenge', 4.0);
+  const shareSupportImpact = calculateFactorImpact(data, 'shareSupportStudents', 'challenge', 4.0);
   const shareChallengeImpact = calculateFactorImpact(data, 'shareChallengeStudents', 'challenge', 4.0);
+  const levelsImpact = calculateFactorImpact(data, 'levelsTeaching', 'challenge', 4.0);
   const groupSizeImpact = calculateGroupSizeImpact(data, 'challenge', 4.0);
+  
+  const timeImpact = calculateFactorImpact(data, 'itemTimeToDifferentiate', 'challenge', 4.0);
+  const classSizeImpact = calculateFactorImpact(data, 'itemClassSizeOk', 'challenge', 4.0);
+  const confidentSupportImpact = calculateFactorImpact(data, 'itemConfidentSupport', 'challenge', 4.0);
+  const confidentChallengeImpact = calculateFactorImpact(data, 'itemConfidentChallenge', 'challenge', 4.0);
+  const teacherEdImpact = calculateFactorImpact(data, 'itemTeacherEdPrepared', 'challenge', 4.0);
+  const formativeImpact = calculateFactorImpact(data, 'itemFormativeHelps', 'challenge', 4.0);
+  const digitalToolsImpact = calculateFactorImpact(data, 'itemDigitalTools', 'challenge', 4.0);
+  const materialsSupportImpact = calculateFactorImpact(data, 'itemMaterialsSupport', 'challenge', 4.0);
+  const materialsChallengeImpact = calculateFactorImpact(data, 'itemMaterialsChallenge', 'challenge', 4.0);
 
   const allImpacts = [
     ...yearsImpact.map(i => ({ ...i, variable: 'Years Teaching' })),
     ...schoolTypeImpact.map(i => ({ ...i, variable: 'School Type' })),
     ...certificationImpact.map(i => ({ ...i, variable: 'Certification' })),
+    ...levelsImpact.map(i => ({ ...i, variable: 'Levels Teaching' })),
+    ...shareSupportImpact.map(i => ({ ...i, variable: 'Share Support Students' })),
     ...shareChallengeImpact.map(i => ({ ...i, variable: 'Share Challenge Students' })),
     ...groupSizeImpact.map(i => ({ ...i, variable: 'Group Size' })),
+    ...timeImpact.map(i => ({ ...i, variable: 'Time to Differentiate' })),
+    ...classSizeImpact.map(i => ({ ...i, variable: 'Class Size OK' })),
+    ...confidentSupportImpact.map(i => ({ ...i, variable: 'Confident Supporting' })),
+    ...confidentChallengeImpact.map(i => ({ ...i, variable: 'Confident Challenging' })),
+    ...teacherEdImpact.map(i => ({ ...i, variable: 'Teacher Ed Prepared' })),
+    ...formativeImpact.map(i => ({ ...i, variable: 'Formative Assessment Helps' })),
+    ...digitalToolsImpact.map(i => ({ ...i, variable: 'Digital Tools Available' })),
+    ...materialsSupportImpact.map(i => ({ ...i, variable: 'Materials for Support' })),
+    ...materialsChallengeImpact.map(i => ({ ...i, variable: 'Materials for Challenge' })),
   ];
 
   const validData = data.filter(r => r.challengeAdaptationIndex !== null);
