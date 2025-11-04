@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import { Button } from '@/components/ui/button';
 import { Download } from '@phosphor-icons/react';
 import { exportSvgToPng, getChartFilename } from '@/lib/export-utils';
+import { getFullQuestion } from '@/lib/question-mappings';
 
 interface HorizontalBarChartProps {
   data: { category: string; value: number; count?: number }[];
@@ -124,9 +125,19 @@ export function HorizontalBarChart({
         const direction = (d.value ?? 0) >= 0 ? 'Higher than average' : 'Lower than average';
         const countText = d.count !== undefined ? `<br/>Responses: ${d.count}` : '';
         const colorIndicator = (d.value ?? 0) >= 0 ? '🟢' : '🔴';
+        
+        const parts = d.category.split(': ');
+        const variableName = parts.length > 1 ? parts[0] : '';
+        const categoryValue = parts.length > 1 ? parts[1] : d.category;
+        const fullQuestion = getFullQuestion(variableName);
+        
+        const questionText = fullQuestion 
+          ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${fullQuestion}</div>`
+          : '';
+        
         tooltip
           .style('visibility', 'visible')
-          .html(`<div style="max-width: 350px;">${colorIndicator} <strong>${d.category}</strong><br/>Difference: ${(d.value ?? 0) >= 0 ? '+' : ''}${d.value.toFixed(2)}<br/><em>${direction}</em>${countText}</div>`);
+          .html(`<div style="max-width: 400px;">${colorIndicator} <strong>${d.category}</strong><br/>Difference: ${(d.value ?? 0) >= 0 ? '+' : ''}${d.value.toFixed(2)}<br/><em>${direction}</em>${countText}${questionText}</div>`);
       })
       .on('mousemove', function(event) {
         const containerRect = containerRef.current!.getBoundingClientRect();

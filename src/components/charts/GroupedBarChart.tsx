@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import { Button } from '@/components/ui/button';
 import { Download } from '@phosphor-icons/react';
 import { exportSvgToPng, getChartFilename } from '@/lib/export-utils';
+import { getFullQuestion } from '@/lib/question-mappings';
 
 interface GroupedBarChartProps {
   data: { category: string; support: number; challenge: number }[];
@@ -120,9 +121,18 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
         const typeName = d.key === 'support' ? 'Support Adaptation' : 'Challenge Adaptation';
+        
+        const parts = d.category.split(': ');
+        const variableName = parts.length > 1 ? parts[0] : '';
+        const fullQuestion = getFullQuestion(variableName);
+        
+        const questionText = fullQuestion 
+          ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${fullQuestion}</div>`
+          : '';
+        
         tooltip
           .style('visibility', 'visible')
-          .html(`<div style="max-width: 300px;"><strong>${d.category}</strong><br/>${typeName}: ${d.value.toFixed(2)}</div>`);
+          .html(`<div style="max-width: 400px;"><strong>${d.category}</strong><br/>${typeName}: ${d.value.toFixed(2)}${questionText}</div>`);
       })
       .on('mousemove', function(event) {
         const containerRect = containerRef.current!.getBoundingClientRect();
