@@ -69,7 +69,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
       className={`p-12 border-2 border-dashed cursor-pointer transition-all bg-white shadow-lg ${
         isDragging
           ? 'border-accent bg-accent/5 shadow-xl shadow-accent/30 scale-[1.02]'
-          : 'border-primary/30 hover:border-accent hover:bg-accent/5 hover:shadow-xl'
+          : 'border-primary/30 hover:border-accent hover:shadow-xl hover:shadow-accent/10'
       }`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
