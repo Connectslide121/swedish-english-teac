@@ -13,7 +13,6 @@ import { BothFactorsTab } from '@/components/tabs/BothFactorsTab';
 import { PerQuestionTab } from '@/components/tabs/PerQuestionTab';
 import { RawDataTab } from '@/components/tabs/RawDataTab';
 import { parseCSV } from '@/lib/csv-parser';
-import { parseExcel } from '@/lib/excel-parser';
 import { applyFilters, calculateSummaryStats } from '@/lib/analysis';
 import { SurveyResponse, Filters } from '@/lib/types';
 
@@ -31,23 +30,12 @@ function App() {
     shareChallengeStudents: [],
   });
 
-  const handleFileLoad = (content: string | ArrayBuffer, filename: string, fileType: 'csv' | 'excel') => {
+  const handleFileLoad = (content: string, filename: string) => {
     try {
-      let data: SurveyResponse[];
-      let parseWarnings: string[];
+      const result = parseCSV(content);
       
-      if (fileType === 'excel') {
-        const result = parseExcel(content as ArrayBuffer);
-        data = result.data;
-        parseWarnings = result.warnings;
-      } else {
-        const result = parseCSV(content as string);
-        data = result.data;
-        parseWarnings = result.warnings;
-      }
-      
-      setRawData(data);
-      setWarnings(parseWarnings);
+      setRawData(result.data);
+      setWarnings(result.warnings);
       
       setFilters({
         currentlyTeaching: ['Yes'],
@@ -67,15 +55,14 @@ function App() {
   const handleUploadClick = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv,.xlsx,.xls';
+    input.accept = '.csv';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         const isCSV = file.name.toLowerCase().endsWith('.csv');
-        const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
         
-        if (!isCSV && !isExcel) {
-          alert('Please upload a CSV or Excel file');
+        if (!isCSV) {
+          alert('Please upload a CSV file');
           return;
         }
         
@@ -83,14 +70,10 @@ function App() {
         reader.onload = (e) => {
           const content = e.target?.result;
           if (!content) return;
-          handleFileLoad(content, file.name, isCSV ? 'csv' : 'excel');
+          handleFileLoad(content as string, file.name);
         };
         
-        if (isExcel) {
-          reader.readAsArrayBuffer(file);
-        } else {
-          reader.readAsText(file);
-        }
+        reader.readAsText(file);
       }
     };
     input.click();
@@ -159,7 +142,7 @@ function App() {
             <FileUpload onFileLoad={handleFileLoad} />
 
             <div className="mt-8 text-center text-sm text-foreground/60">
-              <p>Upload your Google Forms export (CSV or Excel) to get started</p>
+              <p>Upload your Google Forms export (CSV) to get started</p>
             </div>
           </div>
         </div>

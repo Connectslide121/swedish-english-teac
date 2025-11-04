@@ -3,7 +3,7 @@ import { UploadSimple, CheckCircle } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 
 interface FileUploadProps {
-  onFileLoad: (content: string | ArrayBuffer, filename: string, fileType: 'csv' | 'excel') => void;
+  onFileLoad: (content: string, filename: string) => void;
 }
 
 export function FileUpload({ onFileLoad }: FileUploadProps) {
@@ -12,10 +12,9 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
 
   const handleFile = useCallback((file: File) => {
     const isCSV = file.name.toLowerCase().endsWith('.csv');
-    const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
     
-    if (!isCSV && !isExcel) {
-      alert('Please upload a CSV or Excel file (.csv, .xlsx, .xls)');
+    if (!isCSV) {
+      alert('Please upload a CSV file (.csv)');
       return;
     }
 
@@ -25,14 +24,10 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
       if (!content) return;
       
       setUploadedFile(file.name);
-      onFileLoad(content, file.name, isCSV ? 'csv' : 'excel');
+      onFileLoad(content as string, file.name);
     };
     
-    if (isExcel) {
-      reader.readAsArrayBuffer(file);
-    } else {
-      reader.readAsText(file);
-    }
+    reader.readAsText(file);
   }, [onFileLoad]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -56,7 +51,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
   const handleClick = useCallback(() => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv,.xlsx,.xls';
+    input.accept = '.csv';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) handleFile(file);
@@ -104,7 +99,7 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
                 <span className="font-semibold text-foreground">"Classroom Adaptations in the English Classroom"</span> survey
               </p>
               <p className="text-xs text-foreground/60 mb-1">
-                Supports CSV and Excel formats (.csv, .xlsx, .xls)
+                Supports CSV format (.csv)
               </p>
               <p className="text-xs text-accent font-semibold">
                 Click to browse or drag and drop
