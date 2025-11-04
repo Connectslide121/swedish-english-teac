@@ -115,9 +115,7 @@ function App() {
               <h1 className="text-5xl font-semibold mb-4 tracking-tight text-foreground">
                 Swedish English Teachers
                 <br />
-                <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                  Classroom Adaptation Dashboard
-                </span>
+                Classroom Adaptation Dashboard
               </h1>
               
               <p className="text-lg text-foreground/70 max-w-2xl mx-auto mb-12 leading-relaxed">
