@@ -66,10 +66,10 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
 
   return (
     <Card
-      className={`p-12 border-2 border-dashed cursor-pointer transition-all backdrop-blur-sm ${
+      className={`p-12 border-2 border-dashed cursor-pointer transition-all bg-white shadow-lg ${
         isDragging
-          ? 'border-accent bg-accent/10 shadow-lg shadow-accent/20'
-          : 'border-border/50 hover:border-accent/50 hover:bg-card/80 hover:shadow-md'
+          ? 'border-accent bg-accent/5 shadow-xl shadow-accent/30 scale-[1.02]'
+          : 'border-primary/30 hover:border-accent hover:bg-accent/5 hover:shadow-xl'
       }`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
@@ -79,34 +79,34 @@ export function FileUpload({ onFileLoad }: FileUploadProps) {
       <div className="flex flex-col items-center gap-4 text-center">
         {uploadedFile ? (
           <>
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10">
-              <CheckCircle className="text-accent" size={48} weight="fill" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent shadow-md">
+              <CheckCircle className="text-accent-foreground" size={48} weight="fill" />
             </div>
             <div>
-              <h3 className="text-lg font-medium mb-1">File Uploaded Successfully</h3>
-              <p className="text-sm text-muted-foreground font-mono">{uploadedFile}</p>
-              <p className="text-xs text-muted-foreground mt-2">
+              <h3 className="text-lg font-semibold mb-1 text-foreground">File Uploaded Successfully</h3>
+              <p className="text-sm text-foreground/70 font-mono">{uploadedFile}</p>
+              <p className="text-xs text-foreground/60 mt-2">
                 Click or drag to upload a different file
               </p>
             </div>
           </>
         ) : (
           <>
-            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full transition-all ${
-              isDragging ? 'bg-accent/10' : 'bg-primary/10'
+            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl transition-all shadow-md ${
+              isDragging ? 'bg-accent' : 'bg-primary'
             }`}>
-              <UploadSimple className={isDragging ? 'text-accent' : 'text-primary'} size={48} weight={isDragging ? 'fill' : 'regular'} />
+              <UploadSimple className={isDragging ? 'text-accent-foreground' : 'text-primary-foreground'} size={48} weight={isDragging ? 'fill' : 'regular'} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2">Upload Survey Data</h3>
-              <p className="text-sm text-muted-foreground mb-3">
+              <h3 className="text-lg font-semibold mb-2 text-foreground">Upload Survey Data</h3>
+              <p className="text-sm text-foreground/70 mb-3 leading-relaxed">
                 Upload the Google Forms export from the<br />
-                <span className="font-medium">"Classroom Adaptations in the English Classroom"</span> survey
+                <span className="font-semibold text-foreground">"Classroom Adaptations in the English Classroom"</span> survey
               </p>
-              <p className="text-xs text-muted-foreground mb-1">
+              <p className="text-xs text-foreground/60 mb-1">
                 Supports CSV and Excel formats (.csv, .xlsx, .xls)
               </p>
-              <p className="text-xs text-primary font-medium">
+              <p className="text-xs text-accent font-semibold">
                 Click to browse or drag and drop
               </p>
             </div>

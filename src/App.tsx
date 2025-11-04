@@ -103,53 +103,55 @@ function App() {
 
   if (rawData.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-secondary/10 p-6 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/15 p-6 flex flex-col">
         <div className="flex-1 flex items-center justify-center">
           <div className="max-w-5xl w-full">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 bg-accent/10 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-6">
-                <Sparkle size={16} weight="fill" />
+              <div className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-5 py-2.5 rounded-full text-sm font-medium mb-6 shadow-lg shadow-accent/20">
+                <Sparkle size={18} weight="fill" />
                 Hello Kimia!
               </div>
               
-              <h1 className="text-5xl font-semibold mb-4 tracking-tight bg-gradient-to-br from-primary via-accent to-secondary bg-clip-text text-transparent">
+              <h1 className="text-5xl font-semibold mb-4 tracking-tight text-foreground">
                 Swedish English Teachers
                 <br />
-                Classroom Adaptation Dashboard
+                <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                  Classroom Adaptation Dashboard
+                </span>
               </h1>
               
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              <p className="text-lg text-foreground/70 max-w-2xl mx-auto mb-12 leading-relaxed">
                 A comprehensive analytics tool to visualize and understand how Swedish English teachers 
                 adapt their lessons for students needing support and challenge
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
-                <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-6 text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-3">
-                    <ChartBar size={24} weight="fill" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+                <div className="bg-white border-2 border-primary/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-primary/40 transition-all">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground mb-4 shadow-md">
+                    <ChartBar size={28} weight="fill" />
                   </div>
-                  <h3 className="font-medium mb-2">Rich Visualizations</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="font-semibold text-foreground mb-2">Rich Visualizations</h3>
+                  <p className="text-sm text-foreground/60">
                     Interactive charts and graphs to explore survey responses
                   </p>
                 </div>
 
-                <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-6 text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 text-accent mb-3">
-                    <Funnel size={24} weight="fill" />
+                <div className="bg-white border-2 border-accent/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-accent/40 transition-all">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent text-accent-foreground mb-4 shadow-md">
+                    <Funnel size={28} weight="fill" />
                   </div>
-                  <h3 className="font-medium mb-2">Advanced Filtering</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="font-semibold text-foreground mb-2">Advanced Filtering</h3>
+                  <p className="text-sm text-foreground/60">
                     Filter by teaching experience, school type, and more
                   </p>
                 </div>
 
-                <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-6 text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-secondary/10 text-secondary-foreground mb-3">
-                    <Info size={24} weight="fill" />
+                <div className="bg-white border-2 border-secondary/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-secondary/40 transition-all">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-secondary text-secondary-foreground mb-4 shadow-md">
+                    <Info size={28} weight="fill" />
                   </div>
-                  <h3 className="font-medium mb-2">Detailed Analysis</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="font-semibold text-foreground mb-2">Detailed Analysis</h3>
+                  <p className="text-sm text-foreground/60">
                     Deep dive into support and challenge factors
                   </p>
                 </div>
@@ -158,13 +160,13 @@ function App() {
 
             <FileUpload onFileLoad={handleFileLoad} />
 
-            <div className="mt-8 text-center text-sm text-muted-foreground">
+            <div className="mt-8 text-center text-sm text-foreground/60">
               <p>Upload your Google Forms export (CSV or Excel) to get started</p>
             </div>
           </div>
         </div>
 
-        <footer className="mt-12 text-center text-sm text-muted-foreground">
+        <footer className="mt-12 text-center text-sm text-foreground/60">
           Made with <Heart size={14} weight="fill" className="inline text-destructive mx-1" /> by Jon
         </footer>
       </div>
