@@ -172,53 +172,53 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 flex flex-col">
-      <div className="flex-1">
-        <div className="max-w-[1800px] mx-auto">
-          <div className="mb-6">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h1 className="text-3xl font-semibold tracking-tight">
-                  Swedish English Teachers Classroom Adaptation Dashboard
-                </h1>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Analyzing {rawData.length} survey responses
-                </p>
-              </div>
-              <Button onClick={handleUploadClick} variant="outline">
-                <UploadSimple className="mr-2" size={16} />
-                Upload New File
-              </Button>
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-[1800px] mx-auto">
+        <div className="mb-6">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Swedish English Teachers Classroom Adaptation Dashboard
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Analyzing {rawData.length} survey responses
+              </p>
             </div>
+            <Button onClick={handleUploadClick} variant="outline">
+              <UploadSimple className="mr-2" size={16} />
+              Upload New File
+            </Button>
+          </div>
+        </div>
+
+        {warnings.length > 0 && (
+          <Alert className="mb-6 border-accent/50 bg-accent/5">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Data Warnings:</strong>
+              <ul className="list-disc list-inside mt-2">
+                {warnings.map((warning, idx) => (
+                  <li key={idx} className="text-sm">{warning}</li>
+                ))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="mb-6">
+          <SummaryCards stats={summaryStats} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+          <div className="lg:sticky lg:top-6 lg:self-start">
+            <FiltersSidebar
+              data={rawData}
+              filters={filters}
+              onFiltersChange={setFilters}
+            />
           </div>
 
-          {warnings.length > 0 && (
-            <Alert className="mb-6 border-accent/50 bg-accent/5">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <strong>Data Warnings:</strong>
-                <ul className="list-disc list-inside mt-2">
-                  {warnings.map((warning, idx) => (
-                    <li key={idx} className="text-sm">{warning}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="mb-6">
-            <SummaryCards stats={summaryStats} />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-            <div className="lg:sticky lg:top-6 lg:self-start">
-              <FiltersSidebar
-                data={rawData}
-                filters={filters}
-                onFiltersChange={setFilters}
-              />
-            </div>
-
+          <div>
             <div>
               {filteredData.length === 0 ? (
                 <Alert>
