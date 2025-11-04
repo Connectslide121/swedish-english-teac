@@ -118,12 +118,6 @@ export function HorizontalBarChart({
       .attr('width', d => Math.abs(x(d.value ?? 0) - x(0)))
       .attr('height', y.bandwidth())
       .attr('fill', d => (d.value ?? 0) >= 0 ? 'oklch(0.65 0.18 142)' : 'oklch(0.60 0.20 25)')
-      .attr('opacity', 0.8)
-      .on('mouseenter', function(event, d) {
-        d3.select(this).attr('opacity', 1);
-        const direction = (d.value ?? 0) >= 0 
-          ? (chartType === 'support' ? 'Higher support adaptation' : 'Higher challenge adaptation')
-          : (chartType === 'support' ? 'Lower support adaptation' : 'Lower challenge adaptation');
         const countText = d.count !== undefined ? `<br/>Responses: ${d.count}` : '';
         const colorIndicator = (d.value ?? 0) >= 0 ? '🟢' : '🔴';
         tooltip
