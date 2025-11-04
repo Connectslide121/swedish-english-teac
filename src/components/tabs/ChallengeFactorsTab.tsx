@@ -5,8 +5,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Info } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { calculateFactorImpact, calculateGroupSizeImpact, calculateQuestionStats } from '@/lib/analysis';
+import { getFullQuestion } from '@/lib/question-mappings';
 import { HorizontalBarChart } from '../charts/HorizontalBarChart';
 import { BarChart } from '../charts/BarChart';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface ChallengeFactorsTabProps {
   data: SurveyResponse[];
@@ -225,37 +227,57 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           </Tooltip>
         </div>
         <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Variable</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">Mean Index</TableHead>
-                <TableHead className="text-right">Diff from Overall</TableHead>
-                <TableHead className="text-right">P(High)</TableHead>
-                <TableHead className="text-right">Count</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {allImpacts
-                .sort((a, b) => b.diffFromOverall - a.diffFromOverall)
-                .map((impact, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell className="font-medium">{impact.variable}</TableCell>
-                    <TableCell>{impact.category}</TableCell>
-                    <TableCell className="text-right font-mono">{(impact.meanIndex ?? 0).toFixed(2)}</TableCell>
-                    <TableCell className={`text-right font-mono ${impact.diffFromOverall >= 0 ? 'text-chart-challenge' : 'text-muted-foreground'}`}>
-                      {impact.diffFromOverall >= 0 ? '+' : ''}{(impact.diffFromOverall ?? 0).toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
-                    <TableCell className="text-right">
-                      {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
-                      {impact.count}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+          <TooltipProvider>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Variable</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Mean Index</TableHead>
+                  <TableHead className="text-right">Diff from Overall</TableHead>
+                  <TableHead className="text-right">P(High)</TableHead>
+                  <TableHead className="text-right">Count</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allImpacts
+                  .sort((a, b) => b.diffFromOverall - a.diffFromOverall)
+                  .map((impact, idx) => {
+                    const fullQuestion = getFullQuestion(impact.variable);
+                    return (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">
+                          {fullQuestion ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help underline decoration-dotted underline-offset-2">
+                                  {impact.variable}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-xs">{fullQuestion}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            impact.variable
+                          )}
+                        </TableCell>
+                        <TableCell>{impact.category}</TableCell>
+                        <TableCell className="text-right font-mono">{(impact.meanIndex ?? 0).toFixed(2)}</TableCell>
+                        <TableCell className={`text-right font-mono ${impact.diffFromOverall >= 0 ? 'text-chart-challenge' : 'text-muted-foreground'}`}>
+                          {impact.diffFromOverall >= 0 ? '+' : ''}{(impact.diffFromOverall ?? 0).toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right font-mono">{((impact.probability ?? 0) * 100).toFixed(1)}%</TableCell>
+                        <TableCell className="text-right">
+                          {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
+                          {impact.count}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TooltipProvider>
         </div>
       </Card>
 

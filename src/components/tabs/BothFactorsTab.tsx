@@ -5,8 +5,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Info } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { calculateDualFactorImpact, calculateDualGroupSizeImpact } from '@/lib/analysis';
+import { getFullQuestion } from '@/lib/question-mappings';
 import { BarChart } from '../charts/BarChart';
 import { GroupedBarChart } from '../charts/GroupedBarChart';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface BothFactorsTabProps {
   data: SurveyResponse[];
@@ -279,53 +281,73 @@ export function BothFactorsTab({ data }: BothFactorsTabProps) {
           </Tooltip>
         </div>
         <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Variable</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">Support Mean</TableHead>
-                <TableHead className="text-right">Challenge Mean</TableHead>
-                <TableHead className="text-right">Diff Support</TableHead>
-                <TableHead className="text-right">Diff Challenge</TableHead>
-                <TableHead className="text-right">P(Both High)</TableHead>
-                <TableHead className="text-right">Combined Impact</TableHead>
-                <TableHead className="text-right">Count</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {allImpacts
-                .sort((a, b) => b.combinedImpact - a.combinedImpact)
-                .map((impact, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell className="font-medium">{impact.variable}</TableCell>
-                    <TableCell>{impact.category}</TableCell>
-                    <TableCell className="text-right font-mono text-xs">
-                      {impact.meanSupport.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-xs">
-                      {impact.meanChallenge.toFixed(2)}
-                    </TableCell>
-                    <TableCell className={`text-right font-mono text-xs ${Math.abs(impact.diffSupportFromOverall) > 0.2 ? 'font-semibold' : ''}`}>
-                      {impact.diffSupportFromOverall >= 0 ? '+' : ''}{impact.diffSupportFromOverall.toFixed(2)}
-                    </TableCell>
-                    <TableCell className={`text-right font-mono text-xs ${Math.abs(impact.diffChallengeFromOverall) > 0.2 ? 'font-semibold' : ''}`}>
-                      {impact.diffChallengeFromOverall >= 0 ? '+' : ''}{impact.diffChallengeFromOverall.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-xs">
-                      {(impact.probabilityBoth * 100).toFixed(1)}%
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-xs font-semibold text-accent">
-                      {impact.combinedImpact.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
-                      {impact.count}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+          <TooltipProvider>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Variable</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Support Mean</TableHead>
+                  <TableHead className="text-right">Challenge Mean</TableHead>
+                  <TableHead className="text-right">Diff Support</TableHead>
+                  <TableHead className="text-right">Diff Challenge</TableHead>
+                  <TableHead className="text-right">P(Both High)</TableHead>
+                  <TableHead className="text-right">Combined Impact</TableHead>
+                  <TableHead className="text-right">Count</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allImpacts
+                  .sort((a, b) => b.combinedImpact - a.combinedImpact)
+                  .map((impact, idx) => {
+                    const fullQuestion = getFullQuestion(impact.variable);
+                    return (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">
+                          {fullQuestion ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help underline decoration-dotted underline-offset-2">
+                                  {impact.variable}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-xs">{fullQuestion}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            impact.variable
+                          )}
+                        </TableCell>
+                        <TableCell>{impact.category}</TableCell>
+                        <TableCell className="text-right font-mono text-xs">
+                          {impact.meanSupport.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-xs">
+                          {impact.meanChallenge.toFixed(2)}
+                        </TableCell>
+                        <TableCell className={`text-right font-mono text-xs ${Math.abs(impact.diffSupportFromOverall) > 0.2 ? 'font-semibold' : ''}`}>
+                          {impact.diffSupportFromOverall >= 0 ? '+' : ''}{impact.diffSupportFromOverall.toFixed(2)}
+                        </TableCell>
+                        <TableCell className={`text-right font-mono text-xs ${Math.abs(impact.diffChallengeFromOverall) > 0.2 ? 'font-semibold' : ''}`}>
+                          {impact.diffChallengeFromOverall >= 0 ? '+' : ''}{impact.diffChallengeFromOverall.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-xs">
+                          {(impact.probabilityBoth * 100).toFixed(1)}%
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-xs font-semibold text-accent">
+                          {impact.combinedImpact.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {impact.count < 5 && <Badge variant="outline" className="mr-2 text-xs">Low n</Badge>}
+                          {impact.count}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TooltipProvider>
         </div>
       </Card>
     </div>
