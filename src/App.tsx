@@ -125,7 +125,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
                 <div className="bg-white border-2 border-primary/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-primary/40 transition-all">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-4 shadow-md">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary/40 mb-4 shadow-md">
                     <ChartBar size={28} weight="fill" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Rich Visualizations</h3>
@@ -135,7 +135,7 @@ function App() {
                 </div>
 
                 <div className="bg-white border-2 border-accent/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-accent/40 transition-all">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent/15 text-accent mb-4 shadow-md">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent/15 text-accent/50 mb-4 shadow-md">
                     <Funnel size={28} weight="fill" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Advanced Filtering</h3>
@@ -145,7 +145,7 @@ function App() {
                 </div>
 
                 <div className="bg-white border-2 border-secondary/20 rounded-xl p-6 text-center shadow-lg hover:shadow-xl hover:border-secondary/40 transition-all">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-secondary/20 text-secondary mb-4 shadow-md">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-secondary/20 text-secondary/50 mb-4 shadow-md">
                     <Info size={28} weight="fill" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Detailed Analysis</h3>
