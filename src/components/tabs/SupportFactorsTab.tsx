@@ -105,10 +105,10 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
                 This chart shows how different teacher contexts relate to their support adaptation scores, measured as differences from the overall mean ({overallMean.toFixed(2)}).
               </p>
               <p className="text-xs mb-2">
-                <strong className="text-[var(--chart-support)]">Blue bars (negative values)</strong> indicate groups with LOWER support adaptation than average (less frequent use of support strategies).
+                <strong>🔴 Red bars (negative values)</strong> indicate groups with LOWER support adaptation than average (less frequent use of support strategies).
               </p>
               <p className="text-xs">
-                <strong className="text-[var(--chart-challenge)]">Yellow bars (positive values)</strong> indicate groups with HIGHER support adaptation than average (more frequent use of support strategies).
+                <strong>🟢 Green bars (positive values)</strong> indicate groups with HIGHER support adaptation than average (more frequent use of support strategies).
               </p>
             </TooltipContent>
           </Tooltip>
@@ -119,20 +119,20 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'var(--chart-challenge)' }}></div>
+              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'oklch(0.65 0.18 142)' }}></div>
               <div>
-                <strong className="text-[var(--chart-challenge)]">Positive values (yellow/right):</strong> Groups that use support strategies MORE frequently than average
+                <strong>🟢 Positive values (green/right):</strong> Groups that use support strategies MORE frequently than average
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'var(--chart-support)' }}></div>
+              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'oklch(0.60 0.20 25)' }}></div>
               <div>
-                <strong className="text-[var(--chart-support)]">Negative values (blue/left):</strong> Groups that use support strategies LESS frequently than average
+                <strong>🔴 Negative values (red/left):</strong> Groups that use support strategies LESS frequently than average
               </div>
             </div>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            <strong>Example:</strong> If "School Type: Gymnasium" shows +0.35, teachers at gymnasiums score 0.35 points higher on support adaptation, meaning they use these strategies more frequently than the typical teacher.
+            <strong>Example:</strong> If "School Type: Gymnasium" shows +0.35 (green bar), teachers at gymnasiums score 0.35 points higher on support adaptation, meaning they use these strategies more frequently than the typical teacher.
           </p>
         </div>
         <HorizontalBarChart

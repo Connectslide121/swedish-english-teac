@@ -105,10 +105,10 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
                 This chart shows how different teacher contexts relate to their challenge adaptation scores, measured as differences from the overall mean ({overallMean.toFixed(2)}).
               </p>
               <p className="text-xs mb-2">
-                <strong className="text-[var(--chart-support)]">Blue bars (negative values)</strong> indicate groups with LOWER challenge adaptation than average (less frequent use of challenge strategies).
+                <strong>🔴 Red bars (negative values)</strong> indicate groups with LOWER challenge adaptation than average (less frequent use of challenge strategies).
               </p>
               <p className="text-xs">
-                <strong className="text-[var(--chart-challenge)]">Yellow bars (positive values)</strong> indicate groups with HIGHER challenge adaptation than average (more frequent use of challenge strategies).
+                <strong>🟢 Green bars (positive values)</strong> indicate groups with HIGHER challenge adaptation than average (more frequent use of challenge strategies).
               </p>
             </TooltipContent>
           </Tooltip>
@@ -119,20 +119,20 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'var(--chart-challenge)' }}></div>
+              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'oklch(0.65 0.18 142)' }}></div>
               <div>
-                <strong className="text-[var(--chart-challenge)]">Positive values (yellow/right):</strong> Groups that use challenge strategies MORE frequently than average
+                <strong>🟢 Positive values (green/right):</strong> Groups that use challenge strategies MORE frequently than average
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'var(--chart-support)' }}></div>
+              <div className="w-4 h-4 rounded mt-0.5" style={{ backgroundColor: 'oklch(0.60 0.20 25)' }}></div>
               <div>
-                <strong className="text-[var(--chart-support)]">Negative values (blue/left):</strong> Groups that use challenge strategies LESS frequently than average
+                <strong>🔴 Negative values (red/left):</strong> Groups that use challenge strategies LESS frequently than average
               </div>
             </div>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            <strong>Example:</strong> If "School Type: Grundskola" shows -0.28, teachers at grundskola score 0.28 points lower on challenge adaptation, meaning they use these strategies less frequently than the typical teacher.
+            <strong>Example:</strong> If "School Type: Grundskola" shows -0.28 (red bar), teachers at grundskola score 0.28 points lower on challenge adaptation, meaning they use these strategies less frequently than the typical teacher.
           </p>
         </div>
         <HorizontalBarChart

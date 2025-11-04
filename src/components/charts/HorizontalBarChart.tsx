@@ -117,13 +117,7 @@ export function HorizontalBarChart({
       .attr('y', d => y(d.category) || 0)
       .attr('width', d => Math.abs(x(d.value ?? 0) - x(0)))
       .attr('height', y.bandwidth())
-      .attr('fill', d => {
-        if (chartType === 'support') {
-          return (d.value ?? 0) >= 0 ? 'var(--chart-support)' : 'var(--chart-challenge)';
-        } else {
-          return (d.value ?? 0) >= 0 ? 'var(--chart-challenge)' : 'var(--chart-support)';
-        }
-      })
+      .attr('fill', d => (d.value ?? 0) >= 0 ? 'oklch(0.65 0.18 142)' : 'oklch(0.60 0.20 25)')
       .attr('opacity', 0.8)
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
@@ -131,9 +125,10 @@ export function HorizontalBarChart({
           ? (chartType === 'support' ? 'Higher support adaptation' : 'Higher challenge adaptation')
           : (chartType === 'support' ? 'Lower support adaptation' : 'Lower challenge adaptation');
         const countText = d.count !== undefined ? `<br/>Responses: ${d.count}` : '';
+        const colorIndicator = (d.value ?? 0) >= 0 ? '🟢' : '🔴';
         tooltip
           .style('visibility', 'visible')
-          .html(`<div style="max-width: 350px;"><strong>${d.category}</strong><br/>Difference: ${(d.value ?? 0) >= 0 ? '+' : ''}${d.value.toFixed(2)}<br/><em>${direction}</em>${countText}</div>`);
+          .html(`<div style="max-width: 350px;">${colorIndicator} <strong>${d.category}</strong><br/>Difference: ${(d.value ?? 0) >= 0 ? '+' : ''}${d.value.toFixed(2)}<br/><em>${direction}</em>${countText}</div>`);
       })
       .on('mousemove', function(event) {
         const containerRect = containerRef.current!.getBoundingClientRect();
