@@ -28,7 +28,7 @@ function cloneAndResolveStyles(svgElement: SVGSVGElement): SVGSVGElement {
       el.setAttribute('stroke', computedStyle.stroke);
     }
     
-    if (computedStyle.strokeWidth && el.getAttribute('stroke')) {
+    if (computedStyle.strokeWidth) {
       el.setAttribute('stroke-width', computedStyle.strokeWidth);
     }
     
@@ -36,10 +36,11 @@ function cloneAndResolveStyles(svgElement: SVGSVGElement): SVGSVGElement {
       el.setAttribute('stroke-dasharray', computedStyle.strokeDasharray);
     }
     
-    if (el.tagName === 'text') {
+    if (el.tagName === 'text' || el.tagName.toLowerCase() === 'text') {
       const fontSize = computedStyle.fontSize;
       const fontFamily = computedStyle.fontFamily;
       const fontWeight = computedStyle.fontWeight;
+      const textAnchor = computedStyle.textAnchor || (originalEl as SVGTextElement).style.textAnchor;
       
       if (fontSize) {
         el.setAttribute('font-size', fontSize);
@@ -50,18 +51,40 @@ function cloneAndResolveStyles(svgElement: SVGSVGElement): SVGSVGElement {
       if (fontWeight && fontWeight !== '400') {
         el.setAttribute('font-weight', fontWeight);
       }
+      if (textAnchor) {
+        el.setAttribute('text-anchor', textAnchor);
+      }
     }
     
-    if (el.tagName === 'rect' && el.hasAttribute('rx')) {
+    if ((el.tagName === 'rect' || el.tagName.toLowerCase() === 'rect') && el.hasAttribute('rx')) {
       const rx = el.getAttribute('rx');
       if (rx) {
         el.setAttribute('rx', rx);
       }
     }
     
-    const opacity = el.getAttribute('opacity');
-    if (opacity) {
+    const opacity = computedStyle.opacity;
+    if (opacity && opacity !== '1') {
       el.setAttribute('opacity', opacity);
+    }
+    
+    if (el.tagName === 'line' || el.tagName.toLowerCase() === 'line') {
+      if (computedStyle.strokeWidth) {
+        el.setAttribute('stroke-width', computedStyle.strokeWidth);
+      }
+    }
+    
+    if (el.tagName === 'path' || el.tagName.toLowerCase() === 'path') {
+      if (!el.getAttribute('fill')) {
+        el.setAttribute('fill', 'none');
+      }
+    }
+    
+    if (el.hasAttribute('transform')) {
+      const transform = el.getAttribute('transform');
+      if (transform) {
+        el.setAttribute('transform', transform);
+      }
     }
   });
   
