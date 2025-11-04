@@ -35,7 +35,7 @@ export function HorizontalBarChart({
   useEffect(() => {
     if (!svgRef.current || !containerRef.current || data.length === 0) return;
 
-    const margin = { top: 20, right: 60, bottom: 40, left: 150 };
+    const margin = { top: 20, right: 80, bottom: 40, left: 150 };
     const width = containerRef.current.clientWidth;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -59,6 +59,7 @@ export function HorizontalBarChart({
       .style('border-radius', '0.375rem')
       .style('padding', '0.5rem 0.75rem')
       .style('font-size', '0.875rem')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('pointer-events', 'none')
       .style('z-index', '1000')
       .style('box-shadow', '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)');
@@ -74,18 +75,28 @@ export function HorizontalBarChart({
       .nice()
       .range([0, innerWidth]);
 
-    g.append('g')
-      .call(d3.axisLeft(y))
-      .selectAll('text')
+    const yAxis = g.append('g')
+      .call(d3.axisLeft(y));
+    
+    yAxis.selectAll('text')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    yAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
-    g.append('g')
+    const xAxis = g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(x))
-      .selectAll('text')
+      .call(d3.axisBottom(x));
+    
+    xAxis.selectAll('text')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    xAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
     if (showBaseline) {
       g.append('line')
@@ -147,7 +158,9 @@ export function HorizontalBarChart({
       .attr('dy', '0.35em')
       .attr('text-anchor', d => (d.value ?? 0) >= 0 ? 'start' : 'end')
       .style('font-size', '11px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)')
+      .style('font-weight', '500')
       .text(d => {
         const valText = (d.value ?? 0).toFixed(2);
         return d.count !== undefined ? `${valText} (n=${d.count})` : valText;
@@ -159,6 +172,7 @@ export function HorizontalBarChart({
         .attr('y', height - 5)
         .attr('text-anchor', 'middle')
         .style('font-size', '12px')
+        .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
         .style('fill', 'var(--muted-foreground)')
         .text(valueLabel);
     }

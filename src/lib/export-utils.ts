@@ -13,54 +13,55 @@ function resolveCSSVariable(value: string): string {
 function cloneAndResolveStyles(svgElement: SVGSVGElement): SVGSVGElement {
   const clone = svgElement.cloneNode(true) as SVGSVGElement;
   
-  const elementsWithFill = clone.querySelectorAll('[fill]');
-  elementsWithFill.forEach((el) => {
-    const fillValue = el.getAttribute('fill');
-    if (fillValue) {
-      const resolvedFill = resolveCSSVariable(fillValue);
-      el.setAttribute('fill', resolvedFill);
-    }
-  });
-  
-  const elementsWithStroke = clone.querySelectorAll('[stroke]');
-  elementsWithStroke.forEach((el) => {
-    const strokeValue = el.getAttribute('stroke');
-    if (strokeValue) {
-      const resolvedStroke = resolveCSSVariable(strokeValue);
-      el.setAttribute('stroke', resolvedStroke);
-    }
-  });
-  
-  const textElements = clone.querySelectorAll('text');
-  textElements.forEach((text) => {
-    const style = window.getComputedStyle(svgElement.querySelector(`text:nth-of-type(${Array.from(svgElement.querySelectorAll('text')).indexOf(svgElement.querySelectorAll('text')[Array.from(clone.querySelectorAll('text')).indexOf(text)]) + 1})`) || text);
-    const fill = style.fill;
-    const fontSize = style.fontSize;
-    const fontFamily = style.fontFamily;
-    
-    if (fill && fill !== 'rgb(0, 0, 0)') {
-      text.setAttribute('fill', fill);
-    }
-    if (fontSize) {
-      text.setAttribute('font-size', fontSize);
-    }
-    if (fontFamily) {
-      text.setAttribute('font-family', fontFamily);
-    }
-  });
-  
   const allElements = clone.querySelectorAll('*');
   allElements.forEach((el, index) => {
     const originalEl = svgElement.querySelectorAll('*')[index];
-    if (originalEl) {
-      const computedStyle = window.getComputedStyle(originalEl);
+    if (!originalEl) return;
+    
+    const computedStyle = window.getComputedStyle(originalEl);
+    
+    if (computedStyle.fill && computedStyle.fill !== 'none') {
+      el.setAttribute('fill', computedStyle.fill);
+    }
+    
+    if (computedStyle.stroke && computedStyle.stroke !== 'none') {
+      el.setAttribute('stroke', computedStyle.stroke);
+    }
+    
+    if (computedStyle.strokeWidth && el.getAttribute('stroke')) {
+      el.setAttribute('stroke-width', computedStyle.strokeWidth);
+    }
+    
+    if (computedStyle.strokeDasharray && computedStyle.strokeDasharray !== 'none') {
+      el.setAttribute('stroke-dasharray', computedStyle.strokeDasharray);
+    }
+    
+    if (el.tagName === 'text') {
+      const fontSize = computedStyle.fontSize;
+      const fontFamily = computedStyle.fontFamily;
+      const fontWeight = computedStyle.fontWeight;
       
-      if (computedStyle.fill && computedStyle.fill.includes('rgb')) {
-        el.setAttribute('fill', computedStyle.fill);
+      if (fontSize) {
+        el.setAttribute('font-size', fontSize);
       }
-      if (computedStyle.stroke && computedStyle.stroke.includes('rgb')) {
-        el.setAttribute('stroke', computedStyle.stroke);
+      if (fontFamily) {
+        el.setAttribute('font-family', fontFamily);
       }
+      if (fontWeight && fontWeight !== '400') {
+        el.setAttribute('font-weight', fontWeight);
+      }
+    }
+    
+    if (el.tagName === 'rect' && el.hasAttribute('rx')) {
+      const rx = el.getAttribute('rx');
+      if (rx) {
+        el.setAttribute('rx', rx);
+      }
+    }
+    
+    const opacity = el.getAttribute('opacity');
+    if (opacity) {
+      el.setAttribute('opacity', opacity);
     }
   });
   
@@ -70,12 +71,14 @@ function cloneAndResolveStyles(svgElement: SVGSVGElement): SVGSVGElement {
 export async function exportSvgToPng(svgElement: SVGSVGElement, filename: string) {
   const clonedSvg = cloneAndResolveStyles(svgElement);
   
-  const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background').trim() || '#ffffff';
+  const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
+  const backgroundColor = bgColor ? `oklch(${bgColor})` : '#ffffff';
+  const resolvedBgColor = getComputedStyle(document.body).backgroundColor;
   
   const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
   bgRect.setAttribute('width', '100%');
   bgRect.setAttribute('height', '100%');
-  bgRect.setAttribute('fill', backgroundColor);
+  bgRect.setAttribute('fill', resolvedBgColor || '#ffffff');
   clonedSvg.insertBefore(bgRect, clonedSvg.firstChild);
   
   const svgData = new XMLSerializer().serializeToString(clonedSvg);

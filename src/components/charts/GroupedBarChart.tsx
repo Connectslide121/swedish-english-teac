@@ -23,7 +23,7 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
   useEffect(() => {
     if (!svgRef.current || !containerRef.current || data.length === 0) return;
 
-    const margin = { top: 40, right: 100, bottom: 60, left: 60 };
+    const margin = { top: 40, right: 120, bottom: 60, left: 60 };
     const width = containerRef.current.clientWidth;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -47,6 +47,7 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       .style('border-radius', '0.375rem')
       .style('padding', '0.5rem 0.75rem')
       .style('font-size', '0.875rem')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('pointer-events', 'none')
       .style('z-index', '1000')
       .style('box-shadow', '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)');
@@ -72,20 +73,30 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       challenge: 'var(--chart-challenge)',
     };
 
-    g.append('g')
+    const xAxis = g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(x0))
-      .selectAll('text')
+      .call(d3.axisBottom(x0));
+    
+    xAxis.selectAll('text')
       .attr('transform', 'rotate(-45)')
       .style('text-anchor', 'end')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    xAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
-    g.append('g')
-      .call(d3.axisLeft(y))
-      .selectAll('text')
+    const yAxis = g.append('g')
+      .call(d3.axisLeft(y));
+    
+    yAxis.selectAll('text')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    yAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
     const categories = g.selectAll('.category')
       .data(data)
@@ -127,8 +138,24 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
         tooltip.style('visibility', 'hidden');
       });
 
+    categories.selectAll('.bar-label')
+      .data(d => [
+        { key: 'support', value: d.support ?? 0, category: d.category },
+        { key: 'challenge', value: d.challenge ?? 0, category: d.category },
+      ])
+      .join('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => (x1(d.key) || 0) + x1.bandwidth() / 2)
+      .attr('y', d => y(d.value) - 5)
+      .attr('text-anchor', 'middle')
+      .style('font-size', '11px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
+      .style('fill', 'var(--foreground)')
+      .style('font-weight', '500')
+      .text(d => d.value.toFixed(2));
+
     const legend = svg.append('g')
-      .attr('transform', `translate(${width - margin.right + 10},${margin.top})`);
+      .attr('transform', `translate(${width - margin.right + 20},${margin.top})`);
 
     [
       { label: 'Support', color: colors.support },
@@ -138,15 +165,18 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
         .attr('transform', `translate(0,${i * 25})`);
 
       legendItem.append('rect')
-        .attr('width', 15)
-        .attr('height', 15)
+        .attr('width', 16)
+        .attr('height', 16)
+        .attr('rx', 3)
         .attr('fill', item.color)
         .attr('opacity', 0.9);
 
       legendItem.append('text')
-        .attr('x', 20)
-        .attr('y', 12)
-        .style('font-size', '12px')
+        .attr('x', 24)
+        .attr('y', 13)
+        .style('font-size', '13px')
+        .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
+        .style('font-weight', '500')
         .style('fill', 'var(--foreground)')
         .text(item.label);
     });

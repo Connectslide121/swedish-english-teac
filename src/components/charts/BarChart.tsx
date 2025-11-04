@@ -49,6 +49,7 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
       .style('border-radius', '0.375rem')
       .style('padding', '0.5rem 0.75rem')
       .style('font-size', '0.875rem')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('pointer-events', 'none')
       .style('z-index', '1000')
       .style('box-shadow', '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)');
@@ -63,20 +64,30 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
       .nice()
       .range([innerHeight, 0]);
 
-    g.append('g')
+    const xAxis = g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(x))
-      .selectAll('text')
+      .call(d3.axisBottom(x));
+    
+    xAxis.selectAll('text')
       .attr('transform', 'rotate(-45)')
       .style('text-anchor', 'end')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    xAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
-    g.append('g')
-      .call(d3.axisLeft(y))
-      .selectAll('text')
+    const yAxis = g.append('g')
+      .call(d3.axisLeft(y));
+    
+    yAxis.selectAll('text')
       .style('font-size', '12px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
       .style('fill', 'var(--foreground)');
+    
+    yAxis.selectAll('line, path')
+      .style('stroke', 'var(--border)');
 
     g.selectAll('.bar')
       .data(data)
@@ -108,12 +119,26 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
         tooltip.style('visibility', 'hidden');
       });
 
+    g.selectAll('.bar-label')
+      .data(data)
+      .join('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => (x(d.label) || 0) + x.bandwidth() / 2)
+      .attr('y', d => y(d.value ?? 0) - 5)
+      .attr('text-anchor', 'middle')
+      .style('font-size', '11px')
+      .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
+      .style('fill', 'var(--foreground)')
+      .style('font-weight', '500')
+      .text(d => d.value.toFixed(2));
+
     if (xLabel) {
       svg.append('text')
         .attr('x', width / 2)
         .attr('y', height - 5)
         .attr('text-anchor', 'middle')
         .style('font-size', '12px')
+        .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
         .style('fill', 'var(--muted-foreground)')
         .text(xLabel);
     }
@@ -125,6 +150,7 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
         .attr('y', 15)
         .attr('text-anchor', 'middle')
         .style('font-size', '12px')
+        .style('font-family', 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
         .style('fill', 'var(--muted-foreground)')
         .text(yLabel);
     }
