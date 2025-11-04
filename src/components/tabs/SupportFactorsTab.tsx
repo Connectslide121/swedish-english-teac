@@ -142,6 +142,7 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
           showBaseline
           baselineValue={0}
           chartType="support"
+          exportPrefix="support_factor_impact"
         />
       </Card>
 
@@ -177,6 +178,7 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
           data={probData}
           height={Math.max(300, probData.length * 20)}
           yLabel="Probability of high support (0-100%)"
+          exportPrefix="support_probability"
         />
       </Card>
 
@@ -258,6 +260,7 @@ export function SupportFactorsTab({ data }: SupportFactorsTabProps) {
           }))}
           height={300}
           yLabel="Mean frequency (1-5 scale)"
+          exportPrefix="support_questions"
         />
       </Card>
     </div>

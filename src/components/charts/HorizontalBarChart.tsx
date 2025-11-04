@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { Button } from '@/components/ui/button';
+import { Download } from '@phosphor-icons/react';
+import { exportSvgToPng, getChartFilename } from '@/lib/export-utils';
 
 interface HorizontalBarChartProps {
   data: { category: string; value: number; count?: number }[];
@@ -8,6 +11,7 @@ interface HorizontalBarChartProps {
   showBaseline?: boolean;
   baselineValue?: number;
   chartType?: 'support' | 'challenge';
+  exportPrefix?: string;
 }
 
 export function HorizontalBarChart({ 
@@ -17,9 +21,16 @@ export function HorizontalBarChart({
   showBaseline = false,
   baselineValue = 0,
   chartType = 'support',
+  exportPrefix = 'horizontal-bar-chart',
 }: HorizontalBarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleExport = async () => {
+    if (svgRef.current) {
+      await exportSvgToPng(svgRef.current, getChartFilename(exportPrefix));
+    }
+  };
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current || data.length === 0) return;
@@ -155,8 +166,21 @@ export function HorizontalBarChart({
   }, [data, height, valueLabel, showBaseline, baselineValue, chartType]);
 
   return (
-    <div ref={containerRef} className="w-full relative">
-      <svg ref={svgRef}></svg>
+    <div className="space-y-2">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleExport}
+          className="gap-2"
+        >
+          <Download size={16} />
+          Export Chart
+        </Button>
+      </div>
+      <div ref={containerRef} className="w-full relative">
+        <svg ref={svgRef}></svg>
+      </div>
     </div>
   );
 }

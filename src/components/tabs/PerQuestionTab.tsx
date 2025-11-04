@@ -167,6 +167,7 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
               height={250}
               xLabel="Frequency (1-5 scale)"
               yLabel="Number of responses"
+              exportPrefix={`question_distribution_${selectedQuestion}`}
             />
           </div>
 
@@ -186,7 +187,7 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <GroupedBarChart data={yearData} height={300} />
+              <GroupedBarChart data={yearData} height={300} exportPrefix={`question_by_years_${selectedQuestion}`} />
             </div>
           )}
 
@@ -206,7 +207,7 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <GroupedBarChart data={schoolData} height={350} />
+              <GroupedBarChart data={schoolData} height={350} exportPrefix={`question_by_school_${selectedQuestion}`} />
             </div>
           )}
         </div>

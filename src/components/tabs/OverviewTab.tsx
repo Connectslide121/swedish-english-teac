@@ -42,7 +42,7 @@ export function OverviewTab({ data }: OverviewTabProps) {
             </TooltipContent>
           </Tooltip>
         </div>
-        <GroupedBarChart data={indexData} height={250} />
+        <GroupedBarChart data={indexData} height={250} exportPrefix="overview_indices" />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

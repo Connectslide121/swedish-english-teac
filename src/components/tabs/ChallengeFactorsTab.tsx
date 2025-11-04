@@ -142,6 +142,7 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           showBaseline
           baselineValue={0}
           chartType="challenge"
+          exportPrefix="challenge_factor_impact"
         />
       </Card>
 
@@ -177,6 +178,7 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           data={probData}
           height={Math.max(300, probData.length * 20)}
           yLabel="Probability of high challenge (0-100%)"
+          exportPrefix="challenge_probability"
         />
       </Card>
 
@@ -258,6 +260,7 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
           }))}
           height={300}
           yLabel="Mean frequency (1-5 scale)"
+          exportPrefix="challenge_questions"
         />
       </Card>
     </div>
