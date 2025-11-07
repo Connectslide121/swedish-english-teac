@@ -16,13 +16,14 @@ type DataMode = 'mean' | 'median' | 'count' | 'percentage';
 
 interface PlaygroundConfig {
   chartType: ChartType;
-  chartType: ChartType;
-  selectedGroups: str
-  comparisonMode: ComparisonMode;
+  dataMode: DataMode;
   selectedQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
   showDataLabels: boolean;
+}
+
+const QUESTIONS = [
   { key: 'supportQ4', label: 'Support: Different ways to access task', category: 'support' },
   { key: 'supportQ5', label: 'Support: Choose topic for motivation', category: 'support' },
   { key: 'challengeQ3', label: 'Challenge: More/deeper content', category: 'challenge' },
@@ -61,7 +62,7 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
     groupByField: 'schoolType',
-}   showDataLabels: true,
+    showDataLabels: true,
   });
 
   const availableGroups = useMemo(() => {
