@@ -23,7 +23,7 @@ import {
 import { SurveyResponse } from '@/lib/types';
 
 type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
-type DataMode = 'mean' | 'median' | 'count' | 'percentage';
+type DataMode = 'average' | 'distribution';
 
 interface PlaygroundConfig {
   chartType: ChartType;
@@ -72,23 +72,11 @@ const QUESTION_LABELS: Record<string, string> = {
 function calculateStatistic(values: number[], mode: DataMode): number {
   if (values.length === 0) return 0;
   
-  switch (mode) {
-    case 'mean':
-      return values.reduce((a, b) => a + b, 0) / values.length;
-    case 'median':
-      const sorted = [...values].sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 === 0 
-        ? (sorted[mid - 1] + sorted[mid]) / 2 
-        : sorted[mid];
-    case 'count':
-      return values.length;
-    case 'percentage':
-      const highCount = values.filter(v => v >= 4).length;
-      return (highCount / values.length) * 100;
-    default:
-      return 0;
+  if (mode === 'average') {
+    return values.reduce((a, b) => a + b, 0) / values.length;
   }
+  
+  return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
@@ -380,9 +368,9 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={config.dataMode === 'percentage' ? [0, 100] : [0, 'auto']}
+              domain={[0, 'auto']}
               label={{ 
-                value: config.dataMode === 'percentage' ? 'Percentage' : 'Value', 
+                value: 'Value', 
                 angle: -90, 
                 position: 'insideLeft' 
               }}
@@ -450,9 +438,9 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={config.dataMode === 'percentage' ? [0, 100] : [0, 'auto']}
+              domain={[0, 'auto']}
               label={{ 
-                value: config.dataMode === 'percentage' ? 'Percentage' : 'Value', 
+                value: 'Value', 
                 angle: -90, 
                 position: 'insideLeft' 
               }}
@@ -496,9 +484,9 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={config.dataMode === 'percentage' ? [0, 100] : [0, 'auto']}
+              domain={[0, 'auto']}
               label={{ 
-                value: config.dataMode === 'percentage' ? 'Percentage' : 'Value', 
+                value: 'Value', 
                 angle: -90, 
                 position: 'insideLeft' 
               }}
@@ -540,9 +528,9 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             interval={0}
           />
           <YAxis 
-            domain={config.dataMode === 'percentage' ? [0, 100] : [0, 'auto']}
+            domain={[0, 'auto']}
             label={{ 
-              value: config.dataMode === 'percentage' ? 'Percentage' : 'Value', 
+              value: 'Value', 
               angle: -90, 
               position: 'insideLeft' 
             }}

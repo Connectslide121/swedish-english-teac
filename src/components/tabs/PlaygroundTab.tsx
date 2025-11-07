@@ -34,14 +34,14 @@ const QUESTIONS = [
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
 ];
 
-const GROUP_BY_FIELDS = [bel: 'School Type' },
-  { key: 'schoolType', label: 'School Type' },s Teaching' },
+const GROUP_BY_FIELDS = [
+  { key: 'schoolType', label: 'School Type' },
   { key: 'yearsTeachingCategory', label: 'Years Teaching' },
   { key: 'levelsTeaching', label: 'Levels Teaching' },
   { key: 'shareSupportStudents', label: 'Share of Support Students' },
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students' },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate' },
-  { key: 'itemClassSizeOk', label: 'Class Size OK' },
+  { key: 'itemClassSizeOk', label: 'Class Size' },
   { key: 'itemConfidentSupport', label: 'Confident Support' },
   { key: 'itemConfidentChallenge', label: 'Confident Challenge' },
   { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared' },
@@ -51,14 +51,16 @@ const GROUP_BY_FIELDS = [bel: 'School Type' },
   { key: 'itemMaterialsChallenge', label: 'Materials for Challenge' },
 ];
 
+type DataMode = 'average' | 'distribution';
+
 interface PlaygroundTabProps {
   data: SurveyResponse[];
+}
 
 export function PlaygroundTab({ data }: PlaygroundTabProps) {
-export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const [config, setConfig] = useState<PlaygroundConfig>({
-    chartType: 'bar',
-    dataMode: 'mean',
+    chartType: 'grouped-bar',
+    dataMode: 'average',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
     groupByField: 'schoolType',
@@ -241,12 +243,13 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mean">Mean (Average)</SelectItem>
-                    <SelectItem value="median">Median</SelectItem>
-                    <SelectItem value="count">Count</SelectItem>
-                    <SelectItem value="percentage">Percentage</SelectItem>
+                    <SelectItem value="average">Mean (Average)</SelectItem>
+                    <SelectItem value="distribution">Distribution</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
+
+              <Separator />
 
               <div className="space-y-2">
                 <Label>Group By</Label>
@@ -270,9 +273,16 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
 
-                  </Label>
-                </div>
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <Label>Show Data Labels</Label>
+                <Checkbox 
+                  checked={config.showDataLabels}
+                  onCheckedChange={(checked) => setConfig(prev => ({ ...prev, showDataLabels: !!checked }))}
+                />
               </div>
             </CardContent>
           </Card>
