@@ -12,7 +12,7 @@ import { SurveyResponse } from '@/lib/types';
 import { PlaygroundChart } from '@/components/charts/PlaygroundChart';
 
 type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
-type DataMode = 'mean' | 'median' | 'count' | 'percentage';
+
 
 interface PlaygroundConfig {
   chartType: ChartType;
@@ -34,8 +34,8 @@ const QUESTIONS = [
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
 ];
 
-const GROUP_BY_FIELDS = [
-  { key: 'schoolType', label: 'School Type' },
+const GROUP_BY_FIELDS = [bel: 'School Type' },
+  { key: 'schoolType', label: 'School Type' },s Teaching' },
   { key: 'yearsTeachingCategory', label: 'Years Teaching' },
   { key: 'levelsTeaching', label: 'Levels Teaching' },
   { key: 'shareSupportStudents', label: 'Share of Support Students' },
@@ -53,15 +53,15 @@ const GROUP_BY_FIELDS = [
 
 interface PlaygroundTabProps {
   data: SurveyResponse[];
-}
 
+export function PlaygroundTab({ data }: PlaygroundTabProps) {
 export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'bar',
     dataMode: 'mean',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
-    groupByField: null,
+    groupByField: 'schoolType',
     showDataLabels: true,
   });
 
@@ -245,7 +245,6 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     <SelectItem value="median">Median</SelectItem>
                     <SelectItem value="count">Count</SelectItem>
                     <SelectItem value="percentage">Percentage</SelectItem>
-                  </SelectContent>
                 </Select>
               </div>
 
@@ -271,21 +270,7 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
 
-              <Separator />
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Checkbox 
-                    id="data-labels"
-                    checked={config.showDataLabels}
-                    onCheckedChange={(checked) => 
-                      setConfig(prev => ({ ...prev, showDataLabels: checked as boolean }))
-                    }
-                  />
-                  <Label htmlFor="data-labels" className="cursor-pointer">
-                    Show data labels
                   </Label>
                 </div>
               </div>
