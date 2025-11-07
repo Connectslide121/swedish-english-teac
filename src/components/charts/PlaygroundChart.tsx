@@ -24,16 +24,13 @@ import { SurveyResponse } from '@/lib/types';
 
 type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 type DataMode = 'mean' | 'median' | 'count' | 'percentage';
-type ComparisonMode = 'none' | 'side-by-side' | 'overlay';
 
 interface PlaygroundConfig {
   chartType: ChartType;
   dataMode: DataMode;
-  comparisonMode: ComparisonMode;
   selectedQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
-  showTrendLine: boolean;
   showDataLabels: boolean;
 }
 
@@ -335,7 +332,6 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 fillOpacity={0.6}
               />
             ))}
-            {config.showTrendLine && <ReferenceLine stroke="oklch(0.60 0.25 25)" strokeDasharray="3 3" />}
           </ScatterChart>
         </ResponsiveContainer>
       );
@@ -372,10 +368,6 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'line') {
-      const trendLineData = config.showTrendLine && !config.groupByField 
-        ? calculateTrendLine(chartData, 'value')
-        : null;
-
       return (
         <ResponsiveContainer width="100%" height={500}>
           <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -422,38 +414,23 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 ))}
               </>
             ) : (
-              <>
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke={COLORS[0]}
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                >
-                  {config.showDataLabels && (
-                    <LabelList 
-                      dataKey="value" 
-                      position="top" 
-                      formatter={(value: number) => value.toFixed(1)}
-                      style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
-                    />
-                  )}
-                </Line>
-                {trendLineData && (
-                  <Line
-                    type="monotone"
-                    data={trendLineData}
-                    dataKey="y"
-                    stroke="oklch(0.60 0.25 25)"
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    dot={false}
-                    name="Trend"
-                    legendType="line"
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke={COLORS[0]}
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+              >
+                {config.showDataLabels && (
+                  <LabelList 
+                    dataKey="value" 
+                    position="top" 
+                    formatter={(value: number) => value.toFixed(1)}
+                    style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
                   />
                 )}
-              </>
+              </Line>
             )}
           </LineChart>
         </ResponsiveContainer>
@@ -608,25 +585,6 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               )}
             </Bar>
           )}
-          {config.showTrendLine && !config.groupByField && (() => {
-            const trendData = calculateTrendLine(chartData, 'value');
-            if (trendData) {
-              return (
-                <Line
-                  type="monotone"
-                  data={trendData}
-                  dataKey="y"
-                  stroke="oklch(0.60 0.25 25)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  name="Trend"
-                  legendType="line"
-                />
-              );
-            }
-            return null;
-          })()}
         </BarChart>
       </ResponsiveContainer>
     );

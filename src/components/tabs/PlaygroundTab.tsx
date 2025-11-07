@@ -7,22 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChartBar, ChartLine, ChartPie, Rows, Sparkle, X } from '@phosphor-icons/react';
+import { ChartBar, ChartLine, ChartPie, Rows, Sparkle, X, Info } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { PlaygroundChart } from '@/components/charts/PlaygroundChart';
 
 type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 type DataMode = 'mean' | 'median' | 'count' | 'percentage';
-type ComparisonMode = 'none' | 'side-by-side' | 'overlay';
 
 interface PlaygroundConfig {
   chartType: ChartType;
   dataMode: DataMode;
-  comparisonMode: ComparisonMode;
   selectedQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
-  showTrendLine: boolean;
   showDataLabels: boolean;
 }
 
@@ -68,11 +65,9 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'bar',
     dataMode: 'mean',
-    comparisonMode: 'none',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
     groupByField: 'schoolType',
-    showTrendLine: false,
     showDataLabels: true,
   });
 
@@ -282,40 +277,23 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Comparison Mode</Label>
-                <Select 
-                  value={config.comparisonMode} 
-                  onValueChange={(value: ComparisonMode) => setConfig(prev => ({ ...prev, comparisonMode: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No comparison</SelectItem>
-                    <SelectItem value="side-by-side">Side by Side</SelectItem>
-                    <SelectItem value="overlay">Overlay</SelectItem>
-                  </SelectContent>
-                </Select>
+                {config.groupByField && config.selectedQuestions.length > 1 && (
+                  <div className="text-xs text-muted-foreground bg-accent/10 p-3 rounded-md mt-2 border border-accent/20">
+                    <p className="font-medium mb-1 flex items-center gap-1.5">
+                      <Info size={14} weight="fill" className="text-accent" />
+                      Comparison Mode Active
+                    </p>
+                    <p>
+                      With multiple questions selected, the chart will compare them across different {config.groupByField} groups. 
+                      Use <strong>Grouped Bar</strong> for side-by-side comparison or <strong>Line</strong> to overlay trends.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Separator />
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Checkbox 
-                    id="trend-line"
-                    checked={config.showTrendLine}
-                    onCheckedChange={(checked) => 
-                      setConfig(prev => ({ ...prev, showTrendLine: checked as boolean }))
-                    }
-                  />
-                  <Label htmlFor="trend-line" className="cursor-pointer">
-                    Show trend line
-                  </Label>
-                </div>
                 <div className="flex items-center gap-2">
                   <Checkbox 
                     id="data-labels"
