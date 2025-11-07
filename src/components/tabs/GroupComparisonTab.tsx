@@ -10,7 +10,7 @@ interface GroupComparisonTabProps {
 
 const contextQuestions = [
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', fullText: 'I have sufficient time to differentiate for diverse needs.' },
-  { key: 'itemClassSizeOk', label: 'Class Size OK', fullText: 'My typical class size allows me to adapt instruction effectively.' },
+  { key: 'itemClassSizeOk', label: 'Class Size', fullText: 'My typical class size allows me to adapt instruction effectively.' },
   { key: 'itemConfidentSupport', label: 'Confident Support', fullText: 'I feel confident designing support-focused adaptations.' },
   { key: 'itemConfidentChallenge', label: 'Confident Challenge', fullText: 'I feel confident designing challenge-focused adaptations.' },
   { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared', fullText: 'My teacher education prepared me to adapt instruction for diverse needs.' },
@@ -24,11 +24,16 @@ const likertToNumber = (value: string): number | null => {
   const normalized = value?.toLowerCase().trim();
   if (!normalized) return null;
   
+  const asNumber = parseFloat(normalized);
+  if (!isNaN(asNumber) && asNumber >= 1 && asNumber <= 5) {
+    return asNumber;
+  }
+  
   if (normalized.includes('strongly agree') || normalized.includes('instämmer helt')) return 5;
-  if (normalized.includes('agree') || normalized.includes('instämmer')) return 4;
-  if (normalized.includes('neutral') || normalized.includes('varken')) return 3;
-  if (normalized.includes('disagree') || normalized.includes('instämmer inte')) return 2;
-  if (normalized.includes('strongly disagree')) return 1;
+  if (normalized.includes('strongly disagree') || normalized.includes('instämmer inte alls')) return 1;
+  if (normalized.includes('agree') && !normalized.includes('disagree')) return 4;
+  if (normalized.includes('disagree') && !normalized.includes('strongly')) return 2;
+  if (normalized.includes('neutral') || normalized.includes('varken') || normalized.includes('neither') || normalized.includes('eller')) return 3;
   
   return null;
 };

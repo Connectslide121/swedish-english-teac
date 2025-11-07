@@ -63,9 +63,9 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       .range([0, x0.bandwidth()])
       .padding(0.1);
 
-    const maxValue = d3.max(data, d => Math.max(d.support, d.challenge)) || 5;
+    const maxValue = d3.max(data, d => Math.max(d.support || 0, d.challenge || 0)) || 5;
     const y = d3.scaleLinear()
-      .domain([0, maxValue])
+      .domain([0, Math.max(maxValue, 0.1)])
       .nice()
       .range([innerHeight, 0]);
 
