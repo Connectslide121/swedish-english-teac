@@ -38,7 +38,7 @@ const likertToNumber = (value: string): number | null => {
   return null;
 };
 
-type FrequencyGroup = 'often' | 'sometimes' | 'rarely';
+type FrequencyGroup = 'high' | 'medium' | 'low';
 
 const classifyTeacher = (responses: SurveyResponse[], type: 'support' | 'challenge', group: FrequencyGroup): SurveyResponse[] => {
   const questionKeys = type === 'support' 
@@ -52,18 +52,14 @@ const classifyTeacher = (responses: SurveyResponse[], type: 'support' | 'challen
     
     if (values.length === 0) return false;
     
-    const oftenCount = values.filter(v => v >= 4).length;
-    const totalQuestions = values.length;
-    const oftenRatio = oftenCount / totalQuestions;
+    const average = values.reduce((a, b) => a + b, 0) / values.length;
     
-    if (group === 'often') {
-      return oftenRatio >= 0.5;
-    } else if (group === 'sometimes') {
-      const sometimesCount = values.filter(v => v === 3).length;
-      const sometimesRatio = sometimesCount / totalQuestions;
-      return sometimesRatio >= 0.5;
+    if (group === 'high') {
+      return average >= 4;
+    } else if (group === 'medium') {
+      return average >= 2.5 && average < 4;
     } else {
-      return oftenRatio < 0.5 && values.filter(v => v <= 2).length >= totalQuestions * 0.5;
+      return average < 2.5;
     }
   });
 };
@@ -106,9 +102,9 @@ const calculateGroupMeans = (
 };
 
 export function GroupComparisonTab({ data }: GroupComparisonTabProps) {
-  const oftenData = calculateGroupMeans(data, 'often');
-  const sometimesData = calculateGroupMeans(data, 'sometimes');
-  const rarelyData = calculateGroupMeans(data, 'rarely');
+  const highData = calculateGroupMeans(data, 'high');
+  const mediumData = calculateGroupMeans(data, 'medium');
+  const lowData = calculateGroupMeans(data, 'low');
 
   return (
     <TooltipProvider>
@@ -125,90 +121,90 @@ export function GroupComparisonTab({ data }: GroupComparisonTabProps) {
                   This analysis compares how teachers who frequently use support strategies differ from those who frequently use challenge strategies in terms of their teaching context and attitudes.
                 </p>
                 <p className="text-xs">
-                  Teachers are grouped based on how often they answer "Often" or "Very Often" to support questions (Q1-6) vs challenge questions (Q7-12), then we compare their responses to context questions (Q13-21).
+                  Teachers are grouped based on their average responses to support questions (Q1-6) vs challenge questions (Q7-12), then we compare their responses to context questions (Q13-21).
                 </p>
               </TooltipContent>
             </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground">
             Comparing teacher responses to context questions (Q13-21) based on their adaptation frequency patterns. 
-            Each chart shows two bars per question: one for teachers who frequently use that type of adaptation, and one for teachers who use the other type.
+            Each chart shows two bars per question: one for teachers who score high on average for that type of adaptation, and one for teachers who score high for the other type.
           </p>
         </Card>
 
         <Card className="p-6">
           <div className="flex items-start gap-2 mb-4">
-            <h3 className="text-lg font-semibold">Often/Very Often Adaptors</h3>
+            <h3 className="text-lg font-semibold">High Frequency Adaptors</h3>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Info className="text-muted-foreground cursor-help mt-1" size={18} />
               </TooltipTrigger>
               <TooltipContent className="max-w-md">
                 <p className="text-xs mb-2">
-                  <strong>Support Teachers (Blue):</strong> Teachers who answer "Often" or "Very Often" to at least 50% of support questions (Q1-6).
+                  <strong>Support Teachers (Blue):</strong> Teachers whose average response to support questions (Q1-6) is 4 or higher (Often/Very Often).
                 </p>
                 <p className="text-xs">
-                  <strong>Challenge Teachers (Yellow):</strong> Teachers who answer "Often" or "Very Often" to at least 50% of challenge questions (Q7-12).
+                  <strong>Challenge Teachers (Yellow):</strong> Teachers whose average response to challenge questions (Q7-12) is 4 or higher (Often/Very Often).
                 </p>
               </TooltipContent>
             </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
-            Teachers who say "Often" or "Very Often" to support questions vs those who say "Often" or "Very Often" to challenge questions.
+            Teachers with high average scores (≥4.0) on support questions vs those with high average scores on challenge questions.
             <br />
-            <span className="font-medium">Support teachers: {oftenData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {oftenData.challengeTeachers.length}</span>
+            <span className="font-medium">Support teachers: {highData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {highData.challengeTeachers.length}</span>
           </p>
-          <GroupedBarChart data={oftenData.chartData} />
+          <GroupedBarChart data={highData.chartData} exportPrefix="high-frequency-adaptors" />
         </Card>
 
         <Card className="p-6">
           <div className="flex items-start gap-2 mb-4">
-            <h3 className="text-lg font-semibold">Sometimes Adaptors</h3>
+            <h3 className="text-lg font-semibold">Medium Frequency Adaptors</h3>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Info className="text-muted-foreground cursor-help mt-1" size={18} />
               </TooltipTrigger>
               <TooltipContent className="max-w-md">
                 <p className="text-xs mb-2">
-                  <strong>Support Teachers (Blue):</strong> Teachers who answer "Sometimes" to at least 50% of support questions (Q1-6).
+                  <strong>Support Teachers (Blue):</strong> Teachers whose average response to support questions (Q1-6) is between 2.5 and 4.0 (Sometimes to Often).
                 </p>
                 <p className="text-xs">
-                  <strong>Challenge Teachers (Yellow):</strong> Teachers who answer "Sometimes" to at least 50% of challenge questions (Q7-12).
+                  <strong>Challenge Teachers (Yellow):</strong> Teachers whose average response to challenge questions (Q7-12) is between 2.5 and 4.0 (Sometimes to Often).
                 </p>
               </TooltipContent>
             </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
-            Teachers who say "Sometimes" to support questions vs those who say "Sometimes" to challenge questions.
+            Teachers with medium average scores (2.5-3.9) on support questions vs those with medium average scores on challenge questions.
             <br />
-            <span className="font-medium">Support teachers: {sometimesData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {sometimesData.challengeTeachers.length}</span>
+            <span className="font-medium">Support teachers: {mediumData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {mediumData.challengeTeachers.length}</span>
           </p>
-          <GroupedBarChart data={sometimesData.chartData} />
+          <GroupedBarChart data={mediumData.chartData} exportPrefix="medium-frequency-adaptors" />
         </Card>
 
         <Card className="p-6">
           <div className="flex items-start gap-2 mb-4">
-            <h3 className="text-lg font-semibold">Rarely/Very Rarely Adaptors</h3>
+            <h3 className="text-lg font-semibold">Low Frequency Adaptors</h3>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Info className="text-muted-foreground cursor-help mt-1" size={18} />
               </TooltipTrigger>
               <TooltipContent className="max-w-md">
                 <p className="text-xs mb-2">
-                  <strong>Support Teachers (Blue):</strong> Teachers who answer "Rarely" or "Very Rarely" to at least 50% of support questions (Q1-6).
+                  <strong>Support Teachers (Blue):</strong> Teachers whose average response to support questions (Q1-6) is below 2.5 (Rarely/Very Rarely).
                 </p>
                 <p className="text-xs">
-                  <strong>Challenge Teachers (Yellow):</strong> Teachers who answer "Rarely" or "Very Rarely" to at least 50% of challenge questions (Q7-12).
+                  <strong>Challenge Teachers (Yellow):</strong> Teachers whose average response to challenge questions (Q7-12) is below 2.5 (Rarely/Very Rarely).
                 </p>
               </TooltipContent>
             </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
-            Teachers who say "Rarely" or "Very Rarely" to support questions vs those who say "Rarely" or "Very Rarely" to challenge questions.
+            Teachers with low average scores (&lt;2.5) on support questions vs those with low average scores on challenge questions.
             <br />
-            <span className="font-medium">Support teachers: {rarelyData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {rarelyData.challengeTeachers.length}</span>
+            <span className="font-medium">Support teachers: {lowData.supportTeachers.length}</span> | <span className="font-medium">Challenge teachers: {lowData.challengeTeachers.length}</span>
           </p>
-          <GroupedBarChart data={rarelyData.chartData} />
+          <GroupedBarChart data={lowData.chartData} exportPrefix="low-frequency-adaptors" />
         </Card>
       </div>
     </TooltipProvider>
