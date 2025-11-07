@@ -6,7 +6,7 @@ import { exportSvgToPng, getChartFilename } from '@/lib/export-utils';
 import { getFullQuestion } from '@/lib/question-mappings';
 
 interface GroupedBarChartProps {
-  data: { category: string; support: number; challenge: number }[];
+  data: { category: string; support: number; challenge: number; fullQuestion?: string }[];
   height?: number;
   exportPrefix?: string;
 }
@@ -107,8 +107,8 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
 
     categories.selectAll('.bar')
       .data(d => [
-        { key: 'support', value: d.support ?? 0, category: d.category },
-        { key: 'challenge', value: d.challenge ?? 0, category: d.category },
+        { key: 'support', value: d.support ?? 0, category: d.category, fullQuestion: d.fullQuestion },
+        { key: 'challenge', value: d.challenge ?? 0, category: d.category, fullQuestion: d.fullQuestion },
       ])
       .join('rect')
       .attr('class', 'bar')
@@ -120,14 +120,10 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       .attr('opacity', 0.9)
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 1);
-        const typeName = d.key === 'support' ? 'Support Adaptation' : 'Challenge Adaptation';
+        const typeName = d.key === 'support' ? 'Support Teachers' : 'Challenge Teachers';
         
-        const parts = d.category.split(': ');
-        const variableName = parts.length > 1 ? parts[0] : '';
-        const fullQuestion = getFullQuestion(variableName);
-        
-        const questionText = fullQuestion 
-          ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${fullQuestion}</div>`
+        const questionText = d.fullQuestion 
+          ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-style: italic;">${d.fullQuestion}</div>`
           : '';
         
         tooltip
@@ -150,8 +146,8 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
 
     categories.selectAll('.bar-label')
       .data(d => [
-        { key: 'support', value: d.support ?? 0, category: d.category },
-        { key: 'challenge', value: d.challenge ?? 0, category: d.category },
+        { key: 'support', value: d.support ?? 0, category: d.category, fullQuestion: d.fullQuestion },
+        { key: 'challenge', value: d.challenge ?? 0, category: d.category, fullQuestion: d.fullQuestion },
       ])
       .join('text')
       .attr('class', 'bar-label')

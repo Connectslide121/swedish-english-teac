@@ -12,6 +12,7 @@ import { ChallengeFactorsTab } from '@/components/tabs/ChallengeFactorsTab';
 import { BothFactorsTab } from '@/components/tabs/BothFactorsTab';
 import { PerQuestionTab } from '@/components/tabs/PerQuestionTab';
 import { RawDataTab } from '@/components/tabs/RawDataTab';
+import { GroupComparisonTab } from '@/components/tabs/GroupComparisonTab';
 import { parseCSV } from '@/lib/csv-parser';
 import { applyFilters, calculateSummaryStats } from '@/lib/analysis';
 import { SurveyResponse, Filters } from '@/lib/types';
@@ -217,6 +218,7 @@ function App() {
                     <TabsTrigger value="support">Support Factors</TabsTrigger>
                     <TabsTrigger value="challenge">Challenge Factors</TabsTrigger>
                     <TabsTrigger value="both">Both Factors</TabsTrigger>
+                    <TabsTrigger value="comparison">Group Comparison</TabsTrigger>
                     <TabsTrigger value="questions">Per Question</TabsTrigger>
                     <TabsTrigger value="raw">Raw Data</TabsTrigger>
                   </TabsList>
@@ -235,6 +237,10 @@ function App() {
 
                   <TabsContent value="both">
                     <BothFactorsTab data={filteredData} />
+                  </TabsContent>
+
+                  <TabsContent value="comparison">
+                    <GroupComparisonTab data={filteredData} />
                   </TabsContent>
 
                   <TabsContent value="questions">
