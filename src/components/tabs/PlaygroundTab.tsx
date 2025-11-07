@@ -61,7 +61,7 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
     dataMode: 'mean',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
-    groupByField: 'schoolType',
+    groupByField: null,
     showDataLabels: true,
   });
 
@@ -271,18 +271,6 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                {config.groupByField && config.selectedQuestions.length > 1 && (
-                  <div className="text-xs text-muted-foreground bg-accent/10 p-3 rounded-md mt-2 border border-accent/20">
-                    <p className="font-medium mb-1 flex items-center gap-1.5">
-                      <Info size={14} weight="fill" className="text-accent" />
-                      Comparison Mode Active
-                    </p>
-                    <p>
-                      With multiple questions selected, the chart will compare them across different {config.groupByField} groups. 
-                      Use <strong>Grouped Bar</strong> for side-by-side comparison or <strong>Line</strong> to overlay trends.
-                    </p>
-                  </div>
-                )}
               </div>
 
               <Separator />
