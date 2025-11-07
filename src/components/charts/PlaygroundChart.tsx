@@ -158,7 +158,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
       return result;
     });
-  }, [data, config]);
+  }, [
+    data, 
+    config.selectedQuestions, 
+    config.selectedGroups, 
+    config.groupByField, 
+    config.dataMode
+  ]);
 
   const scatterData = useMemo(() => {
     if (config.chartType !== 'scatter' || config.selectedQuestions.length < 2) {
@@ -178,7 +184,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         y: (row as any)[yKey],
         group: config.groupByField ? String(row[config.groupByField]) : 'All',
       }));
-  }, [data, config]);
+  }, [data, config.chartType, config.selectedQuestions, config.groupByField]);
 
   const distributionData = useMemo(() => {
     if (config.chartType !== 'distribution' || config.selectedQuestions.length === 0) {
@@ -202,7 +208,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         count,
         percentage: (count / data.length) * 100,
       }));
-  }, [data, config]);
+  }, [data, config.chartType, config.selectedQuestions]);
 
   if (config.selectedQuestions.length === 0) {
     return (

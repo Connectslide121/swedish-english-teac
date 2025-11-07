@@ -118,10 +118,24 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
     }));
   };
 
+  const handleClearAllQuestions = () => {
+    setConfig(prev => ({
+      ...prev,
+      selectedQuestions: []
+    }));
+  };
+
   const handleSelectAllGroups = () => {
     setConfig(prev => ({
       ...prev,
       selectedGroups: availableGroups
+    }));
+  };
+
+  const handleClearAllGroups = () => {
+    setConfig(prev => ({
+      ...prev,
+      selectedGroups: []
     }));
   };
 
@@ -326,8 +340,29 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleSelectAllQuestions('support')}
+                    onClick={() => handleSelectAllQuestions()}
                     className="h-7 text-xs"
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearAllQuestions}
+                    className="h-7 text-xs"
+                  >
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+              <CardDescription className="flex items-center justify-between">
+                <span>{config.selectedQuestions.length} selected</span>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleSelectAllQuestions('support')}
+                    className="h-6 text-xs px-2"
                   >
                     All Support
                   </Button>
@@ -335,14 +370,11 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleSelectAllQuestions('challenge')}
-                    className="h-7 text-xs"
+                    className="h-6 text-xs px-2"
                   >
                     All Challenge
                   </Button>
                 </div>
-              </div>
-              <CardDescription>
-                {config.selectedQuestions.length} selected
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -379,14 +411,24 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Groups</CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleSelectAllGroups}
-                    className="h-7 text-xs"
-                  >
-                    Select All
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleSelectAllGroups}
+                      className="h-7 text-xs"
+                    >
+                      Select All
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearAllGroups}
+                      className="h-7 text-xs"
+                    >
+                      Clear All
+                    </Button>
+                  </div>
                 </div>
                 <CardDescription>
                   {config.selectedGroups.length} of {availableGroups.length} selected
