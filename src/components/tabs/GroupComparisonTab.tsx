@@ -10,7 +10,7 @@ interface GroupComparisonTabProps {
 
 const contextQuestions = [
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', fullText: 'I have sufficient time to differentiate for diverse needs.' },
-  { key: 'itemClassSizeOk', label: 'Class Size', fullText: 'My typical class size allows me to adapt instruction effectively.' },
+  { key: 'itemClassSizeOk', label: 'Class Size OK', fullText: 'My typical class size allows me to adapt instruction effectively.' },
   { key: 'itemConfidentSupport', label: 'Confident Support', fullText: 'I feel confident designing support-focused adaptations.' },
   { key: 'itemConfidentChallenge', label: 'Confident Challenge', fullText: 'I feel confident designing challenge-focused adaptations.' },
   { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared', fullText: 'My teacher education prepared me to adapt instruction for diverse needs.' },

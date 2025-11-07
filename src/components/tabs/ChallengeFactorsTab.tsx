@@ -42,7 +42,7 @@ export function ChallengeFactorsTab({ data }: ChallengeFactorsTabProps) {
     ...shareChallengeImpact.map(i => ({ ...i, variable: 'Share Challenge Students' })),
     ...groupSizeImpact.map(i => ({ ...i, variable: 'Group Size' })),
     ...timeImpact.map(i => ({ ...i, variable: 'Time to Differentiate' })),
-    ...classSizeImpact.map(i => ({ ...i, variable: 'Class Size' })),
+    ...classSizeImpact.map(i => ({ ...i, variable: 'Class Size OK' })),
     ...confidentSupportImpact.map(i => ({ ...i, variable: 'Confident Supporting' })),
     ...confidentChallengeImpact.map(i => ({ ...i, variable: 'Confident Challenging' })),
     ...teacherEdImpact.map(i => ({ ...i, variable: 'Teacher Ed Prepared' })),
