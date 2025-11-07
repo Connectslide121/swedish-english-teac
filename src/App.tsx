@@ -13,6 +13,7 @@ import { BothFactorsTab } from '@/components/tabs/BothFactorsTab';
 import { PerQuestionTab } from '@/components/tabs/PerQuestionTab';
 import { RawDataTab } from '@/components/tabs/RawDataTab';
 import { GroupComparisonTab } from '@/components/tabs/GroupComparisonTab';
+import { PlaygroundTab } from '@/components/tabs/PlaygroundTab';
 import { parseCSV } from '@/lib/csv-parser';
 import { applyFilters, calculateSummaryStats } from '@/lib/analysis';
 import { SurveyResponse, Filters } from '@/lib/types';
@@ -215,6 +216,7 @@ function App() {
                 <Tabs defaultValue="overview" className="w-full">
                   <TabsList className="w-full justify-start mb-6">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="playground">Playground</TabsTrigger>
                     <TabsTrigger value="support">Support Factors</TabsTrigger>
                     <TabsTrigger value="challenge">Challenge Factors</TabsTrigger>
                     <TabsTrigger value="both">Both Factors</TabsTrigger>
@@ -225,6 +227,10 @@ function App() {
 
                   <TabsContent value="overview">
                     <OverviewTab data={filteredData} />
+                  </TabsContent>
+
+                  <TabsContent value="playground">
+                    <PlaygroundTab data={filteredData} />
                   </TabsContent>
 
                   <TabsContent value="support">

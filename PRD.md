@@ -34,11 +34,18 @@ The dashboard handles CSV upload, multi-dimensional filtering, statistical calcu
 - **Success criteria**: All visualizations update within 100ms, filter combinations work correctly
 
 ### Multi-Tab Analysis Views
-- **Functionality**: Five tabs - Overview (correlations), Support Factors (impact analysis), Challenge Factors (impact analysis), Per Question (item-level detail), Raw Data (table export)
+- **Functionality**: Eight tabs - Overview (correlations), Playground (custom chart builder), Support Factors (impact analysis), Challenge Factors (impact analysis), Both Factors (dual analysis), Group Comparison, Per Question (item-level detail), Raw Data (table export)
 - **Purpose**: Organize different analytical perspectives on the same dataset
 - **Trigger**: User clicks tab
 - **Progression**: Click tab → Switch view → Render appropriate charts/tables for that perspective
 - **Success criteria**: Each tab shows relevant analysis, data remains filtered consistently across tabs
+
+### Chart Playground
+- **Functionality**: Interactive chart builder allowing users to select questions, group-by fields, chart types (bar, line, grouped-bar, stacked-bar, scatter, distribution), data modes (mean, median, count, percentage), comparison modes (side-by-side, overlay), and visual options (trend lines, data labels)
+- **Purpose**: Enable researchers to create custom visualizations for exploratory analysis and specific research questions not covered by preset tabs
+- **Trigger**: Navigate to Playground tab
+- **Progression**: Select questions → Choose grouping → Pick chart type → Configure display options → View dynamically generated chart
+- **Success criteria**: Charts update instantly (<200ms) as configuration changes, support all 14 question types, allow multi-question and multi-group comparisons, generate publication-ready visualizations
 
 ### Bayesian-Style Probability Analysis
 - **Functionality**: For each teacher attribute (experience, school type, etc.), compute P(HighSupport | attribute) and P(HighChallenge | attribute) where High = index ≥ 4.0
@@ -134,12 +141,16 @@ Subtle transitions reinforce data relationships—use motion sparingly to guide 
 - **Icon Selection**:
   - UploadSimple - File upload
   - DownloadSimple - CSV export
-  - ChartBar - Support metrics
-  - ChartLine - Challenge metrics  
+  - ChartBar - Support metrics / Bar charts
+  - ChartLine - Challenge metrics / Line charts
+  - ChartPie - Scatter plots
+  - Rows - Grouped/stacked charts
+  - Sparkle - Playground feature highlight
   - Funnel - Filters sidebar
   - Table - Raw data tab
   - MagnifyingGlass - Per question analysis
   - Info - Warnings and help tooltips
+  - X - Clear selections
   
 - **Spacing**:
   - Page padding: p-6
