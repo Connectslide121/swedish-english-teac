@@ -16,7 +16,9 @@ import {
   Legend, 
   ResponsiveContainer,
   Cell,
-  ReferenceLine
+  ReferenceLine,
+  Label,
+  LabelList
 } from 'recharts';
 import { SurveyResponse } from '@/lib/types';
 
@@ -210,6 +212,30 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       }));
   }, [data, config.chartType, config.selectedQuestions]);
 
+  const calculateTrendLine = (chartData: any[], dataKey: string) => {
+    if (chartData.length < 2) return null;
+    
+    const points = chartData
+      .map((d, i) => ({ x: i, y: d[dataKey] }))
+      .filter(p => p.y !== null && p.y !== undefined);
+    
+    if (points.length < 2) return null;
+    
+    const n = points.length;
+    const sumX = points.reduce((sum, p) => sum + p.x, 0);
+    const sumY = points.reduce((sum, p) => sum + p.y, 0);
+    const sumXY = points.reduce((sum, p) => sum + p.x * p.y, 0);
+    const sumXX = points.reduce((sum, p) => sum + p.x * p.x, 0);
+    
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    
+    return chartData.map((d, i) => ({
+      x: d.name,
+      y: slope * i + intercept
+    }));
+  };
+
   if (config.selectedQuestions.length === 0) {
     return (
       <Card>
@@ -332,6 +358,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               {distributionData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
+              {config.showDataLabels && (
+                <LabelList 
+                  dataKey="count" 
+                  position="top" 
+                  style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                />
+              )}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -339,6 +372,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'line') {
+      const trendLineData = config.showTrendLine && !config.groupByField 
+        ? calculateTrendLine(chartData, 'value')
+        : null;
+
       return (
         <ResponsiveContainer width="100%" height={500}>
           <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -372,18 +409,51 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                     name={QUESTION_LABELS[questionKey] || questionKey}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
-                  />
+                  >
+                    {config.showDataLabels && (
+                      <LabelList 
+                        dataKey={questionKey} 
+                        position="top" 
+                        formatter={(value: number) => value.toFixed(1)}
+                        style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                      />
+                    )}
+                  </Line>
                 ))}
               </>
             ) : (
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke={COLORS[0]}
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
+              <>
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke={COLORS[0]}
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                >
+                  {config.showDataLabels && (
+                    <LabelList 
+                      dataKey="value" 
+                      position="top" 
+                      formatter={(value: number) => value.toFixed(1)}
+                      style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                    />
+                  )}
+                </Line>
+                {trendLineData && (
+                  <Line
+                    type="monotone"
+                    data={trendLineData}
+                    dataKey="y"
+                    stroke="oklch(0.60 0.25 25)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={false}
+                    name="Trend"
+                    legendType="line"
+                  />
+                )}
+              </>
             )}
           </LineChart>
         </ResponsiveContainer>
@@ -420,7 +490,16 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 fill={COLORS[idx % COLORS.length]}
                 name={QUESTION_LABELS[questionKey] || questionKey}
                 radius={idx === config.selectedQuestions.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
-              />
+              >
+                {config.showDataLabels && (
+                  <LabelList 
+                    dataKey={questionKey} 
+                    position="center" 
+                    formatter={(value: number) => value > 0 ? value.toFixed(1) : ''}
+                    style={{ fontSize: '11px', fill: 'oklch(0.99 0 0)' }}
+                  />
+                )}
+              </Bar>
             ))}
           </BarChart>
         </ResponsiveContainer>
@@ -456,7 +535,16 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 fill={COLORS[idx % COLORS.length]}
                 name={QUESTION_LABELS[questionKey] || questionKey}
                 radius={[8, 8, 0, 0]}
-              />
+              >
+                {config.showDataLabels && (
+                  <LabelList 
+                    dataKey={questionKey} 
+                    position="top" 
+                    formatter={(value: number) => value.toFixed(1)}
+                    style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                  />
+                )}
+              </Bar>
             ))}
           </BarChart>
         </ResponsiveContainer>
@@ -493,7 +581,16 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                   fill={COLORS[idx % COLORS.length]}
                   name={QUESTION_LABELS[questionKey] || questionKey}
                   radius={[8, 8, 0, 0]}
-                />
+                >
+                  {config.showDataLabels && (
+                    <LabelList 
+                      dataKey={questionKey} 
+                      position="top" 
+                      formatter={(value: number) => value.toFixed(1)}
+                      style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                    />
+                  )}
+                </Bar>
               ))}
             </>
           ) : (
@@ -501,8 +598,35 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
+              {config.showDataLabels && (
+                <LabelList 
+                  dataKey="value" 
+                  position="top" 
+                  formatter={(value: number) => value.toFixed(1)}
+                  style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+                />
+              )}
             </Bar>
           )}
+          {config.showTrendLine && !config.groupByField && (() => {
+            const trendData = calculateTrendLine(chartData, 'value');
+            if (trendData) {
+              return (
+                <Line
+                  type="monotone"
+                  data={trendData}
+                  dataKey="y"
+                  stroke="oklch(0.60 0.25 25)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  name="Trend"
+                  legendType="line"
+                />
+              );
+            }
+            return null;
+          })()}
         </BarChart>
       </ResponsiveContainer>
     );
