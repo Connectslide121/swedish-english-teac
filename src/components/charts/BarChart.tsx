@@ -62,10 +62,19 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
       .padding(0.3);
 
     const maxValue = d3.max(data, d => d.value) || 5;
-    const isRatingScale = maxValue <= 5;
+    const minValue = d3.min(data, d => d.value) || 0;
+    const isRatingScale = maxValue <= 5 && yLabel?.includes('1-5');
+    
+    let yDomain: [number, number];
+    if (isRatingScale) {
+      yDomain = [0, 5];
+    } else {
+      const padding = (maxValue - minValue) * 0.1;
+      yDomain = [Math.max(0, minValue - padding), maxValue + padding];
+    }
     
     const y = d3.scaleLinear()
-      .domain([0, isRatingScale ? 5 : maxValue])
+      .domain(yDomain)
       .range([innerHeight, 0]);
 
     const xAxis = g.append('g')
@@ -82,12 +91,12 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
     xAxis.selectAll('line, path')
       .style('stroke', 'var(--border)');
 
-    const yAxisGenerator = isRatingScale 
-      ? d3.axisLeft(y).tickValues([0, 1, 2, 3, 4, 5])
-      : d3.axisLeft(y);
-    
     const yAxis = g.append('g')
-      .call(yAxisGenerator);
+      .call(
+        isRatingScale 
+          ? d3.axisLeft(y).tickValues([0, 1, 2, 3, 4, 5])
+          : d3.axisLeft(y).ticks(8)
+      );
     
     yAxis.selectAll('text')
       .style('font-size', '12px')
