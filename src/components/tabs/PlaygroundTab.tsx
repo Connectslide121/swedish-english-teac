@@ -48,20 +48,20 @@ const QUESTIONS = [
 ];
 
 const GROUP_BY_FIELDS = [
-  { key: 'schoolType', label: 'School Type' },
-  { key: 'yearsTeachingCategory', label: 'Years Teaching' },
-  { key: 'levelsTeaching', label: 'Levels Teaching' },
-  { key: 'shareSupportStudents', label: 'Share of Support Students' },
-  { key: 'shareChallengeStudents', label: 'Share of Challenge Students' },
-  { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate' },
-  { key: 'itemClassSizeOk', label: 'Class Size OK' },
-  { key: 'itemConfidentSupport', label: 'Confident Support' },
-  { key: 'itemConfidentChallenge', label: 'Confident Challenge' },
-  { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared' },
-  { key: 'itemFormativeHelps', label: 'Formative Assessment Helps' },
-  { key: 'itemDigitalTools', label: 'Digital Tools' },
-  { key: 'itemMaterialsSupport', label: 'Materials for Support' },
-  { key: 'itemMaterialsChallenge', label: 'Materials for Challenge' },
+  { key: 'schoolType', label: 'School Type', isRangeField: false },
+  { key: 'yearsTeachingCategory', label: 'Years Teaching', isRangeField: false },
+  { key: 'levelsTeaching', label: 'Levels Teaching', isRangeField: false },
+  { key: 'shareSupportStudents', label: 'Share of Support Students', isRangeField: false },
+  { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
+  { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', isRangeField: true },
+  { key: 'itemClassSizeOk', label: 'Class Size OK', isRangeField: true },
+  { key: 'itemConfidentSupport', label: 'Confident Support', isRangeField: true },
+  { key: 'itemConfidentChallenge', label: 'Confident Challenge', isRangeField: true },
+  { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared', isRangeField: true },
+  { key: 'itemFormativeHelps', label: 'Formative Assessment Helps', isRangeField: true },
+  { key: 'itemDigitalTools', label: 'Digital Tools', isRangeField: true },
+  { key: 'itemMaterialsSupport', label: 'Materials for Support', isRangeField: true },
+  { key: 'itemMaterialsChallenge', label: 'Materials for Challenge', isRangeField: true },
 ];
 
 type DataMode = 'average' | 'distribution';
@@ -82,6 +82,13 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const availableGroups = useMemo(() => {
     if (!config.groupByField) return [];
     
+    const currentField = GROUP_BY_FIELDS.find(f => f.key === config.groupByField);
+    const isRangeField = currentField?.isRangeField || false;
+    
+    if (isRangeField) {
+      return ['1', '2', '3', '4', '5'];
+    }
+    
     const groups = new Set<string>();
     data.forEach(row => {
       const value = row[config.groupByField as keyof SurveyResponse];
@@ -91,6 +98,22 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
     });
     return Array.from(groups).sort();
   }, [data, config.groupByField]);
+
+  const groupCounts = useMemo(() => {
+    if (!config.groupByField) return new Map<string, number>();
+    
+    const counts = new Map<string, number>();
+    
+    availableGroups.forEach(group => {
+      const count = data.filter(row => {
+        const value = row[config.groupByField as keyof SurveyResponse];
+        return String(value) === group;
+      }).length;
+      counts.set(group, count);
+    });
+    
+    return counts;
+  }, [data, config.groupByField, availableGroups]);
 
   const handleQuestionToggle = (questionKey: string) => {
     setConfig(prev => ({
@@ -368,21 +391,29 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
               <CardContent>
                 <ScrollArea className="h-[200px] pr-4">
                   <div className="space-y-3">
-                    {availableGroups.map(group => (
-                      <div key={group} className="flex items-start gap-2">
-                        <Checkbox 
-                          id={`group-${group}`}
-                          checked={config.selectedGroups.includes(group)}
-                          onCheckedChange={() => handleGroupToggle(group)}
-                        />
-                        <Label 
-                          htmlFor={`group-${group}`} 
-                          className="cursor-pointer text-sm"
-                        >
-                          {group}
-                        </Label>
-                      </div>
-                    ))}
+                    {availableGroups.map(group => {
+                      const count = groupCounts.get(group) || 0;
+                      return (
+                        <div key={group} className="flex items-start gap-2">
+                          <Checkbox 
+                            id={`group-${group}`}
+                            checked={config.selectedGroups.includes(group)}
+                            onCheckedChange={() => handleGroupToggle(group)}
+                          />
+                          <Label 
+                            htmlFor={`group-${group}`} 
+                            className="cursor-pointer text-sm flex-1"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span>{group}</span>
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                {count}
+                              </Badge>
+                            </div>
+                          </Label>
+                        </div>
+                      );
+                    })}
                   </div>
                 </ScrollArea>
               </CardContent>

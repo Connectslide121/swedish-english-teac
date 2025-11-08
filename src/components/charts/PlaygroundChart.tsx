@@ -84,6 +84,18 @@ const GROUP_BY_LABELS: Record<string, string> = {
   itemMaterialsChallenge: 'Materials for Challenge',
 };
 
+const RANGE_FIELDS = new Set([
+  'itemTimeToDifferentiate',
+  'itemClassSizeOk',
+  'itemConfidentSupport',
+  'itemConfidentChallenge',
+  'itemTeacherEdPrepared',
+  'itemFormativeHelps',
+  'itemDigitalTools',
+  'itemMaterialsSupport',
+  'itemMaterialsChallenge',
+]);
+
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
   const chartData = useMemo(() => {
     if (config.selectedQuestions.length === 0) {
@@ -106,6 +118,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       });
     }
 
+    const isRangeField = RANGE_FIELDS.has(config.groupByField as string);
+    
     if (config.selectedGroups.length === 0) {
       const groups = new Set<string>();
       data.forEach(row => {
@@ -114,7 +128,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
           groups.add(String(value));
         }
       });
-      const allGroups = Array.from(groups).sort();
+      let allGroups = Array.from(groups).sort();
+      
+      if (isRangeField) {
+        allGroups = ['1', '2', '3', '4', '5'];
+      }
 
       return allGroups.map(group => {
         const groupData = data.filter(
@@ -135,7 +153,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       });
     }
 
-    return config.selectedGroups.map(group => {
+    let groupsToShow = config.selectedGroups;
+    
+    if (isRangeField) {
+      groupsToShow = ['1', '2', '3', '4', '5'];
+    }
+
+    return groupsToShow.map(group => {
       const groupData = data.filter(
         row => String(row[config.groupByField as keyof SurveyResponse]) === group
       );
