@@ -7,11 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChartBar, ChartLine, ChartPie, Rows, Sparkle, X, Info } from '@phosphor-icons/react';
+import { ChartBar, ChartPie, Rows, Sparkle, X, Info } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { PlaygroundChart } from '@/components/charts/PlaygroundChart';
 
-type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
+type ChartType = 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 
 
 interface PlaygroundConfig {
@@ -190,30 +190,12 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                 <Label>Chart Type</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
-                    variant={config.chartType === 'bar' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setConfig(prev => ({ ...prev, chartType: 'bar' }))}
-                    className="justify-start"
-                  >
-                    <ChartBar className="mr-2" size={16} />
-                    Bar
-                  </Button>
-                  <Button
-                    variant={config.chartType === 'line' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setConfig(prev => ({ ...prev, chartType: 'line' }))}
-                    className="justify-start"
-                  >
-                    <ChartLine className="mr-2" size={16} />
-                    Line
-                  </Button>
-                  <Button
                     variant={config.chartType === 'grouped-bar' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setConfig(prev => ({ ...prev, chartType: 'grouped-bar' }))}
                     className="justify-start"
                   >
-                    <Rows className="mr-2" size={16} />
+                    <ChartBar className="mr-2" size={16} />
                     Grouped
                   </Button>
                   <Button
