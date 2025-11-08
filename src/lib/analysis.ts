@@ -157,25 +157,51 @@ export function calculateGroupSizeImpact(
   }).filter((r): r is FactorImpact => r !== null);
 }
 
+function convertLikertToNumber(value: string | number | null): number | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'number') return value;
+  
+  const str = String(value).trim().toLowerCase();
+  if (str === '') return null;
+  
+  if (str.includes('strongly disagree') || str === '1') return 1;
+  if (str.includes('disagree') || str === '2') return 2;
+  if (str.includes('neutral') || str === '3') return 3;
+  if (str.includes('agree') && !str.includes('strongly')) return 4;
+  if (str.includes('strongly agree') || str === '5') return 5;
+  
+  const num = parseFloat(str);
+  return isNaN(num) ? null : num;
+}
+
 export function calculateQuestionStats(data: SurveyResponse[]): QuestionStats[] {
   const questions = [
-    { key: 'supportQ1', label: 'Extra time to finish' },
-    { key: 'supportQ2', label: 'Easier/supported version' },
-    { key: 'supportQ3', label: 'Limit to core requirements' },
-    { key: 'supportQ4', label: 'Different ways to access task' },
-    { key: 'supportQ5', label: 'Choose topic for motivation' },
-    { key: 'supportQ6', label: 'Flexible grouping (support)' },
-    { key: 'challengeQ1', label: 'Move to planned next task' },
-    { key: 'challengeQ2', label: 'Harder version of task' },
-    { key: 'challengeQ3', label: 'More/deeper content' },
-    { key: 'challengeQ4', label: 'More demanding mode' },
-    { key: 'challengeQ5', label: 'Interest-based extension' },
-    { key: 'challengeQ6', label: 'Flexible grouping (challenge)' },
+    { key: 'supportQ1', label: 'Q1: Extra time to finish' },
+    { key: 'supportQ2', label: 'Q2: Easier/supported version' },
+    { key: 'supportQ3', label: 'Q3: Limit to core requirements' },
+    { key: 'supportQ4', label: 'Q4: Different ways to access task' },
+    { key: 'supportQ5', label: 'Q5: Choose topic for motivation' },
+    { key: 'supportQ6', label: 'Q6: Flexible grouping (support)' },
+    { key: 'challengeQ1', label: 'Q7: Move to planned next task' },
+    { key: 'challengeQ2', label: 'Q8: Harder version of task' },
+    { key: 'challengeQ3', label: 'Q9: More/deeper content' },
+    { key: 'challengeQ4', label: 'Q10: More demanding mode' },
+    { key: 'challengeQ5', label: 'Q11: Interest-based extension' },
+    { key: 'challengeQ6', label: 'Q12: Flexible grouping (challenge)' },
+    { key: 'itemTimeToDifferentiate', label: 'Q13: I have sufficient time to differentiate' },
+    { key: 'itemClassSizeOk', label: 'Q14: My typical class size allows me to adapt' },
+    { key: 'itemConfidentSupport', label: 'Q15: I feel confident designing support adaptations' },
+    { key: 'itemConfidentChallenge', label: 'Q16: I feel confident designing challenge adaptations' },
+    { key: 'itemTeacherEdPrepared', label: 'Q17: My teacher education prepared me to adapt' },
+    { key: 'itemFormativeHelps', label: 'Q18: Formative assessment helps me target adaptations' },
+    { key: 'itemDigitalTools', label: 'Q19: Digital tools make it easier to adapt' },
+    { key: 'itemMaterialsSupport', label: 'Q20: I have access to materials for support' },
+    { key: 'itemMaterialsChallenge', label: 'Q21: I have access to materials for challenge' },
   ];
   
   return questions.map(({ key, label }) => {
     const values = data
-      .map(r => (r as any)[key])
+      .map(r => convertLikertToNumber((r as any)[key]))
       .filter(v => v !== null) as number[];
     
     if (values.length === 0) {
@@ -220,7 +246,8 @@ export function getQuestionDistribution(data: SurveyResponse[], questionKey: str
   const distribution = new Map<number, number>();
   
   data.forEach(row => {
-    const value = (row as any)[questionKey];
+    const rawValue = (row as any)[questionKey];
+    const value = convertLikertToNumber(rawValue);
     if (value !== null) {
       distribution.set(value, (distribution.get(value) || 0) + 1);
     }
@@ -237,7 +264,8 @@ export function getQuestionBreakdown(
   const groups = new Map<string, number[]>();
   
   data.forEach(row => {
-    const value = (row as any)[questionKey];
+    const rawValue = (row as any)[questionKey];
+    const value = convertLikertToNumber(rawValue);
     const category = String(row[breakdownField] || 'Unknown');
     
     if (value !== null) {
