@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Info, UploadSimple, ChartBar, Funnel, Sparkle, Heart, CaretRight, CaretLeft } from '@phosphor-icons/react';
+import { Info, UploadSimple, ChartBar, Funnel, Sparkle, Heart } from '@phosphor-icons/react';
 import { FileUpload } from '@/components/FileUpload';
 import { SummaryCards } from '@/components/SummaryCards';
 import { FiltersSidebar } from '@/components/FiltersSidebar';
@@ -195,30 +195,34 @@ function App() {
           <SummaryCards stats={summaryStats} />
         </div>
 
-        <div className="flex gap-6 relative">
-          <div 
-            className={`${
-              filtersOpen ? 'w-[280px]' : 'w-0'
-            } transition-all duration-300 ease-in-out overflow-hidden`}
-          >
-            <div className="w-[280px] sticky top-6">
-              <FiltersSidebar
-                data={rawData}
-                filters={filters}
-                onFiltersChange={setFilters}
-              />
+        <div className="flex gap-6">
+          {!filtersOpen && (
+            <div className="flex-shrink-0">
+              <Button
+                onClick={() => setFiltersOpen(true)}
+                variant="outline"
+                className="h-full min-h-[200px] w-12 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-accent transition-colors"
+              >
+                <Funnel size={20} />
+                <span className="text-xs writing-mode-vertical transform rotate-180">
+                  Filters
+                </span>
+              </Button>
             </div>
-          </div>
+          )}
 
-          <Button
-            onClick={() => setFiltersOpen(!filtersOpen)}
-            variant="outline"
-            size="sm"
-            className="fixed left-6 top-[50vh] z-10 h-20 w-10 rounded-r-lg rounded-l-none border-l-0 shadow-lg flex items-center justify-center bg-card hover:bg-accent transition-colors"
-            style={{ transform: 'translateY(-50%)' }}
-          >
-            {filtersOpen ? <CaretLeft size={20} /> : <CaretRight size={20} />}
-          </Button>
+          {filtersOpen && (
+            <div className="w-[280px] flex-shrink-0">
+              <div className="sticky top-6">
+                <FiltersSidebar
+                  data={rawData}
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  onClose={() => setFiltersOpen(false)}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex-1 min-w-0">
             <div>

@@ -5,7 +5,8 @@ import { Slider } from '@/components/ui/slider';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Funnel } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Funnel, X } from '@phosphor-icons/react';
 import { Filters, SurveyResponse } from '@/lib/types';
 import { getUniqueValues } from '@/lib/analysis';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -14,9 +15,10 @@ interface FiltersSidebarProps {
   data: SurveyResponse[];
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
+  onClose: () => void;
 }
 
-export function FiltersSidebar({ data, filters, onFiltersChange }: FiltersSidebarProps) {
+export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: FiltersSidebarProps) {
   const schoolTypes = getUniqueValues(data, 'schoolType');
   const yearsCategories = ['0-5', '6-10', '11-20', '21-30', '30+'];
   const levelsOptions = ['7-9', 'Gymnasiet', 'Grundskola', 'Upper secondary'];
@@ -38,9 +40,19 @@ export function FiltersSidebar({ data, filters, onFiltersChange }: FiltersSideba
     <Card className="h-full">
       <ScrollArea className="h-[calc(100vh-12rem)]">
         <div className="p-6 space-y-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Funnel size={20} className="text-muted-foreground" />
-            <h3 className="font-semibold">Filters</h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Funnel size={20} className="text-muted-foreground" />
+              <h3 className="font-semibold">Filters</h3>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="h-8 w-8 p-0"
+            >
+              <X size={18} />
+            </Button>
           </div>
 
           <div className="space-y-2">

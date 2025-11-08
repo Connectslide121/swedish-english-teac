@@ -13,6 +13,10 @@
   .font-mono {
     font-family: 'IBM Plex Mono', 'Courier New', monospace;
   }
+
+  .writing-mode-vertical {
+    writing-mode: vertical-rl;
+  }
 }
 
 :root {
