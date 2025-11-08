@@ -61,17 +61,17 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'grouped-bar',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
+    selectedGroups: [],
     groupByField: 'schoolType',
-  });
     showDataLabels: false,
+  });
+
   const availableGroups = useMemo(() => {
     if (!config.groupByField) return [];
-    ) => {
+    
     const currentField = GROUP_BY_FIELDS.find(f => f.key === config.groupByField);
     const isRangeField = currentField?.isRangeField || false;
-    ByField);
-    const isRangeField = currentField?.isRangeField || false;
-      return ['1', '2', '3', '4', '5'];
+    
     if (isRangeField) {
       return ['1', '2', '3', '4', '5'];
     }
