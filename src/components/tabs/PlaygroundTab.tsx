@@ -55,28 +55,13 @@ const GROUP_BY_FIELDS = [
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', isRangeField: true },
   { key: 'itemClassSizeOk', label: 'Class Size OK', isRangeField: true },
-  { key: 'itemConfidentSupport', label: 'Confident Support', isRangeField: true },
-  { key: 'itemConfidentChallenge', label: 'Confident Challenge', isRangeField: true },
-  { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared', isRangeField: true },
-  { key: 'itemFormativeHelps', label: 'Formative Assessment Helps', isRangeField: true },
-  { key: 'itemDigitalTools', label: 'Digital Tools', isRangeField: true },
-  { key: 'itemMaterialsSupport', label: 'Materials for Support', isRangeField: true },
-  { key: 'itemMaterialsChallenge', label: 'Materials for Challenge', isRangeField: true },
-];
 
-type DataMode = 'average' | 'distribution';
 
-interface PlaygroundTabProps {
   data: SurveyResponse[];
-}
 
-export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const [config, setConfig] = useState<PlaygroundConfig>({
-    chartType: 'grouped-bar',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
-    selectedGroups: [],
     groupByField: 'schoolType',
-    showDataLabels: true,
   });
 
   const availableGroups = useMemo(() => {
