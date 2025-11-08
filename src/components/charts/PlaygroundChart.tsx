@@ -23,11 +23,9 @@ import {
 import { SurveyResponse } from '@/lib/types';
 
 type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
-type DataMode = 'average' | 'distribution';
 
 interface PlaygroundConfig {
   chartType: ChartType;
-  dataMode: DataMode;
   selectedQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
@@ -86,16 +84,6 @@ const GROUP_BY_LABELS: Record<string, string> = {
   itemMaterialsChallenge: 'Materials for Challenge',
 };
 
-function calculateStatistic(values: number[], mode: DataMode): number {
-  if (values.length === 0) return 0;
-  
-  if (mode === 'average') {
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  }
-  
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
   const chartData = useMemo(() => {
     if (config.selectedQuestions.length === 0) {
@@ -108,9 +96,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
           .map(row => (row as any)[questionKey])
           .filter(v => v !== null && v !== undefined) as number[];
         
+        const average = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+        
         return {
           name: QUESTION_LABELS[questionKey] || questionKey,
-          value: calculateStatistic(values, config.dataMode),
+          value: average,
           count: values.length,
         };
       });
@@ -138,7 +128,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             .map(row => (row as any)[questionKey])
             .filter(v => v !== null && v !== undefined) as number[];
           
-          result[questionKey] = calculateStatistic(values, config.dataMode);
+          result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
         });
 
         return result;
@@ -157,7 +147,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
           .map(row => (row as any)[questionKey])
           .filter(v => v !== null && v !== undefined) as number[];
         
-        result[questionKey] = calculateStatistic(values, config.dataMode);
+        result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
       });
 
       return result;
@@ -166,8 +156,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     data, 
     config.selectedQuestions, 
     config.selectedGroups, 
-    config.groupByField, 
-    config.dataMode
+    config.groupByField
   ]);
 
   const scatterData = useMemo(() => {
@@ -356,8 +345,6 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.85 0.01 250)" />
             <XAxis 
               dataKey="name" 
-              domain={[0, 5]}
-              ticks={[1, 2, 3, 4, 5]}
               label={{ value: 'Response Value', position: 'bottom', offset: 40 }}
             />
             <YAxis 

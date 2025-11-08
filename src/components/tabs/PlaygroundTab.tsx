@@ -13,10 +13,8 @@ import { PlaygroundChart } from '@/components/charts/PlaygroundChart';
 
 type ChartType = 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 
-
 interface PlaygroundConfig {
   chartType: ChartType;
-  dataMode: DataMode;
   selectedQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
@@ -75,7 +73,6 @@ interface PlaygroundTabProps {
 export function PlaygroundTab({ data }: PlaygroundTabProps) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'grouped-bar',
-    dataMode: 'average',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
     selectedGroups: [],
     groupByField: 'schoolType',
@@ -226,24 +223,6 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                     Distribution
                   </Button>
                 </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <Label>Data Aggregation</Label>
-                <Select 
-                  value={config.dataMode} 
-                  onValueChange={(value: DataMode) => setConfig(prev => ({ ...prev, dataMode: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="average">Mean (Average)</SelectItem>
-                    <SelectItem value="distribution">Distribution</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
 
               <Separator />
