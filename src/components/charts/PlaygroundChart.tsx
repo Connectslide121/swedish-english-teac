@@ -74,7 +74,7 @@ const GROUP_BY_LABELS: Record<string, string> = {
   shareSupportStudents: 'Share of Support Students',
   shareChallengeStudents: 'Share of Challenge Students',
   itemTimeToDifferentiate: 'Time to Differentiate',
-  itemClassSizeOk: 'Class Size',
+  itemClassSizeOk: 'Class Size OK',
   itemConfidentSupport: 'Confident Support',
   itemConfidentChallenge: 'Confident Challenge',
   itemTeacherEdPrepared: 'Teacher Ed Prepared',

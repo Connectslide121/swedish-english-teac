@@ -54,7 +54,7 @@ const GROUP_BY_FIELDS = [
   { key: 'shareSupportStudents', label: 'Share of Support Students' },
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students' },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate' },
-  { key: 'itemClassSizeOk', label: 'Class Size' },
+  { key: 'itemClassSizeOk', label: 'Class Size OK' },
   { key: 'itemConfidentSupport', label: 'Confident Support' },
   { key: 'itemConfidentChallenge', label: 'Confident Challenge' },
   { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared' },
