@@ -55,13 +55,15 @@ const GROUP_BY_FIELDS = [
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', isRangeField: true },
   { key: 'itemClassSizeOk', label: 'Class Size OK', isRangeField: true },
+];
 
-
-  data: SurveyResponse[];
-
+export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
   const [config, setConfig] = useState<PlaygroundConfig>({
+    chartType: 'grouped-bar',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
+    selectedGroups: [],
     groupByField: 'schoolType',
+    showDataLabels: false,
   });
 
   const availableGroups = useMemo(() => {
