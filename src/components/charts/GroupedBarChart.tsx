@@ -64,9 +64,10 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
       .padding(0.1);
 
     const maxValue = d3.max(data, d => Math.max(d.support || 0, d.challenge || 0)) || 5;
+    const isRatingScale = maxValue <= 5;
+    
     const y = d3.scaleLinear()
-      .domain([0, Math.max(maxValue, 0.1)])
-      .nice()
+      .domain([0, isRatingScale ? 5 : Math.max(maxValue, 0.1)])
       .range([innerHeight, 0]);
 
     const colors = {
@@ -88,8 +89,12 @@ export function GroupedBarChart({ data, height = 350, exportPrefix = 'grouped-ba
     xAxis.selectAll('line, path')
       .style('stroke', 'var(--border)');
 
+    const yAxisGenerator = isRatingScale 
+      ? d3.axisLeft(y).tickValues([0, 1, 2, 3, 4, 5])
+      : d3.axisLeft(y);
+    
     const yAxis = g.append('g')
-      .call(d3.axisLeft(y));
+      .call(yAxisGenerator);
     
     yAxis.selectAll('text')
       .style('font-size', '12px')

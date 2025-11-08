@@ -312,6 +312,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               type="number" 
               dataKey="x" 
               name={QUESTION_LABELS[config.selectedQuestions[0]]}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
               label={{ 
                 value: QUESTION_LABELS[config.selectedQuestions[0]], 
                 position: 'bottom',
@@ -322,6 +324,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               type="number" 
               dataKey="y" 
               name={QUESTION_LABELS[config.selectedQuestions[1]]}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
               label={{ 
                 value: QUESTION_LABELS[config.selectedQuestions[1]], 
                 angle: -90, 
@@ -352,6 +356,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.85 0.01 250)" />
             <XAxis 
               dataKey="name" 
+              domain={[0, 5]}
+              ticks={[1, 2, 3, 4, 5]}
               label={{ value: 'Response Value', position: 'bottom', offset: 40 }}
             />
             <YAxis 
@@ -388,7 +394,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 'auto']}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -458,7 +465,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 'auto']}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -504,7 +512,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 'auto']}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -548,7 +557,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             interval={0}
           />
           <YAxis 
-            domain={[0, 'auto']}
+            domain={[0, 5]}
+            ticks={[0, 1, 2, 3, 4, 5]}
             label={{ 
               value: 'Value', 
               angle: -90, 

@@ -61,9 +61,11 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
       .range([0, innerWidth])
       .padding(0.3);
 
+    const maxValue = d3.max(data, d => d.value) || 5;
+    const isRatingScale = maxValue <= 5;
+    
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.value) || 5])
-      .nice()
+      .domain([0, isRatingScale ? 5 : maxValue])
       .range([innerHeight, 0]);
 
     const xAxis = g.append('g')
@@ -80,8 +82,12 @@ export function BarChart({ data, height = 300, xLabel, yLabel, exportPrefix = 'b
     xAxis.selectAll('line, path')
       .style('stroke', 'var(--border)');
 
+    const yAxisGenerator = isRatingScale 
+      ? d3.axisLeft(y).tickValues([0, 1, 2, 3, 4, 5])
+      : d3.axisLeft(y);
+    
     const yAxis = g.append('g')
-      .call(d3.axisLeft(y));
+      .call(yAxisGenerator);
     
     yAxis.selectAll('text')
       .style('font-size', '12px')
