@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Info, UploadSimple, ChartBar, Funnel, Sparkle, Heart } from '@phosphor-icons/react';
+import { Info, UploadSimple, ChartBar, Funnel, Sparkle, Heart, CaretRight, CaretLeft } from '@phosphor-icons/react';
 import { FileUpload } from '@/components/FileUpload';
 import { SummaryCards } from '@/components/SummaryCards';
 import { FiltersSidebar } from '@/components/FiltersSidebar';
@@ -21,6 +21,7 @@ import { SurveyResponse, Filters } from '@/lib/types';
 function App() {
   const [rawData, setRawData] = useState<SurveyResponse[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     currentlyTeaching: ['Yes'],
     schoolType: [],
@@ -194,16 +195,32 @@ function App() {
           <SummaryCards stats={summaryStats} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-          <div className="lg:sticky lg:top-6 lg:self-start">
-            <FiltersSidebar
-              data={rawData}
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
+        <div className="flex gap-6 relative">
+          <div 
+            className={`${
+              filtersOpen ? 'w-[280px]' : 'w-0'
+            } transition-all duration-300 ease-in-out overflow-hidden`}
+          >
+            <div className="w-[280px] sticky top-6">
+              <FiltersSidebar
+                data={rawData}
+                filters={filters}
+                onFiltersChange={setFilters}
+              />
+            </div>
           </div>
 
-          <div>
+          <Button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            variant="outline"
+            size="sm"
+            className="fixed left-6 top-[50vh] z-10 h-20 w-10 rounded-r-lg rounded-l-none border-l-0 shadow-lg flex items-center justify-center bg-card hover:bg-accent transition-colors"
+            style={{ transform: 'translateY(-50%)' }}
+          >
+            {filtersOpen ? <CaretLeft size={20} /> : <CaretRight size={20} />}
+          </Button>
+
+          <div className="flex-1 min-w-0">
             <div>
               {filteredData.length === 0 ? (
                 <Alert>
