@@ -69,6 +69,23 @@ const QUESTION_LABELS: Record<string, string> = {
   challengeAdaptationIndex: 'Challenge Index',
 };
 
+const GROUP_BY_LABELS: Record<string, string> = {
+  schoolType: 'School Type',
+  yearsTeachingCategory: 'Years Teaching',
+  levelsTeaching: 'Levels Teaching',
+  shareSupportStudents: 'Share of Support Students',
+  shareChallengeStudents: 'Share of Challenge Students',
+  itemTimeToDifferentiate: 'Time to Differentiate',
+  itemClassSizeOk: 'Class Size',
+  itemConfidentSupport: 'Confident Support',
+  itemConfidentChallenge: 'Confident Challenge',
+  itemTeacherEdPrepared: 'Teacher Ed Prepared',
+  itemFormativeHelps: 'Formative Assessment Helps',
+  itemDigitalTools: 'Digital Tools',
+  itemMaterialsSupport: 'Materials for Support',
+  itemMaterialsChallenge: 'Materials for Challenge',
+};
+
 function calculateStatistic(values: number[], mode: DataMode): number {
   if (values.length === 0) return 0;
   
@@ -253,11 +270,9 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
   const getChartTitle = () => {
     const modeLabel = {
-      mean: 'Average',
-      median: 'Median',
-      count: 'Count',
-      percentage: 'Percentage (≥4)',
-    }[config.dataMode];
+      average: 'Average',
+      distribution: 'Distribution',
+    }[config.dataMode] || 'Average';
 
     if (config.chartType === 'scatter') {
       return `Scatter Plot: ${QUESTION_LABELS[config.selectedQuestions[0]]} vs ${QUESTION_LABELS[config.selectedQuestions[1]]}`;
@@ -268,7 +283,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.groupByField) {
-      return `${modeLabel} by ${config.groupByField}`;
+      const groupLabel = GROUP_BY_LABELS[config.groupByField] || config.groupByField;
+      return `${modeLabel} by ${groupLabel}`;
     }
 
     return `${modeLabel} Comparison`;
