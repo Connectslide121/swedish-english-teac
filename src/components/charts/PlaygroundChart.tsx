@@ -491,7 +491,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       );
     }
 
-    if (config.chartType === 'grouped-bar' && config.groupByField) {
+    if ((config.chartType === 'grouped-bar' || config.chartType === 'bar') && config.groupByField) {
       return (
         <ResponsiveContainer width="100%" height={500}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -556,43 +556,19 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             }}
           />
           <Tooltip />
-          {config.groupByField ? (
-            <>
-              <Legend />
-              {config.selectedQuestions.map((questionKey, idx) => (
-                <Bar
-                  key={questionKey}
-                  dataKey={questionKey}
-                  fill={COLORS[idx % COLORS.length]}
-                  name={QUESTION_LABELS[questionKey] || questionKey}
-                  radius={[8, 8, 0, 0]}
-                >
-                  {config.showDataLabels && (
-                    <LabelList 
-                      dataKey={questionKey} 
-                      position="top" 
-                      formatter={(value: number) => value.toFixed(1)}
-                      style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
-                    />
-                  )}
-                </Bar>
-              ))}
-            </>
-          ) : (
-            <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-              {config.showDataLabels && (
-                <LabelList 
-                  dataKey="value" 
-                  position="top" 
-                  formatter={(value: number) => value.toFixed(1)}
-                  style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
-                />
-              )}
-            </Bar>
-          )}
+          <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+            {config.showDataLabels && (
+              <LabelList 
+                dataKey="value" 
+                position="top" 
+                formatter={(value: number) => value.toFixed(1)}
+                style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
+              />
+            )}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     );
