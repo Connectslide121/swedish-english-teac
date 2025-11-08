@@ -24,12 +24,27 @@ interface PlaygroundConfig {
 }
 
 const QUESTIONS = [
+  { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
+  { key: 'supportQ2', label: 'Support: Easier/supported version', category: 'support' },
+  { key: 'supportQ3', label: 'Support: Limit to core requirements', category: 'support' },
   { key: 'supportQ4', label: 'Support: Different ways to access task', category: 'support' },
   { key: 'supportQ5', label: 'Support: Choose topic for motivation', category: 'support' },
+  { key: 'supportQ6', label: 'Support: Flexible grouping (support)', category: 'support' },
+  { key: 'challengeQ1', label: 'Challenge: Move to planned next task', category: 'challenge' },
+  { key: 'challengeQ2', label: 'Challenge: Harder version of task', category: 'challenge' },
   { key: 'challengeQ3', label: 'Challenge: More/deeper content', category: 'challenge' },
   { key: 'challengeQ4', label: 'Challenge: More demanding mode', category: 'challenge' },
   { key: 'challengeQ5', label: 'Challenge: Interest-based extension', category: 'challenge' },
-  { key: 'challengeQ6', label: 'Challenge: Flexible grouping', category: 'challenge' },
+  { key: 'challengeQ6', label: 'Challenge: Flexible grouping (challenge)', category: 'challenge' },
+  { key: 'itemTimeToDifferentiate', label: 'Item: Sufficient time to differentiate', category: 'item' },
+  { key: 'itemClassSizeOk', label: 'Item: Class size allows adaptation', category: 'item' },
+  { key: 'itemConfidentSupport', label: 'Item: Confident designing support', category: 'item' },
+  { key: 'itemConfidentChallenge', label: 'Item: Confident designing challenge', category: 'item' },
+  { key: 'itemTeacherEdPrepared', label: 'Item: Teacher education prepared me', category: 'item' },
+  { key: 'itemFormativeHelps', label: 'Item: Formative assessment helps', category: 'item' },
+  { key: 'itemDigitalTools', label: 'Item: Digital tools make it easier', category: 'item' },
+  { key: 'itemMaterialsSupport', label: 'Item: Access to materials for support', category: 'item' },
+  { key: 'itemMaterialsChallenge', label: 'Item: Access to materials for challenge', category: 'item' },
   { key: 'supportAdaptationIndex', label: 'Support Adaptation Index (avg)', category: 'index' },
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
 ];
@@ -310,9 +325,11 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                   </Button>
                 </div>
               </div>
-              <CardDescription className="flex items-center justify-between">
-                <span>{config.selectedQuestions.length} selected</span>
-                <div className="flex gap-1">
+              <div className="mt-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-muted-foreground">{config.selectedQuestions.length} selected</span>
+                </div>
+                <div className="flex gap-1 flex-wrap">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -329,8 +346,16 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                   >
                     All Challenge
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleSelectAllQuestions('item')}
+                    className="h-6 text-xs px-2"
+                  >
+                    All Items
+                  </Button>
                 </div>
-              </CardDescription>
+              </div>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] pr-4">
