@@ -49,13 +49,11 @@ export function PerQuestionTab({ data }: PerQuestionTabProps) {
     : 'var(--chart-neutral)';
   
   const distribution = getQuestionDistribution(data, selectedQuestion);
-  const distributionData = Array.from(distribution.entries())
-    .sort((a, b) => a[0] - b[0])
-    .map(([value, count]) => ({
-      label: value.toString(),
-      value: count,
-      color: questionColor,
-    }));
+  const distributionData = [1, 2, 3, 4, 5].map(value => ({
+    label: value.toString(),
+    value: distribution.get(value) || 0,
+    color: questionColor,
+  }));
 
   const yearBreakdown = getQuestionBreakdown(data, selectedQuestion, 'yearsTeachingCategory');
   const yearData = Array.from(yearBreakdown.entries())
