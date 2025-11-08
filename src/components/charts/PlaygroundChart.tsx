@@ -269,10 +269,14 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
   }
 
   const getChartTitle = () => {
-    const modeLabel = {
-      average: 'Average',
-      distribution: 'Distribution',
-    }[config.dataMode] || 'Average';
+    const chartTypeLabel = {
+      'bar': 'Bar',
+      'line': 'Line',
+      'grouped-bar': 'Grouped',
+      'stacked-bar': 'Stacked',
+      'scatter': 'Scatter',
+      'distribution': 'Distribution',
+    }[config.chartType] || 'Bar';
 
     if (config.chartType === 'scatter') {
       return `Scatter Plot: ${QUESTION_LABELS[config.selectedQuestions[0]]} vs ${QUESTION_LABELS[config.selectedQuestions[1]]}`;
@@ -284,10 +288,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
     if (config.groupByField) {
       const groupLabel = GROUP_BY_LABELS[config.groupByField] || config.groupByField;
-      return `${modeLabel} by ${groupLabel}`;
+      return `${chartTypeLabel} by ${groupLabel}`;
     }
 
-    return `${modeLabel} Comparison`;
+    return `${chartTypeLabel} Comparison`;
   };
 
   const renderChart = () => {
