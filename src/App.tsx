@@ -201,9 +201,9 @@ function App() {
               <Button
                 onClick={() => setFiltersOpen(true)}
                 variant="outline"
-                className="h-full min-h-[200px] w-12 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-accent transition-colors"
+                className="h-full min-h-[200px] w-10 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-accent transition-colors px-2"
               >
-                <Funnel size={20} />
+                <Funnel size={18} />
                 <span className="text-xs writing-mode-vertical transform rotate-180">
                   Filters
                 </span>
