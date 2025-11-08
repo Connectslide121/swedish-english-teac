@@ -25,8 +25,8 @@ interface PlaygroundConfig {
 
 const QUESTIONS = [
   { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
-  { key: 'supportQ3', label: 'Support: Limit to core requirements', category: 'support' 
-  { key: 'supportQ5', label: 'Support: Choose topic for motivation', category: 'support' }
+  { key: 'supportQ2', label: 'Support: Simpler instructions', category: 'support' },
+  { key: 'supportQ3', label: 'Support: Limit to core requirements', category: 'support' },
   { key: 'supportQ4', label: 'Support: Different ways to access task', category: 'support' },
   { key: 'supportQ5', label: 'Support: Choose topic for motivation', category: 'support' },
   { key: 'supportQ6', label: 'Support: Flexible grouping (support)', category: 'support' },
@@ -47,7 +47,7 @@ const QUESTIONS = [
   { key: 'itemMaterialsChallenge', label: 'Item: Access to materials for challenge', category: 'item' },
   { key: 'supportAdaptationIndex', label: 'Support Adaptation Index (avg)', category: 'index' },
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
-];nst GROUP_BY_FIELDS = [
+];
 
 const GROUP_BY_FIELDS = [
   { key: 'schoolType', label: 'School Type' },
@@ -361,14 +361,6 @@ export function PlaygroundTab({ data }: PlaygroundTabProps) {
                         htmlFor={question.key} 
                         className="cursor-pointer text-sm leading-tight"
                       >
-                        {question.label}
-                        <Badge 
-                          variant="outline" 
-                          className="ml-2 text-xs"
-                        >
-                          {question.category}
-                        </Badge>
-                      </Label>
                         {question.label}
                         <Badge 
                           variant="outline" 
