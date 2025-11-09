@@ -198,16 +198,18 @@ function App() {
         <div className="flex gap-6">
           {!filtersOpen && (
             <div className="flex-shrink-0">
-              <Button
-                onClick={() => setFiltersOpen(true)}
-                variant="outline"
-                className="h-full min-h-[200px] w-10 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-accent transition-colors px-2"
-              >
-                <Funnel size={18} />
-                <span className="text-xs writing-mode-vertical transform rotate-180">
-                  Filters
-                </span>
-              </Button>
+              <div className="sticky top-6 max-h-[60vh]">
+                <Button
+                  onClick={() => setFiltersOpen(true)}
+                  variant="outline"
+                  className="h-full min-h-[200px] w-10 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-accent transition-colors px-2"
+                >
+                  <Funnel size={18} />
+                  <span className="text-xs writing-mode-vertical transform rotate-180">
+                    Filters
+                  </span>
+                </Button>
+              </div>
             </div>
           )}
 
