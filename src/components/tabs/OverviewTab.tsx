@@ -14,9 +14,12 @@ export function OverviewTab({ data }: OverviewTabProps) {
   
   const supportStats = stats.slice(0, 6);
   const challengeStats = stats.slice(6, 12);
+  const contextStats = stats.slice(12, 21);
   
   const avgSupport = supportStats.length > 0 ? supportStats.reduce((sum, s) => sum + (s.mean ?? 0), 0) / 6 : 0;
   const avgChallenge = challengeStats.length > 0 ? challengeStats.reduce((sum, s) => sum + (s.mean ?? 0), 0) / 6 : 0;
+  const avgContext = contextStats.length > 0 ? contextStats.reduce((sum, s) => sum + (s.mean ?? 0), 0) / 9 : 0;
+  const avgAll = stats.length > 0 ? stats.reduce((sum, s) => sum + (s.mean ?? 0), 0) / 21 : 0;
 
   const indexData = [
     { category: 'Indices', support: avgSupport, challenge: avgChallenge }
@@ -116,6 +119,73 @@ export function OverviewTab({ data }: OverviewTabProps) {
           </div>
         </Card>
       </div>
+
+      <Card className="p-6">
+        <div className="flex items-start gap-2 mb-4">
+          <h3 className="text-lg font-semibold">Context Questions</h3>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="text-muted-foreground cursor-help mt-1" size={16} />
+            </TooltipTrigger>
+            <TooltipContent className="max-w-sm">
+              <p className="text-xs">
+                These are the 9 context questions about teaching conditions, confidence, and resources. 
+                The mean shows average agreement (1-5), and the percentage shows how many teachers agree or strongly agree.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="space-y-3">
+          {contextStats.map((stat, idx) => (
+            <div key={idx} className="border-b border-border pb-2 last:border-0">
+              <div className="flex justify-between items-start mb-1">
+                <span className="text-sm font-medium">{stat.question}</span>
+                <span className="text-sm font-mono font-semibold">
+                  {(stat.mean ?? 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Median: {(stat.median ?? 0).toFixed(1)}</span>
+                <span>{(stat.percentHighUse ?? 0).toFixed(0)}% agree strongly (4-5)</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-6 bg-primary/5 border-primary/20">
+        <div className="flex items-start gap-2 mb-4">
+          <h3 className="text-lg font-semibold">Overall Average (All 21 Questions)</h3>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="text-muted-foreground cursor-help mt-1" size={16} />
+            </TooltipTrigger>
+            <TooltipContent className="max-w-sm">
+              <p className="text-xs">
+                This is the average across all 21 questions: 6 support strategies, 6 challenge strategies, and 9 context questions.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-1">{avgAll.toFixed(2)}</div>
+            <div className="text-xs text-muted-foreground">Overall Average</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold" style={{ color: 'var(--chart-support)' }}>{avgSupport.toFixed(2)}</div>
+            <div className="text-xs text-muted-foreground">Support (Q1-6)</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold" style={{ color: 'var(--chart-challenge)' }}>{avgChallenge.toFixed(2)}</div>
+            <div className="text-xs text-muted-foreground">Challenge (Q7-12)</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold">{avgContext.toFixed(2)}</div>
+            <div className="text-xs text-muted-foreground">Context (Q13-21)</div>
+          </div>
+        </div>
+      </Card>
 
       <Card className="p-6">
         <div className="flex items-start gap-2 mb-3">
