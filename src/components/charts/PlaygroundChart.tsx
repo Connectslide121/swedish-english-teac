@@ -139,7 +139,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
           row => String(row[config.groupByField as keyof SurveyResponse]) === group
         );
 
-        const result: any = { name: group };
+        const result: any = { name: group, _count: groupData.length };
         
         config.selectedQuestions.forEach(questionKey => {
           const values = groupData
@@ -147,6 +147,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             .filter(v => v !== null && v !== undefined) as number[];
           
           result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+          result[`${questionKey}_count`] = values.length;
         });
 
         return result;
@@ -164,7 +165,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         row => String(row[config.groupByField as keyof SurveyResponse]) === group
       );
 
-      const result: any = { name: group };
+      const result: any = { name: group, _count: groupData.length };
       
       config.selectedQuestions.forEach(questionKey => {
         const values = groupData
@@ -172,6 +173,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
           .filter(v => v !== null && v !== undefined) as number[];
         
         result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+        result[`${questionKey}_count`] = values.length;
       });
 
       return result;
@@ -226,6 +228,45 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         percentage: (count / data.length) * 100,
       }));
   }, [data, config.chartType, config.selectedQuestions]);
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload || !payload.length) return null;
+
+    return (
+      <div className="bg-card border border-border rounded-lg shadow-lg p-3">
+        <p className="font-semibold text-sm mb-2">{label}</p>
+        {payload.map((entry: any, index: number) => {
+          const countKey = `${entry.dataKey}_count`;
+          const count = entry.payload[countKey];
+          
+          return (
+            <div key={index} className="flex items-center justify-between gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-sm" 
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span>{entry.name}:</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{entry.value.toFixed(2)}</span>
+                {count !== undefined && (
+                  <span className="text-muted-foreground text-xs">
+                    (n={count})
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {payload[0]?.payload?._count !== undefined && (
+          <div className="mt-2 pt-2 border-t border-border text-xs text-muted-foreground">
+            Total responses: {payload[0].payload._count}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const calculateTrendLine = (chartData: any[], dataKey: string) => {
     if (chartData.length < 2) return null;
@@ -346,7 +387,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 offset: 10 
               }}
             />
-            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
             <Legend />
             {Array.from(groupedScatter.entries()).map(([group, points], idx) => (
               <Scatter 
@@ -374,7 +415,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             <YAxis 
               label={{ value: 'Frequency', angle: -90, position: 'insideLeft', offset: 10 }}
             />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="count" fill={COLORS[0]} radius={[8, 8, 0, 0]}>
               {distributionData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -413,7 +454,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 position: 'insideLeft' 
               }}
             />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             {config.groupByField ? (
               <>
                 <Legend />
@@ -484,7 +525,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 position: 'insideLeft' 
               }}
             />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             {config.selectedQuestions.map((questionKey, idx) => (
               <Bar
@@ -531,7 +572,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
                 position: 'insideLeft' 
               }}
             />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             {config.selectedQuestions.map((questionKey, idx) => (
               <Bar
@@ -576,7 +617,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               position: 'insideLeft' 
             }}
           />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Bar dataKey="value" radius={[8, 8, 0, 0]}>
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
