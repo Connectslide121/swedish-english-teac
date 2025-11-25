@@ -27,6 +27,7 @@ type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'd
 interface PlaygroundConfig {
   chartType: ChartType;
   selectedQuestions: string[];
+  selectedYQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
   showDataLabels: boolean;
@@ -153,6 +154,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     const isRangeField = RANGE_FIELDS.has(config.groupByField as string);
+    const questionsToUse = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
     
     if (config.selectedGroups.length === 0) {
       const groups = new Set<string>();
@@ -175,7 +177,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
         const result: any = { name: group, _count: groupData.length };
         
-        config.selectedQuestions.forEach(questionKey => {
+        questionsToUse.forEach(questionKey => {
           const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
           
           const values = groupData
@@ -206,7 +208,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
       const result: any = { name: group, _count: groupData.length };
       
-      config.selectedQuestions.forEach(questionKey => {
+      questionsToUse.forEach(questionKey => {
         const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
         
         const values = groupData
@@ -224,7 +226,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     });
   }, [
     data, 
-    config.selectedQuestions, 
+    config.selectedQuestions,
+    config.selectedYQuestions, 
     config.selectedGroups, 
     config.groupByField
   ]);
@@ -349,7 +352,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }));
   };
 
-  if (config.selectedQuestions.length === 0) {
+  if (config.selectedQuestions.length === 0 && (!config.groupByField || config.selectedYQuestions.length === 0)) {
     return (
       <Card>
         <CardContent className="py-12">
@@ -491,6 +494,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'line') {
+      const questionsToRender = config.groupByField && config.selectedYQuestions.length > 0 
+        ? config.selectedYQuestions 
+        : config.selectedQuestions;
+      
       return (
         <ResponsiveContainer width="100%" height={500}>
           <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -515,7 +522,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             {config.groupByField ? (
               <>
                 <Legend />
-                {config.selectedQuestions.map((questionKey, idx) => (
+                {questionsToRender.map((questionKey, idx) => (
                   <Line
                     key={questionKey}
                     type="monotone"
@@ -562,6 +569,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'stacked-bar' && config.groupByField) {
+      const questionsToRender = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
+      
       return (
         <ResponsiveContainer width="100%" height={500}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -584,14 +593,14 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            {config.selectedQuestions.map((questionKey, idx) => (
+            {questionsToRender.map((questionKey, idx) => (
               <Bar
                 key={questionKey}
                 dataKey={questionKey}
                 stackId="a"
                 fill={COLORS[idx % COLORS.length]}
                 name={QUESTION_LABELS[questionKey] || questionKey}
-                radius={idx === config.selectedQuestions.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
+                radius={idx === questionsToRender.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
               >
                 {config.showDataLabels && (
                   <LabelList 
@@ -609,6 +618,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if ((config.chartType === 'grouped-bar' || config.chartType === 'bar') && config.groupByField) {
+      const questionsToRender = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
+      
       return (
         <ResponsiveContainer width="100%" height={500}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -631,7 +642,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            {config.selectedQuestions.map((questionKey, idx) => (
+            {questionsToRender.map((questionKey, idx) => (
               <Bar
                 key={questionKey}
                 dataKey={questionKey}

@@ -16,6 +16,7 @@ type ChartType = 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 interface PlaygroundConfig {
   chartType: ChartType;
   selectedQuestions: string[];
+  selectedYQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
   showDataLabels: boolean;
@@ -61,6 +62,7 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'grouped-bar',
     selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
+    selectedYQuestions: [],
     selectedGroups: [],
     groupByField: 'schoolType',
     showDataLabels: false,
@@ -111,6 +113,15 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
     }));
   };
 
+  const handleYQuestionToggle = (questionKey: string) => {
+    setConfig(prev => ({
+      ...prev,
+      selectedYQuestions: prev.selectedYQuestions.includes(questionKey)
+        ? prev.selectedYQuestions.filter(q => q !== questionKey)
+        : [...prev.selectedYQuestions, questionKey]
+    }));
+  };
+
   const handleGroupToggle = (group: string) => {
     setConfig(prev => ({
       ...prev,
@@ -131,10 +142,28 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
     }));
   };
 
+  const handleSelectAllYQuestions = (category?: string) => {
+    const questionsToSelect = category 
+      ? QUESTIONS.filter(q => q.category === category).map(q => q.key)
+      : QUESTIONS.map(q => q.key);
+    
+    setConfig(prev => ({
+      ...prev,
+      selectedYQuestions: questionsToSelect
+    }));
+  };
+
   const handleClearAllQuestions = () => {
     setConfig(prev => ({
       ...prev,
       selectedQuestions: []
+    }));
+  };
+
+  const handleClearAllYQuestions = () => {
+    setConfig(prev => ({
+      ...prev,
+      selectedYQuestions: []
     }));
   };
 
@@ -156,6 +185,7 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
     setConfig(prev => ({
       ...prev,
       selectedQuestions: [],
+      selectedYQuestions: [],
       selectedGroups: []
     }));
   };
@@ -276,7 +306,9 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Questions</CardTitle>
+                <CardTitle className="text-base">
+                  {config.groupByField ? 'X-Axis Groups' : 'Questions'}
+                </CardTitle>
                 <div className="flex gap-1">
                   <Button
                     variant="ghost"
@@ -297,7 +329,11 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
                 </div>
               </div>
               <CardDescription className="flex items-center justify-between">
-                <span>{config.selectedQuestions.length} selected</span>
+                <span>
+                  {config.groupByField 
+                    ? `${config.selectedQuestions.length} selected (not used when Y-questions selected)`
+                    : `${config.selectedQuestions.length} selected`}
+                </span>
                 <div className="flex gap-1">
                   <Button
                     variant="ghost"
@@ -346,6 +382,68 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
               </ScrollArea>
             </CardContent>
           </Card>
+
+          {config.groupByField && (
+            <Card className="border-accent">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    Y-Value Questions
+                  </CardTitle>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSelectAllYQuestions()}
+                      className="h-7 text-xs"
+                    >
+                      Select All
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearAllYQuestions}
+                      className="h-7 text-xs"
+                    >
+                      Clear All
+                    </Button>
+                  </div>
+                </div>
+                <CardDescription>
+                  {config.selectedYQuestions.length > 0 
+                    ? `${config.selectedYQuestions.length} selected for Y-axis values`
+                    : 'Not selected - using X-axis questions instead'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[250px] pr-4">
+                  <div className="space-y-3">
+                    {QUESTIONS.map(question => (
+                      <div key={`y-${question.key}`} className="flex items-start gap-2">
+                        <Checkbox 
+                          id={`y-${question.key}`}
+                          checked={config.selectedYQuestions.includes(question.key)}
+                          onCheckedChange={() => handleYQuestionToggle(question.key)}
+                        />
+                        <Label 
+                          htmlFor={`y-${question.key}`} 
+                          className="cursor-pointer text-sm leading-tight"
+                        >
+                          {question.label}
+                          <Badge 
+                            variant="outline" 
+                            className="ml-2 text-xs"
+                          >
+                            {question.category}
+                          </Badge>
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          )}
 
           {config.groupByField && availableGroups.length > 0 && (
             <Card>
