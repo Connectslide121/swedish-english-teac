@@ -96,6 +96,35 @@ const RANGE_FIELDS = new Set([
   'itemMaterialsChallenge',
 ]);
 
+const ITEM_QUESTIONS = new Set([
+  'itemTimeToDifferentiate',
+  'itemClassSizeOk',
+  'itemConfidentSupport',
+  'itemConfidentChallenge',
+  'itemTeacherEdPrepared',
+  'itemFormativeHelps',
+  'itemDigitalTools',
+  'itemMaterialsSupport',
+  'itemMaterialsChallenge',
+]);
+
+function convertLikertToNumber(value: string | number | null): number | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'number') return value;
+  
+  const str = String(value).trim().toLowerCase();
+  if (str === '') return null;
+  
+  if (str.includes('strongly disagree') || str === '1') return 1;
+  if (str.includes('disagree') || str === '2') return 2;
+  if (str.includes('neutral') || str === '3') return 3;
+  if (str.includes('agree') && !str.includes('strongly')) return 4;
+  if (str.includes('strongly agree') || str === '5') return 5;
+  
+  const num = parseFloat(str);
+  return isNaN(num) ? null : num;
+}
+
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
   const chartData = useMemo(() => {
     if (config.selectedQuestions.length === 0) {
@@ -104,8 +133,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
     if (!config.groupByField) {
       return config.selectedQuestions.map(questionKey => {
+        const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+        
         const values = data
-          .map(row => (row as any)[questionKey])
+          .map(row => {
+            const rawValue = (row as any)[questionKey];
+            return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+          })
           .filter(v => v !== null && v !== undefined) as number[];
         
         const average = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
@@ -142,8 +176,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         const result: any = { name: group, _count: groupData.length };
         
         config.selectedQuestions.forEach(questionKey => {
+          const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+          
           const values = groupData
-            .map(row => (row as any)[questionKey])
+            .map(row => {
+              const rawValue = (row as any)[questionKey];
+              return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+            })
             .filter(v => v !== null && v !== undefined) as number[];
           
           result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
@@ -168,8 +207,13 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       const result: any = { name: group, _count: groupData.length };
       
       config.selectedQuestions.forEach(questionKey => {
+        const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+        
         const values = groupData
-          .map(row => (row as any)[questionKey])
+          .map(row => {
+            const rawValue = (row as any)[questionKey];
+            return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+          })
           .filter(v => v !== null && v !== undefined) as number[];
         
         result[questionKey] = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
@@ -191,18 +235,29 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     const [xKey, yKey] = config.selectedQuestions;
+    const isXItemQuestion = ITEM_QUESTIONS.has(xKey);
+    const isYItemQuestion = ITEM_QUESTIONS.has(yKey);
     
     return data
       .filter(row => {
-        const xVal = (row as any)[xKey];
-        const yVal = (row as any)[yKey];
+        const xRaw = (row as any)[xKey];
+        const yRaw = (row as any)[yKey];
+        const xVal = isXItemQuestion ? convertLikertToNumber(xRaw) : xRaw;
+        const yVal = isYItemQuestion ? convertLikertToNumber(yRaw) : yRaw;
         return xVal !== null && xVal !== undefined && yVal !== null && yVal !== undefined;
       })
-      .map(row => ({
-        x: (row as any)[xKey],
-        y: (row as any)[yKey],
-        group: config.groupByField ? String(row[config.groupByField]) : 'All',
-      }));
+      .map(row => {
+        const xRaw = (row as any)[xKey];
+        const yRaw = (row as any)[yKey];
+        const xVal = isXItemQuestion ? convertLikertToNumber(xRaw) : xRaw;
+        const yVal = isYItemQuestion ? convertLikertToNumber(yRaw) : yRaw;
+        
+        return {
+          x: xVal as number,
+          y: yVal as number,
+          group: config.groupByField ? String(row[config.groupByField]) : 'All',
+        };
+      });
   }, [data, config.chartType, config.selectedQuestions, config.groupByField]);
 
   const distributionData = useMemo(() => {
@@ -211,10 +266,12 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     const questionKey = config.selectedQuestions[0];
+    const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
     const distribution = new Map<number, number>();
     
     data.forEach(row => {
-      const value = (row as any)[questionKey];
+      const rawValue = (row as any)[questionKey];
+      const value = isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
       if (value !== null && value !== undefined) {
         distribution.set(value, (distribution.get(value) || 0) + 1);
       }
