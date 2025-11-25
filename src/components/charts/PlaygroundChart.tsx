@@ -5,8 +5,6 @@ import { Info } from '@phosphor-icons/react';
 import { 
   BarChart, 
   Bar, 
-  LineChart, 
-  Line, 
   ScatterChart, 
   Scatter,
   XAxis, 
@@ -22,7 +20,7 @@ import {
 } from 'recharts';
 import { SurveyResponse } from '@/lib/types';
 
-type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
+type ChartType = 'grouped-bar' | 'stacked-bar' | 'scatter' | 'distribution';
 
 interface PlaygroundConfig {
   chartType: ChartType;
@@ -567,13 +565,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
   const getChartTitle = () => {
     const chartTypeLabel = {
-      'bar': 'Bar',
-      'line': 'Line',
       'grouped-bar': 'Grouped',
       'stacked-bar': 'Stacked',
       'scatter': 'Scatter',
       'distribution': 'Distribution',
-    }[config.chartType] || 'Bar';
+    }[config.chartType] || 'Grouped';
 
     if (config.chartType === 'scatter') {
       return `Scatter Plot: ${QUESTION_LABELS[config.selectedQuestions[0]]} vs ${QUESTION_LABELS[config.selectedQuestions[1]]}`;
@@ -688,79 +684,6 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       );
     }
 
-    if (config.chartType === 'line') {
-      const questionsToRender = config.selectedQuestions;
-      
-      return (
-        <ResponsiveContainer width="100%" height={500}>
-          <LineChart data={chartData} margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.85 0.01 250)" />
-            <XAxis 
-              dataKey="name" 
-              angle={-45}
-              textAnchor="end"
-              height={100}
-              interval={0}
-            />
-            <YAxis 
-              domain={getYAxisConfig.domain}
-              ticks={getYAxisConfig.ticks}
-              label={{ 
-                value: 'Value', 
-                angle: -90, 
-                position: 'insideLeft' 
-              }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            {config.groupByField ? (
-              <>
-                <Legend />
-                {questionsToRender.map((questionKey, idx) => (
-                  <Line
-                    key={questionKey}
-                    type="monotone"
-                    dataKey={questionKey}
-                    stroke={COLORS[idx % COLORS.length]}
-                    strokeWidth={2}
-                    name={QUESTION_LABELS[questionKey] || questionKey}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 6 }}
-                  >
-                    {config.showDataLabels && (
-                      <LabelList 
-                        dataKey={questionKey} 
-                        position="top" 
-                        formatter={(value: number) => value.toFixed(1)}
-                        style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
-                      />
-                    )}
-                  </Line>
-                ))}
-              </>
-            ) : (
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke={COLORS[0]}
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              >
-                {config.showDataLabels && (
-                  <LabelList 
-                    dataKey="value" 
-                    position="top" 
-                    formatter={(value: number) => value.toFixed(1)}
-                    style={{ fontSize: '11px', fill: 'oklch(0.20 0.02 250)' }}
-                  />
-                )}
-              </Line>
-            )}
-          </LineChart>
-        </ResponsiveContainer>
-      );
-    }
-
     if (config.chartType === 'stacked-bar' && config.groupByField) {
       const questionsToRender = config.selectedQuestions;
       
@@ -810,7 +733,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       );
     }
 
-    if ((config.chartType === 'grouped-bar' || config.chartType === 'bar') && config.groupByField) {
+    if (config.chartType === 'grouped-bar' && config.groupByField) {
       const questionsToRender = config.selectedQuestions;
       
       return (
