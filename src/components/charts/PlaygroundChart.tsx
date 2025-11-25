@@ -27,7 +27,6 @@ type ChartType = 'bar' | 'line' | 'grouped-bar' | 'stacked-bar' | 'scatter' | 'd
 interface PlaygroundConfig {
   chartType: ChartType;
   selectedQuestions: string[];
-  selectedYQuestions: string[];
   selectedGroups: string[];
   groupByField: keyof SurveyResponse | null;
   showDataLabels: boolean;
@@ -154,7 +153,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     const isRangeField = RANGE_FIELDS.has(config.groupByField as string);
-    const questionsToUse = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
+    const questionsToUse = config.selectedQuestions;
     
     if (config.selectedGroups.length === 0) {
       const groups = new Set<string>();
@@ -226,8 +225,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     });
   }, [
     data, 
-    config.selectedQuestions,
-    config.selectedYQuestions, 
+    config.selectedQuestions, 
     config.selectedGroups, 
     config.groupByField
   ]);
@@ -352,7 +350,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }));
   };
 
-  if (config.selectedQuestions.length === 0 && (!config.groupByField || config.selectedYQuestions.length === 0)) {
+  if (config.selectedQuestions.length === 0) {
     return (
       <Card>
         <CardContent className="py-12">
@@ -494,9 +492,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'line') {
-      const questionsToRender = config.groupByField && config.selectedYQuestions.length > 0 
-        ? config.selectedYQuestions 
-        : config.selectedQuestions;
+      const questionsToRender = config.selectedQuestions;
       
       return (
         <ResponsiveContainer width="100%" height={500}>
@@ -569,7 +565,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if (config.chartType === 'stacked-bar' && config.groupByField) {
-      const questionsToRender = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
+      const questionsToRender = config.selectedQuestions;
       
       return (
         <ResponsiveContainer width="100%" height={500}>
@@ -618,7 +614,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     }
 
     if ((config.chartType === 'grouped-bar' || config.chartType === 'bar') && config.groupByField) {
-      const questionsToRender = config.selectedYQuestions.length > 0 ? config.selectedYQuestions : config.selectedQuestions;
+      const questionsToRender = config.selectedQuestions;
       
       return (
         <ResponsiveContainer width="100%" height={500}>
