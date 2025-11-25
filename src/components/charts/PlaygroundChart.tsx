@@ -87,17 +87,19 @@ const GROUP_BY_LABELS: Record<string, string> = {
   schoolType: 'School Type',
   yearsTeachingCategory: 'Years Teaching',
   levelsTeaching: 'Levels Teaching',
+  hasCertification: 'Certification',
+  groupSize: 'Group Size',
   shareSupportStudents: 'Share of Support Students',
   shareChallengeStudents: 'Share of Challenge Students',
   itemTimeToDifferentiate: 'Time to Differentiate',
-  itemClassSizeOk: 'Class Size OK',
+  itemClassSizeOk: 'Class Size',
   itemConfidentSupport: 'Confident Support',
   itemConfidentChallenge: 'Confident Challenge',
   itemTeacherEdPrepared: 'Teacher Ed Prepared',
-  itemFormativeHelps: 'Formative Assessment Helps',
+  itemFormativeHelps: 'Formative Assessment',
   itemDigitalTools: 'Digital Tools',
-  itemMaterialsSupport: 'Materials for Support',
-  itemMaterialsChallenge: 'Materials for Challenge',
+  itemMaterialsSupport: 'Materials Support',
+  itemMaterialsChallenge: 'Materials Challenge',
 };
 
 const RANGE_FIELDS = new Set([
@@ -132,8 +134,17 @@ const CHALLENGE_QUESTIONS = new Set([
   'challengeQ1', 'challengeQ2', 'challengeQ3', 'challengeQ4', 'challengeQ5', 'challengeQ6'
 ]);
 
-const CONTEXT_QUESTIONS = new Set([
+const NUMERIC_CONTEXT_QUESTIONS = new Set([
   'groupSize',
+]);
+
+const CATEGORICAL_CONTEXT_QUESTIONS = new Set([
+  'yearsTeachingCategory',
+  'schoolType',
+  'hasCertification',
+  'levelsTeaching',
+  'shareSupportStudents',
+  'shareChallengeStudents',
 ]);
 
 const shouldUse1to5Scale = (questionKey: string): boolean => {
@@ -182,18 +193,15 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     if (!config.groupByField) {
       return config.selectedQuestions.map(questionKey => {
         const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
-        const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
+        const isNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(questionKey);
         
         const values = data
           .map(row => {
             const rawValue = (row as any)[questionKey];
             if (isItemQuestion) {
               return convertLikertToNumber(rawValue);
-            } else if (isContextQuestion) {
-              if (questionKey === 'groupSize') {
-                return getContextValue(rawValue, questionKey);
-              }
-              return null;
+            } else if (isNumericContext) {
+              return getContextValue(rawValue, questionKey);
             }
             return rawValue;
           })
@@ -235,18 +243,15 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         
         questionsToUse.forEach(questionKey => {
           const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
-          const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
+          const isNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(questionKey);
           
           const values = groupData
             .map(row => {
               const rawValue = (row as any)[questionKey];
               if (isItemQuestion) {
                 return convertLikertToNumber(rawValue);
-              } else if (isContextQuestion) {
-                if (questionKey === 'groupSize') {
-                  return getContextValue(rawValue, questionKey);
-                }
-                return null;
+              } else if (isNumericContext) {
+                return getContextValue(rawValue, questionKey);
               }
               return rawValue;
             })
@@ -275,18 +280,15 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       
       questionsToUse.forEach(questionKey => {
         const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
-        const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
+        const isNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(questionKey);
         
         const values = groupData
           .map(row => {
             const rawValue = (row as any)[questionKey];
             if (isItemQuestion) {
               return convertLikertToNumber(rawValue);
-            } else if (isContextQuestion) {
-              if (questionKey === 'groupSize') {
-                return getContextValue(rawValue, questionKey);
-              }
-              return null;
+            } else if (isNumericContext) {
+              return getContextValue(rawValue, questionKey);
             }
             return rawValue;
           })
@@ -313,8 +315,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     const [xKey, yKey] = config.selectedQuestions;
     const isXItemQuestion = ITEM_QUESTIONS.has(xKey);
     const isYItemQuestion = ITEM_QUESTIONS.has(yKey);
-    const isXContextQuestion = CONTEXT_QUESTIONS.has(xKey);
-    const isYContextQuestion = CONTEXT_QUESTIONS.has(yKey);
+    const isXNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(xKey);
+    const isYNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(yKey);
     
     return data
       .filter(row => {
@@ -324,7 +326,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         let xVal: number | null = null;
         if (isXItemQuestion) {
           xVal = convertLikertToNumber(xRaw);
-        } else if (isXContextQuestion) {
+        } else if (isXNumericContext) {
           if (xKey === 'groupSize') {
             xVal = getContextValue(xRaw, xKey);
           } else {
@@ -337,7 +339,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         let yVal: number | null = null;
         if (isYItemQuestion) {
           yVal = convertLikertToNumber(yRaw);
-        } else if (isYContextQuestion) {
+        } else if (isYNumericContext) {
           if (yKey === 'groupSize') {
             yVal = getContextValue(yRaw, yKey);
           } else {
@@ -356,7 +358,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         let xVal: number | null = null;
         if (isXItemQuestion) {
           xVal = convertLikertToNumber(xRaw);
-        } else if (isXContextQuestion) {
+        } else if (isXNumericContext) {
           if (xKey === 'groupSize') {
             xVal = getContextValue(xRaw, xKey);
           } else {
@@ -369,7 +371,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         let yVal: number | null = null;
         if (isYItemQuestion) {
           yVal = convertLikertToNumber(yRaw);
-        } else if (isYContextQuestion) {
+        } else if (isYNumericContext) {
           if (yKey === 'groupSize') {
             yVal = getContextValue(yRaw, yKey);
           } else {
@@ -394,7 +396,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
     const questionKey = config.selectedQuestions[0];
     const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
-    const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
+    const isNumericContext = NUMERIC_CONTEXT_QUESTIONS.has(questionKey);
     const distribution = new Map<number, number>();
     
     data.forEach(row => {
@@ -402,7 +404,7 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       let value: number | null = null;
       if (isItemQuestion) {
         value = convertLikertToNumber(rawValue);
-      } else if (isContextQuestion) {
+      } else if (isNumericContext) {
         if (questionKey === 'groupSize') {
           value = getContextValue(rawValue, questionKey);
         } else {

@@ -53,6 +53,7 @@ const GROUP_BY_FIELDS = [
   { key: 'schoolType', label: 'School Type', isRangeField: false },
   { key: 'hasCertification', label: 'Certification', isRangeField: false },
   { key: 'levelsTeaching', label: 'Levels Teaching', isRangeField: false },
+  { key: 'groupSize', label: 'Group Size', isRangeField: false },
   { key: 'shareSupportStudents', label: 'Share of Support Students', isRangeField: false },
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', isRangeField: true },
