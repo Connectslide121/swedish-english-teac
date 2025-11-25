@@ -53,6 +53,16 @@ export interface Filters {
   groupSizeMax: number;
   shareSupportStudents: string[];
   shareChallengeStudents: string[];
+  hasCertification: string[];
+  itemTimeToDifferentiate: string[];
+  itemClassSizeOk: string[];
+  itemConfidentSupport: string[];
+  itemConfidentChallenge: string[];
+  itemTeacherEdPrepared: string[];
+  itemFormativeHelps: string[];
+  itemDigitalTools: string[];
+  itemMaterialsSupport: string[];
+  itemMaterialsChallenge: string[];
 }
 
 export interface SummaryStats {

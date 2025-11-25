@@ -31,6 +31,16 @@ function App() {
     groupSizeMax: 50,
     shareSupportStudents: [],
     shareChallengeStudents: [],
+    hasCertification: [],
+    itemTimeToDifferentiate: [],
+    itemClassSizeOk: [],
+    itemConfidentSupport: [],
+    itemConfidentChallenge: [],
+    itemTeacherEdPrepared: [],
+    itemFormativeHelps: [],
+    itemDigitalTools: [],
+    itemMaterialsSupport: [],
+    itemMaterialsChallenge: [],
   });
 
   const handleFileLoad = (content: string, filename: string) => {
@@ -49,6 +59,16 @@ function App() {
         groupSizeMax: 50,
         shareSupportStudents: [],
         shareChallengeStudents: [],
+        hasCertification: [],
+        itemTimeToDifferentiate: [],
+        itemClassSizeOk: [],
+        itemConfidentSupport: [],
+        itemConfidentChallenge: [],
+        itemTeacherEdPrepared: [],
+        itemFormativeHelps: [],
+        itemDigitalTools: [],
+        itemMaterialsSupport: [],
+        itemMaterialsChallenge: [],
       });
     } catch (error) {
       alert(`Error parsing file: ${(error as Error).message}`);

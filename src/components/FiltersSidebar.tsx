@@ -18,6 +18,19 @@ interface FiltersSidebarProps {
   onClose: () => void;
 }
 
+const CONTEXT_QUESTIONS = [
+  { key: 'hasCertification', label: 'Has Teaching Certification' },
+  { key: 'itemTimeToDifferentiate', label: '13. I have sufficient time to differentiate for diverse needs.' },
+  { key: 'itemClassSizeOk', label: '14. My typical class size allows me to adapt instruction effectively.' },
+  { key: 'itemConfidentSupport', label: '15. I feel confident designing support-focused adaptations.' },
+  { key: 'itemConfidentChallenge', label: '16. I feel confident designing challenge-focused adaptations.' },
+  { key: 'itemTeacherEdPrepared', label: '17. My teacher education prepared me to adapt instruction for diverse needs.' },
+  { key: 'itemFormativeHelps', label: '18. Formative assessment helps me identify and target adaptations efficiently.' },
+  { key: 'itemDigitalTools', label: '19. Digital tools make it easier to adapt lessons for students with different levels and needs.' },
+  { key: 'itemMaterialsSupport', label: '20. I have access to suitable materials for support adaptations.' },
+  { key: 'itemMaterialsChallenge', label: '21. I have access to suitable materials for challenge adaptations.' },
+] as const;
+
 export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: FiltersSidebarProps) {
   const schoolTypes = getUniqueValues(data, 'schoolType');
   const yearsCategories = ['0-5', '6-10', '11-20', '21-30', '30+'];
@@ -34,6 +47,29 @@ export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: Filt
       ? current.filter(v => v !== value)
       : [...current, value];
     updateFilter(key, updated as any);
+  };
+
+  const clearAllFilters = () => {
+    onFiltersChange({
+      currentlyTeaching: [],
+      schoolType: [],
+      yearsTeachingCategory: [],
+      levelsTeaching: [],
+      groupSizeMin: 0,
+      groupSizeMax: 50,
+      shareSupportStudents: [],
+      shareChallengeStudents: [],
+      hasCertification: [],
+      itemTimeToDifferentiate: [],
+      itemClassSizeOk: [],
+      itemConfidentSupport: [],
+      itemConfidentChallenge: [],
+      itemTeacherEdPrepared: [],
+      itemFormativeHelps: [],
+      itemDigitalTools: [],
+      itemMaterialsSupport: [],
+      itemMaterialsChallenge: [],
+    });
   };
 
   return (
@@ -194,6 +230,40 @@ export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: Filt
             </div>
           </div>
 
+          <Separator className="my-6" />
+          
+          <div className="mb-4">
+            <h4 className="font-semibold text-sm text-muted-foreground">Context Questions</h4>
+          </div>
+
+          {CONTEXT_QUESTIONS.map(({ key, label }) => {
+            const uniqueValues = getUniqueValues(data, key as keyof SurveyResponse);
+            const filterKey = key as keyof Filters;
+            
+            return (
+              <div key={key}>
+                <Separator />
+                <div className="space-y-2 mt-4">
+                  <Label className="text-sm font-medium">{label}</Label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {uniqueValues.map(value => (
+                      <div key={value} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`${key}-${value}`}
+                          checked={(filters[filterKey] as string[]).includes(value)}
+                          onCheckedChange={() => toggleArrayFilter(filterKey, value)}
+                        />
+                        <label htmlFor={`${key}-${value}`} className="text-sm cursor-pointer">
+                          {value}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
           {(filters.currentlyTeaching.length > 0 ||
             filters.schoolType.length > 0 ||
             filters.yearsTeachingCategory.length > 0 ||
@@ -201,20 +271,21 @@ export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: Filt
             filters.groupSizeMin > 0 ||
             filters.groupSizeMax < 50 ||
             filters.shareSupportStudents.length > 0 ||
-            filters.shareChallengeStudents.length > 0) && (
+            filters.shareChallengeStudents.length > 0 ||
+            filters.hasCertification.length > 0 ||
+            filters.itemTimeToDifferentiate.length > 0 ||
+            filters.itemClassSizeOk.length > 0 ||
+            filters.itemConfidentSupport.length > 0 ||
+            filters.itemConfidentChallenge.length > 0 ||
+            filters.itemTeacherEdPrepared.length > 0 ||
+            filters.itemFormativeHelps.length > 0 ||
+            filters.itemDigitalTools.length > 0 ||
+            filters.itemMaterialsSupport.length > 0 ||
+            filters.itemMaterialsChallenge.length > 0) && (
             <>
               <Separator />
               <button
-                onClick={() => onFiltersChange({
-                  currentlyTeaching: [],
-                  schoolType: [],
-                  yearsTeachingCategory: [],
-                  levelsTeaching: [],
-                  groupSizeMin: 0,
-                  groupSizeMax: 50,
-                  shareSupportStudents: [],
-                  shareChallengeStudents: [],
-                })}
+                onClick={clearAllFilters}
                 className="text-sm text-accent hover:underline w-full text-left"
               >
                 Clear all filters

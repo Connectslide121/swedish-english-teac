@@ -35,6 +35,46 @@ export function applyFilters(data: SurveyResponse[], filters: Filters): SurveyRe
       return false;
     }
     
+    if (filters.hasCertification.length > 0 && !filters.hasCertification.includes(row.hasCertification)) {
+      return false;
+    }
+    
+    if (filters.itemTimeToDifferentiate.length > 0 && !filters.itemTimeToDifferentiate.includes(row.itemTimeToDifferentiate)) {
+      return false;
+    }
+    
+    if (filters.itemClassSizeOk.length > 0 && !filters.itemClassSizeOk.includes(row.itemClassSizeOk)) {
+      return false;
+    }
+    
+    if (filters.itemConfidentSupport.length > 0 && !filters.itemConfidentSupport.includes(row.itemConfidentSupport)) {
+      return false;
+    }
+    
+    if (filters.itemConfidentChallenge.length > 0 && !filters.itemConfidentChallenge.includes(row.itemConfidentChallenge)) {
+      return false;
+    }
+    
+    if (filters.itemTeacherEdPrepared.length > 0 && !filters.itemTeacherEdPrepared.includes(row.itemTeacherEdPrepared)) {
+      return false;
+    }
+    
+    if (filters.itemFormativeHelps.length > 0 && !filters.itemFormativeHelps.includes(row.itemFormativeHelps)) {
+      return false;
+    }
+    
+    if (filters.itemDigitalTools.length > 0 && !filters.itemDigitalTools.includes(row.itemDigitalTools)) {
+      return false;
+    }
+    
+    if (filters.itemMaterialsSupport.length > 0 && !filters.itemMaterialsSupport.includes(row.itemMaterialsSupport)) {
+      return false;
+    }
+    
+    if (filters.itemMaterialsChallenge.length > 0 && !filters.itemMaterialsChallenge.includes(row.itemMaterialsChallenge)) {
+      return false;
+    }
+    
     return true;
   });
 }
