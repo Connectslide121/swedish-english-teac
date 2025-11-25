@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChartBar, ChartPie, Rows, Sparkle, X, Info } from '@phosphor-icons/react';
+import { ChartBar, ChartPie, Rows, Sparkle, X } from '@phosphor-icons/react';
 import { SurveyResponse } from '@/lib/types';
 import { PlaygroundChart } from '@/components/charts/PlaygroundChart';
 
@@ -17,12 +17,12 @@ interface PlaygroundConfig {
   chartType: ChartType;
   selectedQuestions: string[];
   selectedYQuestions: string[];
-  groupByField: keyof Surve
+  groupByField: keyof SurveyResponse | null;
+  selectedGroups: string[];
+  showDataLabels: boolean;
 }
+
 const QUESTIONS = [
-} { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
-{ key: 'supportQ2', label: 'Support: Simpler instructions', category: 'support' },
-const QUESTIONS = [', label: 'Support: Limit to core requirements', category: 'support' },
   { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
   { key: 'supportQ2', label: 'Support: Simpler instructions', category: 'support' },
   { key: 'supportQ3', label: 'Support: Limit to core requirements', category: 'support' },
@@ -48,33 +48,59 @@ const QUESTIONS = [', label: 'Support: Limit to core requirements', category: 's
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
 ];
 
+const GROUP_BY_FIELDS = [
+  { key: 'yearsTeachingCategory', label: 'Years Teaching', isRangeField: false },
+  { key: 'schoolType', label: 'School Type', isRangeField: false },
+  { key: 'hasCertification', label: 'Certification', isRangeField: false },
   { key: 'levelsTeaching', label: 'Levels Teaching', isRangeField: false },
   { key: 'shareSupportStudents', label: 'Share of Support Students', isRangeField: false },
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
   { key: 'itemTimeToDifferentiate', label: 'Time to Differentiate', isRangeField: true },
-  { key: 'itemClassSizeOk', label: 'Class Size OK', isRangeField: true },
+  { key: 'itemClassSizeOk', label: 'Class Size', isRangeField: true },
+  { key: 'itemConfidentSupport', label: 'Confident Supporting', isRangeField: true },
+  { key: 'itemConfidentChallenge', label: 'Confident Challenging', isRangeField: true },
+  { key: 'itemTeacherEdPrepared', label: 'Teacher Ed Prepared', isRangeField: true },
+  { key: 'itemFormativeHelps', label: 'Formative Assessment', isRangeField: true },
+  { key: 'itemDigitalTools', label: 'Digital Tools', isRangeField: true },
+  { key: 'itemMaterialsSupport', label: 'Materials Support', isRangeField: true },
+  { key: 'itemMaterialsChallenge', label: 'Materials Challenge', isRangeField: true },
 ];
 
 export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'grouped-bar',
-    selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptatio
+    selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
+    selectedYQuestions: [],
+    groupByField: null,
     selectedGroups: [],
     showDataLabels: false,
+  });
 
-    if (!config.groupBy
-    const currentField = GROUP_
+  const availableGroups = useMemo(() => {
+    if (!config.groupByField) return [];
     
-     
-
+    const currentField = GROUP_BY_FIELDS.find(f => f.key === config.groupByField);
+    if (!currentField) return [];
+    
+    if (currentField.isRangeField) {
+      return ['1', '2', '3', '4', '5'];
+    }
+    
+    const groups = new Set<string>();
     data.forEach(row => {
-      if (value !== null && value !== un
+      const value = row[config.groupByField as keyof SurveyResponse];
+      if (value !== null && value !== undefined && value !== '') {
+        groups.add(String(value));
+      }
+    });
     
     return Array.from(groups).sort();
+  }, [data, config.groupByField]);
 
-    
-    const counts = new 
+  const groupCounts = useMemo(() => {
+    const counts = new Map<string, number>();
     availableGroups.forEach(group => {
+      const count = data.filter(row => {
         const value = row[config.groupByField as keyof SurveyResponse];
         return String(value) === group;
       }).length;
@@ -212,7 +238,7 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
                     onClick={() => setConfig(prev => ({ ...prev, chartType: 'grouped-bar' }))}
                     className="justify-start"
                   >
-                    <ChartBar className="mr-2" size={16} />
+                    <Rows className="mr-2" size={16} />
                     Grouped
                   </Button>
                   <Button
