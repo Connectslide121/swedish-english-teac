@@ -39,7 +39,7 @@ export function FiltersSidebar({ data, filters, onFiltersChange, onClose }: Filt
   return (
     <Card className="h-full">
       <ScrollArea className="h-[calc(100vh-12rem)]">
-        <div className="p-6 space-y-6">
+        <div className="px-6 space-y-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Funnel size={20} className="text-muted-foreground" />

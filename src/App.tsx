@@ -198,7 +198,7 @@ function App() {
         <div className="flex gap-6">
           {!filtersOpen && (
             <div className="flex-shrink-0">
-              <div className="sticky top-6 max-h-[60vh]">
+              <div className="sticky top-6 h-[50vh]">
                 <Button
                   onClick={() => setFiltersOpen(true)}
                   variant="outline"
