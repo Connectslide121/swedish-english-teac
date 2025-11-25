@@ -121,7 +121,7 @@ function App() {
               <h1 className="text-5xl font-semibold mb-4 tracking-tight text-foreground">
                 Swedish English Teachers
                 <br />
-                Classroom Adaptation Dashboard
+                Classroom Adaptation Survey Dashboard
               </h1>
               
               <p className="text-lg text-foreground/70 max-w-2xl mx-auto mb-12 leading-relaxed">
@@ -184,7 +184,7 @@ function App() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">
-                Swedish English Teachers Classroom Adaptation Dashboard
+                Swedish English Teachers Classroom Adaptation Survey Dashboard
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Analyzing {rawData.length} survey responses
