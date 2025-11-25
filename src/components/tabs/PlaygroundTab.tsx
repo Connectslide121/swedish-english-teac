@@ -45,6 +45,13 @@ const QUESTIONS = [
   { key: 'itemMaterialsChallenge', label: 'Item: Access to materials for challenge', category: 'item' },
   { key: 'supportAdaptationIndex', label: 'Support Adaptation Index (avg)', category: 'index' },
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
+  { key: 'yearsTeachingCategory', label: 'Context: Years Teaching', category: 'context' },
+  { key: 'schoolType', label: 'Context: School Type', category: 'context' },
+  { key: 'hasCertification', label: 'Context: Certification', category: 'context' },
+  { key: 'levelsTeaching', label: 'Context: Levels Teaching', category: 'context' },
+  { key: 'groupSize', label: 'Context: Group Size', category: 'context' },
+  { key: 'shareSupportStudents', label: 'Context: Share of Support Students', category: 'context' },
+  { key: 'shareChallengeStudents', label: 'Context: Share of Challenge Students', category: 'context' },
 ];
 
 const GROUP_BY_FIELDS = [

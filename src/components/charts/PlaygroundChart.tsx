@@ -65,6 +65,22 @@ const QUESTION_LABELS: Record<string, string> = {
   challengeQ6: 'Flex grouping',
   supportAdaptationIndex: 'Support Index',
   challengeAdaptationIndex: 'Challenge Index',
+  itemTimeToDifferentiate: 'Time to Differentiate',
+  itemClassSizeOk: 'Class Size',
+  itemConfidentSupport: 'Confident Support',
+  itemConfidentChallenge: 'Confident Challenge',
+  itemTeacherEdPrepared: 'Teacher Ed Prepared',
+  itemFormativeHelps: 'Formative Assessment',
+  itemDigitalTools: 'Digital Tools',
+  itemMaterialsSupport: 'Materials Support',
+  itemMaterialsChallenge: 'Materials Challenge',
+  yearsTeachingCategory: 'Years Teaching',
+  schoolType: 'School Type',
+  hasCertification: 'Certification',
+  levelsTeaching: 'Levels Teaching',
+  groupSize: 'Group Size',
+  shareSupportStudents: 'Share Support Students',
+  shareChallengeStudents: 'Share Challenge Students',
 };
 
 const GROUP_BY_LABELS: Record<string, string> = {
@@ -108,6 +124,32 @@ const ITEM_QUESTIONS = new Set([
   'itemMaterialsChallenge',
 ]);
 
+const SUPPORT_QUESTIONS = new Set([
+  'supportQ1', 'supportQ2', 'supportQ3', 'supportQ4', 'supportQ5', 'supportQ6'
+]);
+
+const CHALLENGE_QUESTIONS = new Set([
+  'challengeQ1', 'challengeQ2', 'challengeQ3', 'challengeQ4', 'challengeQ5', 'challengeQ6'
+]);
+
+const CONTEXT_QUESTIONS = new Set([
+  'yearsTeachingCategory',
+  'schoolType',
+  'hasCertification',
+  'levelsTeaching',
+  'groupSize',
+  'shareSupportStudents',
+  'shareChallengeStudents',
+]);
+
+const shouldUse1to5Scale = (questionKey: string): boolean => {
+  return SUPPORT_QUESTIONS.has(questionKey) || 
+         CHALLENGE_QUESTIONS.has(questionKey) || 
+         ITEM_QUESTIONS.has(questionKey) ||
+         questionKey === 'supportAdaptationIndex' ||
+         questionKey === 'challengeAdaptationIndex';
+};
+
 function convertLikertToNumber(value: string | number | null): number | null {
   if (value === null || value === undefined) return null;
   if (typeof value === 'number') return value;
@@ -125,6 +167,17 @@ function convertLikertToNumber(value: string | number | null): number | null {
   return isNaN(num) ? null : num;
 }
 
+function getContextValue(value: any, questionKey: string): number | null {
+  if (value === null || value === undefined) return null;
+  
+  if (questionKey === 'groupSize') {
+    const num = typeof value === 'number' ? value : parseFloat(String(value));
+    return isNaN(num) ? null : num;
+  }
+  
+  return null;
+}
+
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
   const chartData = useMemo(() => {
     if (config.selectedQuestions.length === 0) {
@@ -134,11 +187,17 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     if (!config.groupByField) {
       return config.selectedQuestions.map(questionKey => {
         const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+        const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
         
         const values = data
           .map(row => {
             const rawValue = (row as any)[questionKey];
-            return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+            if (isItemQuestion) {
+              return convertLikertToNumber(rawValue);
+            } else if (isContextQuestion) {
+              return getContextValue(rawValue, questionKey);
+            }
+            return rawValue;
           })
           .filter(v => v !== null && v !== undefined) as number[];
         
@@ -178,11 +237,17 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         
         questionsToUse.forEach(questionKey => {
           const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+          const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
           
           const values = groupData
             .map(row => {
               const rawValue = (row as any)[questionKey];
-              return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+              if (isItemQuestion) {
+                return convertLikertToNumber(rawValue);
+              } else if (isContextQuestion) {
+                return getContextValue(rawValue, questionKey);
+              }
+              return rawValue;
             })
             .filter(v => v !== null && v !== undefined) as number[];
           
@@ -209,11 +274,17 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       
       questionsToUse.forEach(questionKey => {
         const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+        const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
         
         const values = groupData
           .map(row => {
             const rawValue = (row as any)[questionKey];
-            return isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+            if (isItemQuestion) {
+              return convertLikertToNumber(rawValue);
+            } else if (isContextQuestion) {
+              return getContextValue(rawValue, questionKey);
+            }
+            return rawValue;
           })
           .filter(v => v !== null && v !== undefined) as number[];
         
@@ -238,24 +309,59 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
     const [xKey, yKey] = config.selectedQuestions;
     const isXItemQuestion = ITEM_QUESTIONS.has(xKey);
     const isYItemQuestion = ITEM_QUESTIONS.has(yKey);
+    const isXContextQuestion = CONTEXT_QUESTIONS.has(xKey);
+    const isYContextQuestion = CONTEXT_QUESTIONS.has(yKey);
     
     return data
       .filter(row => {
         const xRaw = (row as any)[xKey];
         const yRaw = (row as any)[yKey];
-        const xVal = isXItemQuestion ? convertLikertToNumber(xRaw) : xRaw;
-        const yVal = isYItemQuestion ? convertLikertToNumber(yRaw) : yRaw;
+        
+        let xVal: number | null = null;
+        if (isXItemQuestion) {
+          xVal = convertLikertToNumber(xRaw);
+        } else if (isXContextQuestion) {
+          xVal = getContextValue(xRaw, xKey);
+        } else {
+          xVal = xRaw;
+        }
+        
+        let yVal: number | null = null;
+        if (isYItemQuestion) {
+          yVal = convertLikertToNumber(yRaw);
+        } else if (isYContextQuestion) {
+          yVal = getContextValue(yRaw, yKey);
+        } else {
+          yVal = yRaw;
+        }
+        
         return xVal !== null && xVal !== undefined && yVal !== null && yVal !== undefined;
       })
       .map(row => {
         const xRaw = (row as any)[xKey];
         const yRaw = (row as any)[yKey];
-        const xVal = isXItemQuestion ? convertLikertToNumber(xRaw) : xRaw;
-        const yVal = isYItemQuestion ? convertLikertToNumber(yRaw) : yRaw;
+        
+        let xVal: number | null = null;
+        if (isXItemQuestion) {
+          xVal = convertLikertToNumber(xRaw);
+        } else if (isXContextQuestion) {
+          xVal = getContextValue(xRaw, xKey);
+        } else {
+          xVal = xRaw;
+        }
+        
+        let yVal: number | null = null;
+        if (isYItemQuestion) {
+          yVal = convertLikertToNumber(yRaw);
+        } else if (isYContextQuestion) {
+          yVal = getContextValue(yRaw, yKey);
+        } else {
+          yVal = yRaw;
+        }
         
         return {
-          x: xVal as number,
-          y: yVal as number,
+          x: xVal!,
+          y: yVal!,
           group: config.groupByField ? String(row[config.groupByField]) : 'All',
         };
       });
@@ -268,11 +374,20 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
 
     const questionKey = config.selectedQuestions[0];
     const isItemQuestion = ITEM_QUESTIONS.has(questionKey);
+    const isContextQuestion = CONTEXT_QUESTIONS.has(questionKey);
     const distribution = new Map<number, number>();
     
     data.forEach(row => {
       const rawValue = (row as any)[questionKey];
-      const value = isItemQuestion ? convertLikertToNumber(rawValue) : rawValue;
+      let value: number | null = null;
+      if (isItemQuestion) {
+        value = convertLikertToNumber(rawValue);
+      } else if (isContextQuestion) {
+        value = getContextValue(rawValue, questionKey);
+      } else {
+        value = rawValue;
+      }
+      
       if (value !== null && value !== undefined) {
         distribution.set(value, (distribution.get(value) || 0) + 1);
       }
@@ -286,6 +401,50 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         percentage: (count / data.length) * 100,
       }));
   }, [data, config.chartType, config.selectedQuestions]);
+
+  const getYAxisConfig = useMemo(() => {
+    const allSelectedUse1to5 = config.selectedQuestions.every(q => shouldUse1to5Scale(q));
+    
+    if (allSelectedUse1to5) {
+      return {
+        domain: [0, 5] as [number, number],
+        ticks: [0, 1, 2, 3, 4, 5],
+      };
+    }
+    
+    let allValues: number[] = [];
+    if (config.groupByField) {
+      chartData.forEach(row => {
+        config.selectedQuestions.forEach(q => {
+          const value = row[q];
+          if (value !== null && value !== undefined && !isNaN(value)) {
+            allValues.push(value);
+          }
+        });
+      });
+    } else {
+      chartData.forEach(row => {
+        if (row.value !== null && row.value !== undefined && !isNaN(row.value)) {
+          allValues.push(row.value);
+        }
+      });
+    }
+    
+    if (allValues.length === 0) {
+      return {
+        domain: undefined,
+        ticks: undefined,
+      };
+    }
+    
+    const minValue = Math.floor(Math.min(...allValues));
+    const maxValue = Math.ceil(Math.max(...allValues));
+    
+    return {
+      domain: undefined,
+      ticks: undefined,
+    };
+  }, [config.selectedQuestions, chartData, config.groupByField]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
@@ -416,6 +575,18 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         groupedScatter.get(point.group)!.push(point);
       });
 
+      const [xKey, yKey] = config.selectedQuestions;
+      const xUses1to5 = shouldUse1to5Scale(xKey);
+      const yUses1to5 = shouldUse1to5Scale(yKey);
+
+      const xAxisConfig = xUses1to5 
+        ? { domain: [0, 5] as [number, number], ticks: [0, 1, 2, 3, 4, 5] }
+        : { domain: undefined, ticks: undefined };
+      
+      const yAxisConfig = yUses1to5 
+        ? { domain: [0, 5] as [number, number], ticks: [0, 1, 2, 3, 4, 5] }
+        : { domain: undefined, ticks: undefined };
+
       return (
         <ResponsiveContainer width="100%" height={500}>
           <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 60 }}>
@@ -423,11 +594,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             <XAxis 
               type="number" 
               dataKey="x" 
-              name={QUESTION_LABELS[config.selectedQuestions[0]]}
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
+              name={QUESTION_LABELS[xKey]}
+              domain={xAxisConfig.domain}
+              ticks={xAxisConfig.ticks}
               label={{ 
-                value: QUESTION_LABELS[config.selectedQuestions[0]], 
+                value: QUESTION_LABELS[xKey], 
                 position: 'bottom',
                 offset: 40 
               }}
@@ -435,11 +606,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             <YAxis 
               type="number" 
               dataKey="y" 
-              name={QUESTION_LABELS[config.selectedQuestions[1]]}
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
+              name={QUESTION_LABELS[yKey]}
+              domain={yAxisConfig.domain}
+              ticks={yAxisConfig.ticks}
               label={{ 
-                value: QUESTION_LABELS[config.selectedQuestions[1]], 
+                value: QUESTION_LABELS[yKey], 
                 angle: -90, 
                 position: 'insideLeft',
                 offset: 10 
@@ -506,8 +677,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
+              domain={getYAxisConfig.domain}
+              ticks={getYAxisConfig.ticks}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -579,8 +750,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
+              domain={getYAxisConfig.domain}
+              ticks={getYAxisConfig.ticks}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -628,8 +799,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               interval={0}
             />
             <YAxis 
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
+              domain={getYAxisConfig.domain}
+              ticks={getYAxisConfig.ticks}
               label={{ 
                 value: 'Value', 
                 angle: -90, 
@@ -673,8 +844,8 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             interval={0}
           />
           <YAxis 
-            domain={[0, 5]}
-            ticks={[0, 1, 2, 3, 4, 5]}
+            domain={getYAxisConfig.domain}
+            ticks={getYAxisConfig.ticks}
             label={{ 
               value: 'Value', 
               angle: -90, 
