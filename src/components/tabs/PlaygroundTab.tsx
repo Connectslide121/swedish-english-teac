@@ -289,7 +289,7 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">
-                  {config.groupByField ? 'X-Axis Groups' : 'Questions'}
+                  Questions
                 </CardTitle>
                 <div className="flex gap-1">
                   <Button
@@ -312,9 +312,7 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
               </div>
               <CardDescription className="flex items-center justify-between">
                 <span>
-                  {config.groupByField 
-                    ? `${config.selectedQuestions.length} selected (not used when Y-questions selected)`
-                    : `${config.selectedQuestions.length} selected`}
+                  {config.selectedQuestions.length} selected
                 </span>
                 <div className="flex gap-1">
                   <Button
