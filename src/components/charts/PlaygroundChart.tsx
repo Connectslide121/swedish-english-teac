@@ -133,13 +133,7 @@ const CHALLENGE_QUESTIONS = new Set([
 ]);
 
 const CONTEXT_QUESTIONS = new Set([
-  'yearsTeachingCategory',
-  'schoolType',
-  'hasCertification',
-  'levelsTeaching',
   'groupSize',
-  'shareSupportStudents',
-  'shareChallengeStudents',
 ]);
 
 const shouldUse1to5Scale = (questionKey: string): boolean => {
@@ -175,7 +169,8 @@ function getContextValue(value: any, questionKey: string): number | null {
     return isNaN(num) ? null : num;
   }
   
-  return null;
+  const num = typeof value === 'number' ? value : parseFloat(String(value));
+  return isNaN(num) ? null : num;
 }
 
 export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
@@ -195,7 +190,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             if (isItemQuestion) {
               return convertLikertToNumber(rawValue);
             } else if (isContextQuestion) {
-              return getContextValue(rawValue, questionKey);
+              if (questionKey === 'groupSize') {
+                return getContextValue(rawValue, questionKey);
+              }
+              return null;
             }
             return rawValue;
           })
@@ -245,7 +243,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
               if (isItemQuestion) {
                 return convertLikertToNumber(rawValue);
               } else if (isContextQuestion) {
-                return getContextValue(rawValue, questionKey);
+                if (questionKey === 'groupSize') {
+                  return getContextValue(rawValue, questionKey);
+                }
+                return null;
               }
               return rawValue;
             })
@@ -282,7 +283,10 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
             if (isItemQuestion) {
               return convertLikertToNumber(rawValue);
             } else if (isContextQuestion) {
-              return getContextValue(rawValue, questionKey);
+              if (questionKey === 'groupSize') {
+                return getContextValue(rawValue, questionKey);
+              }
+              return null;
             }
             return rawValue;
           })
@@ -321,7 +325,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         if (isXItemQuestion) {
           xVal = convertLikertToNumber(xRaw);
         } else if (isXContextQuestion) {
-          xVal = getContextValue(xRaw, xKey);
+          if (xKey === 'groupSize') {
+            xVal = getContextValue(xRaw, xKey);
+          } else {
+            xVal = null;
+          }
         } else {
           xVal = xRaw;
         }
@@ -330,7 +338,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         if (isYItemQuestion) {
           yVal = convertLikertToNumber(yRaw);
         } else if (isYContextQuestion) {
-          yVal = getContextValue(yRaw, yKey);
+          if (yKey === 'groupSize') {
+            yVal = getContextValue(yRaw, yKey);
+          } else {
+            yVal = null;
+          }
         } else {
           yVal = yRaw;
         }
@@ -345,7 +357,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         if (isXItemQuestion) {
           xVal = convertLikertToNumber(xRaw);
         } else if (isXContextQuestion) {
-          xVal = getContextValue(xRaw, xKey);
+          if (xKey === 'groupSize') {
+            xVal = getContextValue(xRaw, xKey);
+          } else {
+            xVal = null;
+          }
         } else {
           xVal = xRaw;
         }
@@ -354,7 +370,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
         if (isYItemQuestion) {
           yVal = convertLikertToNumber(yRaw);
         } else if (isYContextQuestion) {
-          yVal = getContextValue(yRaw, yKey);
+          if (yKey === 'groupSize') {
+            yVal = getContextValue(yRaw, yKey);
+          } else {
+            yVal = null;
+          }
         } else {
           yVal = yRaw;
         }
@@ -383,7 +403,11 @@ export function PlaygroundChart({ data, config }: PlaygroundChartProps) {
       if (isItemQuestion) {
         value = convertLikertToNumber(rawValue);
       } else if (isContextQuestion) {
-        value = getContextValue(rawValue, questionKey);
+        if (questionKey === 'groupSize') {
+          value = getContextValue(rawValue, questionKey);
+        } else {
+          value = null;
+        }
       } else {
         value = rawValue;
       }
