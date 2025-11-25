@@ -17,12 +17,12 @@ interface PlaygroundConfig {
   chartType: ChartType;
   selectedQuestions: string[];
   selectedYQuestions: string[];
-  selectedGroups: string[];
-  groupByField: keyof SurveyResponse | null;
-  showDataLabels: boolean;
+  groupByField: keyof Surve
 }
-
 const QUESTIONS = [
+} { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
+{ key: 'supportQ2', label: 'Support: Simpler instructions', category: 'support' },
+const QUESTIONS = [', label: 'Support: Limit to core requirements', category: 'support' },
   { key: 'supportQ1', label: 'Support: Extra time to finish', category: 'support' },
   { key: 'supportQ2', label: 'Support: Simpler instructions', category: 'support' },
   { key: 'supportQ3', label: 'Support: Limit to core requirements', category: 'support' },
@@ -48,9 +48,6 @@ const QUESTIONS = [
   { key: 'challengeAdaptationIndex', label: 'Challenge Adaptation Index (avg)', category: 'index' },
 ];
 
-const GROUP_BY_FIELDS = [
-  { key: 'schoolType', label: 'School Type', isRangeField: false },
-  { key: 'yearsTeachingCategory', label: 'Years Teaching', isRangeField: false },
   { key: 'levelsTeaching', label: 'Levels Teaching', isRangeField: false },
   { key: 'shareSupportStudents', label: 'Share of Support Students', isRangeField: false },
   { key: 'shareChallengeStudents', label: 'Share of Challenge Students', isRangeField: false },
@@ -61,40 +58,23 @@ const GROUP_BY_FIELDS = [
 export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
   const [config, setConfig] = useState<PlaygroundConfig>({
     chartType: 'grouped-bar',
-    selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptationIndex'],
-    selectedYQuestions: [],
+    selectedQuestions: ['supportAdaptationIndex', 'challengeAdaptatio
     selectedGroups: [],
-    groupByField: 'schoolType',
     showDataLabels: false,
-  });
 
-  const availableGroups = useMemo(() => {
-    if (!config.groupByField) return [];
+    if (!config.groupBy
+    const currentField = GROUP_
     
-    const currentField = GROUP_BY_FIELDS.find(f => f.key === config.groupByField);
-    const isRangeField = currentField?.isRangeField || false;
-    
-    if (isRangeField) {
-      return ['1', '2', '3', '4', '5'];
-    }
-    
-    const groups = new Set<string>();
+     
+
     data.forEach(row => {
-      const value = row[config.groupByField as keyof SurveyResponse];
-      if (value !== null && value !== undefined && String(value).trim() !== '') {
-        groups.add(String(value));
-      }
-    });
+      if (value !== null && value !== un
+    
     return Array.from(groups).sort();
-  }, [data, config.groupByField]);
 
-  const groupCounts = useMemo(() => {
-    if (!config.groupByField) return new Map<string, number>();
     
-    const counts = new Map<string, number>();
-    
+    const counts = new 
     availableGroups.forEach(group => {
-      const count = data.filter(row => {
         const value = row[config.groupByField as keyof SurveyResponse];
         return String(value) === group;
       }).length;
