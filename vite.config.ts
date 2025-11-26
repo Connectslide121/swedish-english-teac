@@ -21,4 +21,14 @@ export default defineConfig({
       "@": resolve(projectRoot, "src"),
     },
   },
+  css: {
+    preprocessorOptions: {
+      css: {
+        // Ensure CSS imports from node_modules are resolved
+      },
+    },
+  },
+  build: {
+    cssCodeSplit: false, // Bundle all CSS together
+  },
 });
