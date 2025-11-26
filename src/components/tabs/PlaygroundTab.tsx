@@ -19,9 +19,24 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChartBar, ChartPie, Rows, Sparkle, X } from "@phosphor-icons/react";
+import {
+  ChartBar,
+  ChartPie,
+  Rows,
+  Sparkle,
+  X,
+  Lifebuoy,
+  Lightning,
+  Sliders,
+} from "@phosphor-icons/react";
 import { SurveyResponse } from "@/lib/types";
 import { PlaygroundChart } from "@/components/charts/PlaygroundChart";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type ChartType = "grouped-bar" | "stacked-bar" | "scatter" | "distribution";
 
@@ -315,6 +330,17 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
     }));
   };
 
+  const handleSelectContextQuestions = () => {
+    const contextQuestions = QUESTIONS.filter((q) =>
+      q.category.startsWith("context")
+    ).map((q) => q.key);
+
+    setConfig((prev) => ({
+      ...prev,
+      selectedQuestions: contextQuestions,
+    }));
+  };
+
   const handleClearAllQuestions = () => {
     setConfig((prev) => ({
       ...prev,
@@ -516,24 +542,55 @@ export function PlaygroundTab({ data }: { data: SurveyResponse[] }) {
               </div>
               <CardDescription className="flex items-center justify-between">
                 <span>{config.selectedQuestions.length} selected</span>
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSelectAllQuestions("support")}
-                    className="h-6 text-xs px-2"
-                  >
-                    All Support
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSelectAllQuestions("challenge")}
-                    className="h-6 text-xs px-2"
-                  >
-                    All Challenge
-                  </Button>
-                </div>
+                <TooltipProvider>
+                  <div className="flex gap-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSelectAllQuestions("support")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Lifebuoy size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>All Support</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSelectAllQuestions("challenge")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Lightning size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>All Challenge</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSelectContextQuestions()}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Sliders size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>All Context</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </CardDescription>
             </CardHeader>
             <CardContent>
