@@ -1,6 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@import './index.css';
+@import "./index.css";
 @import "tw-animate-css";
 /*
   ---break---
@@ -34,6 +34,9 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --chart-support: oklch(0.45 0.2 250);
+  --chart-challenge: oklch(0.75 0.18 45);
+  --chart-neutral: oklch(0.55 0.05 250);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -133,6 +136,9 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-support: var(--chart-support);
+  --color-chart-challenge: var(--chart-challenge);
+  --color-chart-neutral: var(--chart-neutral);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
